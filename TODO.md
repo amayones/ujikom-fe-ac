@@ -1,1 +1,0 @@
-- [x] Add responsive Tailwind classes to header.jsx for mobile visibility
