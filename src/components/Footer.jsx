@@ -7,7 +7,7 @@ export default function Footer() {
             <div className="w-full px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
 
                 {/* Copyright */}
-                <p className="text-sm md:text-base text-center md:text-left">
+                <p className="text-xs sm:text-sm md:text-base text-center md:text-left">
                     © 2025 Absolute Cinema. All rights reserved.
                 </p>
 
