@@ -8,5 +8,8 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
-  base: '/ujikom-fe-ac/',
+  base: '/ujikom-fe-ac',
+  server: {
+    historyApiFallback: true,
+  },
 })

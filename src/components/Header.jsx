@@ -3,12 +3,18 @@ import React from 'react'
 export default function Header() {
     return (
         <div>
-            <header className="bg-blue-600 text-white p-4">
-                <h1 className="text-xl font-bold">MyApp</h1>
-                <nav className="mt-2">
-                    <a href="/" className="mr-4 hover:underline">Home</a>
-                    <a href="/about" className="hover:underline">About</a>
-                </nav>
+            <header className="bg-black text-white p-4 shadow-lg">
+                <div className="container mx-auto flex justify-between items-center">
+                    <div className="flex items-center">
+                        <span className="text-red-500 text-2xl mr-2">🎥</span>
+                        <h1 className="text-2xl font-bold">Absolute Cinema</h1>
+                    </div>
+                    <nav className="space-x-6">
+                        <a href="/" className="hover:text-red-500 transition-colors">Home</a>
+                        <a href="/movies" className="hover:text-red-500 transition-colors">Movies</a>
+                        <a href="/about" className="hover:text-red-500 transition-colors">About</a>
+                    </nav>
+                </div>
             </header>
         </div>
     )
