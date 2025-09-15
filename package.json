@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://amayones.github.io/ujikom-fe-ac",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
