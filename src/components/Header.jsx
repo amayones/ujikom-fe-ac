@@ -3,8 +3,8 @@ import { UserCircle, Search } from 'lucide-react';
 
 export default function Header() {
     return (
-        <header className="bg-black text-white shadow-md p-3 sticky top-0 z-50">
-            <div className="container mx-auto flex items-center justify-between gap-4">
+        <header className="bg-black text-white shadow-md p-5 sticky top-0 z-50">
+            <div className="w-full px-4 flex items-center justify-between gap-4">
 
                 {/* Logo + Navigation */}
                 <div className="flex items-center gap-6">
@@ -46,7 +46,7 @@ export default function Header() {
                 <div className="flex items-center space-x-4">
                     <a
                         href="/login"
-                        className="flex items-center space-x-1 text-xs font-medium hover:text-red-500 transition-colors duration-200 whitespace-nowrap"
+                        className="flex items-center space-x-1 text-md font-medium hover:text-red-500 transition-colors duration-200 whitespace-nowrap"
                     >
                         <UserCircle size={18} />
                         <span>Sign In</span>

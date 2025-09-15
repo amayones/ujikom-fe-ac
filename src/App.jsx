@@ -6,9 +6,9 @@ import Footer from "./components/Footer";
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="flex flex-col min-h-screen bg-black">
+      <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="flex-grow p-6">
+        <main>
           <AppRoutes />
         </main>
         <Footer />
