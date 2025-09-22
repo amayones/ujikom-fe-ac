@@ -8,9 +8,9 @@ export default function Header() {
 
     const navLinks = [
         { href: "/", label: "Home", icon: <Home size={16} /> },
-        { href: "/play-now", label: "Now Playing", icon: <Ticket size={16} /> },
-        { href: "/coming-soon", label: "Coming Soon", icon: <Clock size={16} /> },
-        { href: "/history", label: "History", icon: <Info size={16} /> },
+        { href: "/play-now/", label: "Now Playing", icon: <Ticket size={16} /> },
+        { href: "/coming-soon/", label: "Coming Soon", icon: <Clock size={16} /> },
+        { href: "/history/", label: "History", icon: <Info size={16} /> },
     ];
 
     const isActive = (path) => location.pathname === path;
@@ -36,8 +36,8 @@ export default function Header() {
                             key={link.href}
                             href={link.href}
                             className={`flex items-center gap-1 text-sm font-medium relative transition-colors ${isActive(link.href)
-                                    ? "text-red-500"
-                                    : "hover:text-red-400"
+                                ? "text-red-500"
+                                : "hover:text-red-400"
                                 }`}
                         >
                             {link.icon} {link.label}
@@ -74,8 +74,8 @@ export default function Header() {
                                 key={link.href}
                                 href={link.href}
                                 className={`flex items-center gap-2 py-2 ${isActive(link.href)
-                                        ? "text-red-500 font-semibold"
-                                        : "hover:text-red-400"
+                                    ? "text-red-500 font-semibold"
+                                    : "hover:text-red-400"
                                     }`}
                             >
                                 {link.icon} {link.label}
