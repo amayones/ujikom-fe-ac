@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UserCircle, Search, Menu, X, Film, Ticket, Home, Info } from "lucide-react";
+import { UserCircle, Search, Menu, X, Film, Ticket, Home, Info, Clock } from "lucide-react";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,12 +21,6 @@ export default function Header() {
                 {/* Navigation Menu */}
                 <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
                     <a
-                        href="/"
-                        className="flex items-center gap-1 hover:text-red-500 transition-colors"
-                    >
-                        <Home size={16} /> Home
-                    </a>
-                    <a
                         href="/play-now"
                         className="flex items-center gap-1 hover:text-red-500 transition-colors"
                     >
@@ -36,7 +30,7 @@ export default function Header() {
                         href="/coming-soon"
                         className="flex items-center gap-1 hover:text-red-500 transition-colors"
                     >
-                        <Film size={16} /> Coming Soon
+                        <Clock size={16} /> Coming Soon
                     </a>
                     <a
                         href="/history"
