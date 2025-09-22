@@ -1,5 +1,5 @@
 import React from "react";
-import { Film, Ticket, Popcorn, Star, Calendar } from "lucide-react";
+import { Film, Ticket, Popcorn, Star, Calendar, ArrowRight } from "lucide-react";
 
 export default function Home() {
     return (
@@ -48,8 +48,8 @@ export default function Home() {
                 <h2 className="text-3xl font-bold mb-10 text-center flex items-center justify-center gap-2">
                     <Film className="w-7 h-7 text-red-500" /> Now Showing
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-                    {[1, 2, 3, 4].map((i) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                    {[1, 2, 3].map((i) => (
                         <div key={i} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform">
                             <div className="h-56 bg-gray-700 flex items-center justify-center">
                                 <span className="text-gray-400">Poster {i}</span>
@@ -63,6 +63,15 @@ export default function Home() {
                             </div>
                         </div>
                     ))}
+                </div>
+                {/* Tombol Lihat Semua */}
+                <div className="mt-10 text-center">
+                    <a
+                        href="/play-now"
+                        className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-medium shadow-md transition-all"
+                    >
+                        Lihat Semua <ArrowRight size={18} />
+                    </a>
                 </div>
             </section>
 
@@ -83,6 +92,15 @@ export default function Home() {
                             </div>
                         </div>
                     ))}
+                </div>
+                {/* Tombol Lihat Semua */}
+                <div className="mt-10 text-center">
+                    <a
+                        href="/coming-soon"
+                        className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-full font-medium shadow-md transition-all"
+                    >
+                        Lihat Semua <ArrowRight size={18} />
+                    </a>
                 </div>
             </section>
 

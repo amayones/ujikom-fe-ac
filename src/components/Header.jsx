@@ -1,12 +1,23 @@
 import React, { useState } from "react";
-import { UserCircle, Search, Menu, X, Film, Ticket, Home, Info, Clock } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { UserCircle, Menu, X, Film, Ticket, Home, Info, Clock } from "lucide-react";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation();
+
+    const navLinks = [
+        { href: "/", label: "Home", icon: <Home size={16} /> },
+        { href: "/play-now", label: "Now Playing", icon: <Ticket size={16} /> },
+        { href: "/coming-soon", label: "Coming Soon", icon: <Clock size={16} /> },
+        { href: "/history", label: "History", icon: <Info size={16} /> },
+    ];
+
+    const isActive = (path) => location.pathname === path;
 
     return (
         <header className="bg-black text-white shadow-md sticky top-0 z-50">
-            <div className="w-full px-6 py-4 flex items-center justify-between">
+            <div className="w-full px-6 py-4 flex items-center justify-between relative">
                 {/* Logo */}
                 <div className="flex items-center gap-2">
                     <Film className="text-red-600" size={28} />
@@ -18,40 +29,24 @@ export default function Header() {
                     </a>
                 </div>
 
-                {/* Navigation Menu */}
-                <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-                    <a
-                        href="/play-now"
-                        className="flex items-center gap-1 hover:text-red-500 transition-colors"
-                    >
-                        <Ticket size={16} /> Now Playing
-                    </a>
-                    <a
-                        href="/coming-soon"
-                        className="flex items-center gap-1 hover:text-red-500 transition-colors"
-                    >
-                        <Clock size={16} /> Coming Soon
-                    </a>
-                    <a
-                        href="/history"
-                        className="flex items-center gap-1 hover:text-red-500 transition-colors"
-                    >
-                        <Info size={16} /> History
-                    </a>
+                {/* Navigation Menu (Center) */}
+                <nav className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
+                    {navLinks.map((link) => (
+                        <a
+                            key={link.href}
+                            href={link.href}
+                            className={`flex items-center gap-1 text-sm font-medium relative transition-colors ${isActive(link.href)
+                                    ? "text-red-500"
+                                    : "hover:text-red-400"
+                                }`}
+                        >
+                            {link.icon} {link.label}
+                            {isActive(link.href) && (
+                                <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-red-500 rounded-full"></span>
+                            )}
+                        </a>
+                    ))}
                 </nav>
-
-                {/* Search Bar */}
-                <div className="flex-1 mx-4 relative max-w-xs md:max-w-md hidden sm:block">
-                    <input
-                        type="text"
-                        placeholder="Search movies, genres..."
-                        className="w-full rounded px-3 py-2 bg-gray-900 text-white border border-gray-700 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 outline-none text-sm"
-                    />
-                    <Search
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 cursor-pointer"
-                        size={18}
-                    />
-                </div>
 
                 {/* User + Hamburger */}
                 <div className="flex items-center gap-4">
@@ -74,18 +69,18 @@ export default function Header() {
             {isMenuOpen && (
                 <div className="md:hidden bg-black border-t border-gray-800 px-6 py-4">
                     <nav className="flex flex-col space-y-3 text-sm font-medium">
-                        <a href="/" className="flex items-center gap-2 hover:text-red-500 py-2">
-                            <Home size={16} /> Home
-                        </a>
-                        <a href="/play-now" className="flex items-center gap-2 hover:text-red-500 py-2">
-                            <Ticket size={16} /> Now Playing
-                        </a>
-                        <a href="/coming-soon" className="flex items-center gap-2 hover:text-red-500 py-2">
-                            <Film size={16} /> Coming Soon
-                        </a>
-                        <a href="/history" className="flex items-center gap-2 hover:text-red-500 py-2">
-                            <Info size={16} /> History
-                        </a>
+                        {navLinks.map((link) => (
+                            <a
+                                key={link.href}
+                                href={link.href}
+                                className={`flex items-center gap-2 py-2 ${isActive(link.href)
+                                        ? "text-red-500 font-semibold"
+                                        : "hover:text-red-400"
+                                    }`}
+                            >
+                                {link.icon} {link.label}
+                            </a>
+                        ))}
                         <a href="/login" className="flex items-center gap-2 hover:text-red-500 py-2">
                             <UserCircle size={16} /> Sign In
                         </a>
