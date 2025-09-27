@@ -110,9 +110,6 @@ export default function Home() {
                 <p className="text-gray-200 mb-6 max-w-xl mx-auto">
                     Jangan lewatkan film-film terbaru dengan pengalaman menonton terbaik. Pesan tiketmu sekarang dan nikmati hiburan tanpa batas.
                 </p>
-                <button className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full font-semibold shadow-lg transition-all">
-                    Pesan Tiket
-                </button>
             </section>
         </div>
     );

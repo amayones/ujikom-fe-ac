@@ -21,9 +21,7 @@ export default function Footer() {
                     <ul className="space-y-2 text-sm">
                         <li><a href="/" className="hover:text-red-500">Now Showing</a></li>
                         <li><a href="/coming-soon" className="hover:text-red-500">Coming Soon</a></li>
-                        <li><a href="/jadwal" className="hover:text-red-500">Jadwal</a></li>
-                        <li><a href="/harga" className="hover:text-red-500">Harga Tiket</a></li>
-                        <li><a href="/promo" className="hover:text-red-500">Promo</a></li>
+                        <li><a href="/history" className="hover:text-red-500">History</a></li>
                     </ul>
                 </div>
 
@@ -42,24 +40,10 @@ export default function Footer() {
                 <div>
                     <h3 className="text-lg font-semibold text-white mb-4">Kontak</h3>
                     <p className="text-sm mb-3">
-                        Jl. Cinema Raya No. 21, Jakarta<br />
-                        Email: support@absolutecinema.com<br />
-                        Telp: (021) 123-4567
+                        Jl. Absolute Cinema No. 69<br />
+                        Email: may@absolutecinema.com<br />
+                        Telp: (000) 000-0000
                     </p>
-                    <div className="flex items-center gap-4">
-                        <a href="#" className="hover:text-red-500 transition-colors duration-200">
-                            <Facebook size={18} />
-                        </a>
-                        <a href="#" className="hover:text-red-500 transition-colors duration-200">
-                            <Instagram size={18} />
-                        </a>
-                        <a href="#" className="hover:text-red-500 transition-colors duration-200">
-                            <Twitter size={18} />
-                        </a>
-                        <a href="#" className="hover:text-red-500 transition-colors duration-200">
-                            <Youtube size={18} />
-                        </a>
-                    </div>
                 </div>
             </div>
 

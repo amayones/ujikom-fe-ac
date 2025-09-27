@@ -31,11 +31,8 @@ export default function Login() {
                         />
                     </div>
 
-                    {/* Remember + Forgot */}
+                    {/* Forgot */}
                     <div className="flex items-center justify-between text-sm">
-                        <label className="flex items-center text-gray-300">
-                            <input type="checkbox" className="mr-2" /> Remember me
-                        </label>
                         <a href="/forgot-password" className="text-red-500 hover:underline">
                             Lupa password?
                         </a>

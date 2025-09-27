@@ -13,7 +13,11 @@ export default function Header() {
         { href: "/history", label: "History", icon: <Info size={16} /> },
     ];
 
-    const isActive = (path) => location.pathname === path;
+    const isActive = (path) => {
+        const currentPath = location.pathname.replace(/\/+$/, "") || "/";
+        const targetPath = path.replace(/\/+$/, "") || "/";
+        return currentPath === targetPath;
+    };
 
     return (
         <header className="bg-black text-white shadow-md sticky top-0 z-50">
@@ -81,7 +85,10 @@ export default function Header() {
                                 {link.icon} {link.label}
                             </a>
                         ))}
-                        <a href="/login" className="flex items-center gap-2 hover:text-red-500 py-2">
+                        <a
+                            href="/login"
+                            className="flex items-center gap-2 hover:text-red-500 py-2"
+                        >
                             <UserCircle size={16} /> Sign In
                         </a>
                     </nav>
