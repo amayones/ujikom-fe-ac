@@ -1,7 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Film, Ticket, Popcorn, Star, Calendar, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { filmService } from "../services/filmService";
 
 export default function Home() {
+    const [nowPlayingFilms, setNowPlayingFilms] = useState([]);
+    const [comingSoonFilms, setComingSoonFilms] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchFilms = async () => {
+            try {
+                const [nowPlaying, comingSoon] = await Promise.all([
+                    filmService.getFilms('play_now'),
+                    filmService.getFilms('coming_soon')
+                ]);
+                setNowPlayingFilms(nowPlaying.slice(0, 3));
+                setComingSoonFilms(comingSoon.slice(0, 3));
+            } catch (error) {
+                console.error('Failed to fetch films:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFilms();
+    }, []);
+
     return (
         <div className="bg-gray-900 text-white min-h-screen">
             {/* Hero Section */}
@@ -49,29 +74,53 @@ export default function Home() {
                     <Film className="w-7 h-7 text-red-500" /> Now Showing
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform">
-                            <div className="h-56 bg-gray-700 flex items-center justify-center">
-                                <span className="text-gray-400">Poster {i}</span>
+                    {loading ? (
+                        [1, 2, 3].map((i) => (
+                            <div key={i} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden animate-pulse">
+                                <div className="h-56 bg-gray-700"></div>
+                                <div className="p-5">
+                                    <div className="h-4 bg-gray-700 rounded mb-2"></div>
+                                    <div className="h-3 bg-gray-700 rounded mb-3"></div>
+                                    <div className="h-8 bg-gray-700 rounded"></div>
+                                </div>
                             </div>
-                            <div className="p-5">
-                                <h3 className="text-lg font-semibold mb-1">Judul Film {i}</h3>
-                                <p className="text-sm text-gray-400 mb-3">Genre | 120 min</p>
-                                <button className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium text-sm">
-                                    Lihat Detail
-                                </button>
+                        ))
+                    ) : nowPlayingFilms.length > 0 ? (
+                        nowPlayingFilms.map((film) => (
+                            <div key={film.id} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform">
+                                <div className="h-56 bg-gray-700 flex items-center justify-center">
+                                    {film.poster ? (
+                                        <img src={film.poster} alt={film.judul} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-gray-400">🎬</span>
+                                    )}
+                                </div>
+                                <div className="p-5">
+                                    <h3 className="text-lg font-semibold mb-1">{film.judul}</h3>
+                                    <p className="text-sm text-gray-400 mb-3">{film.genre} | {film.durasi} min</p>
+                                    <Link 
+                                        to={`/movies/${film.id}`}
+                                        className="block w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium text-sm text-center transition"
+                                    >
+                                        Lihat Detail
+                                    </Link>
+                                </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="col-span-3 text-center py-12">
+                            <p className="text-gray-400">No films available</p>
                         </div>
-                    ))}
+                    )}
                 </div>
                 {/* Tombol Lihat Semua */}
                 <div className="mt-10 text-center">
-                    <a
-                        href="/play-now"
+                    <Link
+                        to="/play-now"
                         className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-medium shadow-md transition-all"
                     >
                         Lihat Semua <ArrowRight size={18} />
-                    </a>
+                    </Link>
                 </div>
             </section>
 
@@ -81,26 +130,46 @@ export default function Home() {
                     <Calendar className="w-7 h-7 text-yellow-400" /> Coming Soon
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="bg-gray-900 rounded-xl shadow-md overflow-hidden hover:scale-105 transition-transform">
-                            <div className="h-48 bg-gray-600 flex items-center justify-center">
-                                <span className="text-gray-400">Poster Coming {i}</span>
+                    {loading ? (
+                        [1, 2, 3].map((i) => (
+                            <div key={i} className="bg-gray-900 rounded-xl shadow-md overflow-hidden animate-pulse">
+                                <div className="h-48 bg-gray-600"></div>
+                                <div className="p-5">
+                                    <div className="h-4 bg-gray-600 rounded mb-2"></div>
+                                    <div className="h-3 bg-gray-600 rounded"></div>
+                                </div>
                             </div>
-                            <div className="p-5">
-                                <h3 className="text-lg font-semibold mb-1">Film Akan Datang {i}</h3>
-                                <p className="text-sm text-gray-400">Rilis: 20{i}/2025</p>
+                        ))
+                    ) : comingSoonFilms.length > 0 ? (
+                        comingSoonFilms.map((film) => (
+                            <div key={film.id} className="bg-gray-900 rounded-xl shadow-md overflow-hidden hover:scale-105 transition-transform">
+                                <div className="h-48 bg-gray-600 flex items-center justify-center">
+                                    {film.poster ? (
+                                        <img src={film.poster} alt={film.judul} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-gray-400">🎬</span>
+                                    )}
+                                </div>
+                                <div className="p-5">
+                                    <h3 className="text-lg font-semibold mb-1">{film.judul}</h3>
+                                    <p className="text-sm text-gray-400">Rilis: {film.tanggal_rilis || 'TBA'}</p>
+                                </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="col-span-3 text-center py-12">
+                            <p className="text-gray-400">No upcoming films</p>
                         </div>
-                    ))}
+                    )}
                 </div>
                 {/* Tombol Lihat Semua */}
                 <div className="mt-10 text-center">
-                    <a
-                        href="/coming-soon"
+                    <Link
+                        to="/coming-soon"
                         className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-full font-medium shadow-md transition-all"
                     >
                         Lihat Semua <ArrowRight size={18} />
-                    </a>
+                    </Link>
                 </div>
             </section>
 

@@ -1,10 +1,25 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { UserCircle, Menu, X, Film, Ticket, Home, Info, Clock } from "lucide-react";
+import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/authService';
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
+    const { user, logout, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await authService.logout();
+            logout();
+            navigate('/login');
+        } catch (error) {
+            logout();
+            navigate('/login');
+        }
+    };
 
     const navLinks = [
         { href: "/", label: "Home", icon: <Home size={16} /> },
@@ -25,41 +40,59 @@ export default function Header() {
                 {/* Logo */}
                 <div className="flex items-center gap-2">
                     <Film className="text-red-600" size={28} />
-                    <a
-                        href="/"
+                    <Link
+                        to="/"
                         className="text-xl md:text-2xl font-bold text-red-600 tracking-wide hover:text-red-500 transition-colors"
                     >
                         Absolute Cinema
-                    </a>
+                    </Link>
                 </div>
 
                 {/* Navigation Menu (Center) */}
                 <nav className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
-                    {navLinks.map((link) => (
-                        <a
-                            key={link.href}
-                            href={link.href}
-                            className={`flex items-center gap-1 text-sm font-medium relative transition-colors ${isActive(link.href)
-                                    ? "text-red-500"
-                                    : "hover:text-red-400"
-                                }`}
-                        >
-                            {link.icon} {link.label}
-                            {isActive(link.href) && (
-                                <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-red-500 rounded-full"></span>
-                            )}
-                        </a>
-                    ))}
+                    {navLinks.map((link) => {
+                        if (link.href === '/history' && !isAuthenticated) return null;
+                        return (
+                            <Link
+                                key={link.href}
+                                to={link.href}
+                                className={`flex items-center gap-1 text-sm font-medium relative transition-colors ${isActive(link.href)
+                                        ? "text-red-500"
+                                        : "hover:text-red-400"
+                                    }`}
+                            >
+                                {link.icon} {link.label}
+                                {isActive(link.href) && (
+                                    <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-red-500 rounded-full"></span>
+                                )}
+                            </Link>
+                        );
+                    })}
                 </nav>
 
                 {/* User + Hamburger */}
                 <div className="flex items-center gap-4">
-                    <a
-                        href="/login"
-                        className="hidden md:flex items-center gap-1 text-sm font-medium hover:text-red-500 transition-colors"
-                    >
-                        <UserCircle size={18} /> Sign In
-                    </a>
+                    {isAuthenticated ? (
+                        <>
+                            <span className="hidden md:block text-sm text-gray-300">Hi, {user?.nama || user?.name}</span>
+                            <Link to="/profile" className="hidden md:flex items-center gap-1 text-sm font-medium hover:text-red-500 transition-colors">
+                                <UserCircle size={18} /> Profile
+                            </Link>
+                            <button 
+                                onClick={handleLogout}
+                                className="hidden md:block bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition"
+                            >
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="hidden md:flex items-center gap-1 text-sm font-medium hover:text-red-500 transition-colors"
+                        >
+                            <UserCircle size={18} /> Sign In
+                        </Link>
+                    )}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         className="md:hidden text-white hover:text-red-500 transition-colors"
@@ -73,24 +106,41 @@ export default function Header() {
             {isMenuOpen && (
                 <div className="md:hidden bg-black border-t border-gray-800 px-6 py-4">
                     <nav className="flex flex-col space-y-3 text-sm font-medium">
-                        {navLinks.map((link) => (
-                            <a
-                                key={link.href}
-                                href={link.href}
-                                className={`flex items-center gap-2 py-2 ${isActive(link.href)
-                                        ? "text-red-500 font-semibold"
-                                        : "hover:text-red-400"
-                                    }`}
+                        {navLinks.map((link) => {
+                            if (link.href === '/history' && !isAuthenticated) return null;
+                            return (
+                                <Link
+                                    key={link.href}
+                                    to={link.href}
+                                    className={`flex items-center gap-2 py-2 ${isActive(link.href)
+                                            ? "text-red-500 font-semibold"
+                                            : "hover:text-red-400"
+                                        }`}
+                                >
+                                    {link.icon} {link.label}
+                                </Link>
+                            );
+                        })}
+                        {isAuthenticated ? (
+                            <>
+                                <Link to="/profile" className="flex items-center gap-2 hover:text-red-500 py-2">
+                                    <UserCircle size={16} /> Profile
+                                </Link>
+                                <button 
+                                    onClick={handleLogout}
+                                    className="flex items-center gap-2 hover:text-red-500 py-2 text-left"
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <Link
+                                to="/login"
+                                className="flex items-center gap-2 hover:text-red-500 py-2"
                             >
-                                {link.icon} {link.label}
-                            </a>
-                        ))}
-                        <a
-                            href="/login"
-                            className="flex items-center gap-2 hover:text-red-500 py-2"
-                        >
-                            <UserCircle size={16} /> Sign In
-                        </a>
+                                <UserCircle size={16} /> Sign In
+                            </Link>
+                        )}
                     </nav>
                 </div>
             )}
