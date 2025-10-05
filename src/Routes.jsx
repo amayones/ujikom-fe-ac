@@ -1,6 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import React from 'react'
 import ProtectedRoute from "./components/ProtectedRoute";
+import RoleGuard from "./components/RoleGuard";
+import AuthGuard from "./components/AuthGuard";
+import RoleBasedRedirect from "./components/RoleBasedRedirect";
 
 // Auth
 import Login from "./pages/Auth/Login";
@@ -41,19 +44,19 @@ export default function AppRoutes() {
         <div>
             <Routes>
                 {/* Auth */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<AuthGuard><Login /></AuthGuard>} />
+                <Route path="/register" element={<AuthGuard><Register /></AuthGuard>} />
 
                 {/* User */}
-                <Route path="/" element={<Home />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/play-now" element={<NowPlaying />} />
-                <Route path="/coming-soon" element={<ComingSoon />} />
-                <Route path="/movies/:id" element={<MovieDetail />} />
-                <Route path="/booking/:id" element={<Booking />} />
-                <Route path="/payment" element={<Payment />} />
-                <Route path="/ticket/:id" element={<Ticket />} />
-                <Route path="/history" element={<History />} />
+                <Route path="/" element={<RoleBasedRedirect><Home /></RoleBasedRedirect>} />
+                <Route path="/profile" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><Profile /></RoleGuard>} />
+                <Route path="/play-now" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><NowPlaying /></RoleGuard>} />
+                <Route path="/coming-soon" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><ComingSoon /></RoleGuard>} />
+                <Route path="/movies/:id" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><MovieDetail /></RoleGuard>} />
+                <Route path="/booking/:id" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><Booking /></RoleGuard>} />
+                <Route path="/payment" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><Payment /></RoleGuard>} />
+                <Route path="/ticket/:id" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><Ticket /></RoleGuard>} />
+                <Route path="/history" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><History /></RoleGuard>} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />

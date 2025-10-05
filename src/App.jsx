@@ -3,15 +3,21 @@ import AppRoutes from "./Routes";
 import RoleBasedNavbar from "./components/RoleBasedNavbar";
 import Footer from "./components/Footer";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { shouldHideLayout } from "./utils/routeUtils";
+import RouteValidator from "./components/RouteValidator";
+import LoadingScreen from "./components/LoadingScreen";
 
 function Layout() {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   
-  // Hide navbar/footer for auth pages and profile
-  const hideLayout = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/forgot-password";
+  if (loading) {
+    return <LoadingScreen />;
+  }
   
-  // Hide footer for role-specific dashboards
+  const hideLayout = shouldHideLayout(location.pathname);
+  
+  // Hide footer for role-specific dashboards and auth pages
   const hideFooter = hideLayout || 
     location.pathname.startsWith('/admin/') || 
     location.pathname.startsWith('/owner/') || 
@@ -19,13 +25,15 @@ function Layout() {
     location.pathname === "/profile";
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {!hideLayout && <RoleBasedNavbar />}
-      <main className="flex-1">
-        <AppRoutes />
-      </main>
-      {!hideFooter && <Footer />}
-    </div>
+    <RouteValidator>
+      <div className="flex flex-col min-h-screen">
+        {!hideLayout && <RoleBasedNavbar />}
+        <main className="flex-1">
+          <AppRoutes />
+        </main>
+        {!hideFooter && <Footer />}
+      </div>
+    </RouteValidator>
   );
 }
 

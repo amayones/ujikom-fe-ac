@@ -23,15 +23,18 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
     if (isAuthenticated && requiredRole) {
         const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'pelanggan';
         
-        if (userRole !== requiredRole) {
+        // Handle kasir/cashier role matching
+        const normalizedUserRole = userRole === 'cashier' ? 'kasir' : userRole;
+        const normalizedRequiredRole = requiredRole === 'cashier' ? 'kasir' : requiredRole;
+        
+        if (normalizedUserRole !== normalizedRequiredRole) {
             // Redirect to appropriate dashboard based on user's role
-            switch (userRole) {
+            switch (normalizedUserRole) {
                 case 'admin':
                     return <Navigate to="/admin/dashboard" replace />;
                 case 'owner':
                     return <Navigate to="/owner/dashboard" replace />;
                 case 'kasir':
-                case 'cashier':
                     return <Navigate to="/cashier/dashboard" replace />;
                 default:
                     return <Navigate to="/" replace />;

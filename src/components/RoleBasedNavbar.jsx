@@ -13,16 +13,10 @@ export default function RoleBasedNavbar() {
         if (!user) return 'user';
         
         // Check role field first, then fallback to level
-        if (user.role) {
-            return user.role.toLowerCase();
-        }
+        const role = user.role?.toLowerCase() || user.level?.toLowerCase() || 'pelanggan';
         
-        if (user.level) {
-            return user.level.toLowerCase();
-        }
-        
-        // Default to user if no role specified
-        return 'user';
+        // Normalize kasir/cashier
+        return role === 'cashier' ? 'kasir' : role;
     };
 
     const role = getUserRole();
@@ -33,7 +27,6 @@ export default function RoleBasedNavbar() {
         case 'owner':
             return <OwnerNavbar />;
         case 'kasir':
-        case 'cashier':
             return <CashierNavbar />;
         case 'user':
         case 'pelanggan':
