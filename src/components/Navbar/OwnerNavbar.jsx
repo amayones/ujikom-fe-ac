@@ -23,8 +23,8 @@ export default function OwnerNavbar() {
 
     const navLinks = [
         { href: "/owner/dashboard", label: "Dashboard", icon: <BarChart3 size={16} /> },
-        { href: "/owner/finance", label: "Keuangan", icon: <DollarSign size={16} /> },
-        { href: "/owner/report", label: "Laporan", icon: <FileText size={16} /> },
+        { href: "/owner/finance", label: "Finance", icon: <DollarSign size={16} /> },
+        { href: "/owner/report", label: "Reports", icon: <FileText size={16} /> },
     ];
 
     const isActive = (path) => {
@@ -59,7 +59,7 @@ export default function OwnerNavbar() {
                 </nav>
 
                 <div className="flex items-center gap-4">
-                    <span className="hidden md:block text-sm text-purple-200">Owner: {user?.nama || user?.name}</span>
+                    <span className="hidden md:block text-sm text-purple-200">Owner: {user?.name || user?.nama}</span>
                     <button onClick={handleLogout} className="hidden md:flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition">
                         <LogOut size={14} /> Logout
                     </button>

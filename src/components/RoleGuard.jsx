@@ -2,18 +2,23 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function RoleGuard({ children, allowedRoles = ['pelanggan', 'user'] }) {
+export default function RoleGuard({ children, allowedRoles = ['customer', 'user'] }) {
     const { user, isAuthenticated } = useAuth();
 
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
 
-    const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'pelanggan';
+    const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'customer';
     
-    // Normalize kasir/cashier role
-    const normalizedUserRole = userRole === 'cashier' ? 'kasir' : userRole;
-    const normalizedAllowedRoles = allowedRoles.map(role => role === 'cashier' ? 'kasir' : role);
+    // Normalize Indonesian roles to English
+    const roleMap = {
+        'pelanggan': 'customer',
+        'kasir': 'cashier'
+    };
+    
+    const normalizedUserRole = roleMap[userRole] || userRole;
+    const normalizedAllowedRoles = allowedRoles.map(role => roleMap[role] || role);
     
     // If user role is not in allowed roles, redirect to their appropriate dashboard
     if (!normalizedAllowedRoles.includes(normalizedUserRole)) {
@@ -22,7 +27,7 @@ export default function RoleGuard({ children, allowedRoles = ['pelanggan', 'user
                 return <Navigate to="/admin/dashboard" replace />;
             case 'owner':
                 return <Navigate to="/owner/dashboard" replace />;
-            case 'kasir':
+            case 'cashier':
                 return <Navigate to="/cashier/dashboard" replace />;
             default:
                 return <Navigate to="/" replace />;

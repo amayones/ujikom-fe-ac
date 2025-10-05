@@ -65,7 +65,7 @@ export default function UserNavbar() {
                 <div className="flex items-center gap-4">
                     {isAuthenticated ? (
                         <>
-                            <span className="hidden md:block text-sm text-gray-300">Hi, {user?.nama || user?.name}</span>
+                            <span className="hidden md:block text-sm text-gray-300">Hi, {user?.name || user?.nama}</span>
                             <Link to="/profile" className="hidden md:flex items-center gap-1 text-sm font-medium hover:text-red-500 transition-colors">
                                 <UserCircle size={18} /> Profile
                             </Link>

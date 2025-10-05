@@ -49,14 +49,14 @@ export default function AppRoutes() {
 
                 {/* User */}
                 <Route path="/" element={<RoleBasedRedirect><Home /></RoleBasedRedirect>} />
-                <Route path="/profile" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><Profile /></RoleGuard>} />
-                <Route path="/play-now" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><NowPlaying /></RoleGuard>} />
-                <Route path="/coming-soon" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><ComingSoon /></RoleGuard>} />
-                <Route path="/movies/:id" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><MovieDetail /></RoleGuard>} />
-                <Route path="/booking/:id" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><Booking /></RoleGuard>} />
-                <Route path="/payment" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><Payment /></RoleGuard>} />
-                <Route path="/ticket/:id" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><Ticket /></RoleGuard>} />
-                <Route path="/history" element={<RoleGuard allowedRoles={['pelanggan', 'user']}><History /></RoleGuard>} />
+                <Route path="/profile" element={<RoleGuard allowedRoles={['customer', 'user']}><Profile /></RoleGuard>} />
+                <Route path="/play-now" element={<RoleGuard allowedRoles={['customer', 'user']}><NowPlaying /></RoleGuard>} />
+                <Route path="/coming-soon" element={<RoleGuard allowedRoles={['customer', 'user']}><ComingSoon /></RoleGuard>} />
+                <Route path="/movies/:id" element={<RoleGuard allowedRoles={['customer', 'user']}><MovieDetail /></RoleGuard>} />
+                <Route path="/booking/:id" element={<RoleGuard allowedRoles={['customer', 'user']}><Booking /></RoleGuard>} />
+                <Route path="/payment" element={<RoleGuard allowedRoles={['customer', 'user']}><Payment /></RoleGuard>} />
+                <Route path="/ticket/:id" element={<RoleGuard allowedRoles={['customer', 'user']}><Ticket /></RoleGuard>} />
+                <Route path="/history" element={<RoleGuard allowedRoles={['customer', 'user']}><History /></RoleGuard>} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
@@ -70,9 +70,9 @@ export default function AppRoutes() {
                 <Route path="/owner/report" element={<ProtectedRoute requiredRole="owner"><Report /></ProtectedRoute>} />
 
                 {/* Cashier Routes */}
-                <Route path="/cashier/dashboard" element={<ProtectedRoute requiredRole="kasir"><CashierDashboard /></ProtectedRoute>} />
-                <Route path="/cashier/transactions" element={<ProtectedRoute requiredRole="kasir"><Transaction /></ProtectedRoute>} />
-                <Route path="/cashier/scan-ticket" element={<ProtectedRoute requiredRole="kasir"><ScanTicket /></ProtectedRoute>} />
+                <Route path="/cashier/dashboard" element={<ProtectedRoute requiredRole="cashier"><CashierDashboard /></ProtectedRoute>} />
+                <Route path="/cashier/transactions" element={<ProtectedRoute requiredRole="cashier"><Transaction /></ProtectedRoute>} />
+                <Route path="/cashier/scan-ticket" element={<ProtectedRoute requiredRole="cashier"><ScanTicket /></ProtectedRoute>} />
                 
                 {/* 404 Catch-all route */}
                 <Route path="*" element={<NotFound />} />

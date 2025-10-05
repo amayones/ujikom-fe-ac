@@ -11,8 +11,15 @@ export default function RouteValidator({ children }) {
     useEffect(() => {
         if (!isAuthenticated || !user) return;
 
-        const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'pelanggan';
-        const normalizedRole = userRole === 'cashier' ? 'kasir' : userRole;
+        const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'customer';
+        
+        // Normalize Indonesian roles to English
+        const roleMap = {
+            'pelanggan': 'customer',
+            'kasir': 'cashier'
+        };
+        
+        const normalizedRole = roleMap[userRole] || userRole;
         const currentPath = location.pathname;
 
         // Define role-specific path restrictions
@@ -25,17 +32,17 @@ export default function RouteValidator({ children }) {
                 allowed: ['/owner/'],
                 redirect: '/owner/dashboard'
             },
-            kasir: {
+            cashier: {
                 allowed: ['/cashier/'],
                 redirect: '/cashier/dashboard'
             },
-            pelanggan: {
+            customer: {
                 allowed: ['/', '/profile', '/play-now', '/coming-soon', '/movies/', '/booking/', '/payment', '/ticket/', '/history'],
                 redirect: '/'
             }
         };
 
-        const userRestriction = roleRestrictions[normalizedRole] || roleRestrictions.pelanggan;
+        const userRestriction = roleRestrictions[normalizedRole] || roleRestrictions.customer;
 
         // Check if current path is allowed for user role
         const isAllowed = userRestriction.allowed.some(allowedPath => {

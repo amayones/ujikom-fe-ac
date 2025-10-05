@@ -21,18 +21,25 @@ export const authService = {
   getRoleBasedRedirect: (user) => {
     if (!user) return '/';
     
-    const role = user.role?.toLowerCase() || user.level?.toLowerCase() || 'pelanggan';
-    const normalizedRole = role === 'cashier' ? 'kasir' : role;
+    const role = user.role?.toLowerCase() || user.level?.toLowerCase() || 'customer';
+    
+    // Normalize Indonesian roles to English
+    const roleMap = {
+      'pelanggan': 'customer',
+      'kasir': 'cashier'
+    };
+    
+    const normalizedRole = roleMap[role] || role;
     
     switch (normalizedRole) {
       case 'admin':
         return '/admin/dashboard';
       case 'owner':
         return '/owner/dashboard';
-      case 'kasir':
+      case 'cashier':
         return '/cashier/dashboard';
       case 'user':
-      case 'pelanggan':
+      case 'customer':
       default:
         return '/';
     }

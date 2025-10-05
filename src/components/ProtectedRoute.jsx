@@ -21,11 +21,16 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
 
     // If authenticated but trying to access wrong role's area
     if (isAuthenticated && requiredRole) {
-        const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'pelanggan';
+        const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'customer';
         
-        // Handle kasir/cashier role matching
-        const normalizedUserRole = userRole === 'cashier' ? 'kasir' : userRole;
-        const normalizedRequiredRole = requiredRole === 'cashier' ? 'kasir' : requiredRole;
+        // Normalize Indonesian roles to English
+        const roleMap = {
+            'pelanggan': 'customer',
+            'kasir': 'cashier'
+        };
+        
+        const normalizedUserRole = roleMap[userRole] || userRole;
+        const normalizedRequiredRole = roleMap[requiredRole] || requiredRole;
         
         if (normalizedUserRole !== normalizedRequiredRole) {
             // Redirect to appropriate dashboard based on user's role
@@ -34,7 +39,7 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
                     return <Navigate to="/admin/dashboard" replace />;
                 case 'owner':
                     return <Navigate to="/owner/dashboard" replace />;
-                case 'kasir':
+                case 'cashier':
                     return <Navigate to="/cashier/dashboard" replace />;
                 default:
                     return <Navigate to="/" replace />;

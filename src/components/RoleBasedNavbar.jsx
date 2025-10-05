@@ -13,10 +13,15 @@ export default function RoleBasedNavbar() {
         if (!user) return 'user';
         
         // Check role field first, then fallback to level
-        const role = user.role?.toLowerCase() || user.level?.toLowerCase() || 'pelanggan';
+        const role = user.role?.toLowerCase() || user.level?.toLowerCase() || 'customer';
         
-        // Normalize kasir/cashier
-        return role === 'cashier' ? 'kasir' : role;
+        // Normalize Indonesian roles to English
+        const roleMap = {
+            'pelanggan': 'customer',
+            'kasir': 'cashier'
+        };
+        
+        return roleMap[role] || role;
     };
 
     const role = getUserRole();
@@ -26,10 +31,10 @@ export default function RoleBasedNavbar() {
             return <AdminNavbar />;
         case 'owner':
             return <OwnerNavbar />;
-        case 'kasir':
+        case 'cashier':
             return <CashierNavbar />;
         case 'user':
-        case 'pelanggan':
+        case 'customer':
         default:
             return <UserNavbar />;
     }

@@ -23,9 +23,9 @@ export default function AdminNavbar() {
 
     const navLinks = [
         { href: "/admin/dashboard", label: "Dashboard", icon: <BarChart3 size={16} /> },
-        { href: "/admin/movies", label: "Kelola Film", icon: <Film size={16} /> },
-        { href: "/admin/schedules", label: "Jadwal", icon: <Calendar size={16} /> },
-        { href: "/admin/users", label: "Pengguna", icon: <Users size={16} /> },
+        { href: "/admin/movies", label: "Movies", icon: <Film size={16} /> },
+        { href: "/admin/schedules", label: "Schedules", icon: <Calendar size={16} /> },
+        { href: "/admin/users", label: "Users", icon: <Users size={16} /> },
     ];
 
     const isActive = (path) => {
@@ -60,7 +60,7 @@ export default function AdminNavbar() {
                 </nav>
 
                 <div className="flex items-center gap-4">
-                    <span className="hidden md:block text-sm text-gray-300">Admin: {user?.nama || user?.name}</span>
+                    <span className="hidden md:block text-sm text-gray-300">Admin: {user?.name || user?.nama}</span>
                     <button onClick={handleLogout} className="hidden md:flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition">
                         <LogOut size={14} /> Logout
                     </button>

@@ -8,9 +8,9 @@ export default function NotFound() {
             <div className="text-center px-4">
                 <div className="mb-8">
                     <h1 className="text-6xl font-bold text-red-500 mb-4">404</h1>
-                    <h2 className="text-2xl font-semibold mb-2">Halaman Tidak Ditemukan</h2>
+                    <h2 className="text-2xl font-semibold mb-2">Page Not Found</h2>
                     <p className="text-gray-400 mb-8 max-w-md mx-auto">
-                        Maaf, halaman yang Anda cari tidak dapat ditemukan atau Anda tidak memiliki akses ke halaman ini.
+                        Sorry, the page you are looking for could not be found or you don't have access to this page.
                     </p>
                 </div>
                 
@@ -20,14 +20,14 @@ export default function NotFound() {
                         className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg transition"
                     >
                         <Home size={20} />
-                        Kembali ke Home
+                        Back to Home
                     </Link>
                     <button 
                         onClick={() => window.history.back()} 
                         className="flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg transition"
                     >
                         <ArrowLeft size={20} />
-                        Kembali
+                        Go Back
                     </button>
                 </div>
             </div>

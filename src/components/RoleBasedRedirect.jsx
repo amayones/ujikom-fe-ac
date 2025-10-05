@@ -7,17 +7,24 @@ export default function RoleBasedRedirect({ children }) {
 
     // If user is authenticated and not a customer, redirect to their dashboard
     if (isAuthenticated && user) {
-        const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'pelanggan';
-        const normalizedUserRole = userRole === 'cashier' ? 'kasir' : userRole;
+        const userRole = user?.role?.toLowerCase() || user?.level?.toLowerCase() || 'customer';
+        
+        // Normalize Indonesian roles to English
+        const roleMap = {
+            'pelanggan': 'customer',
+            'kasir': 'cashier'
+        };
+        
+        const normalizedUserRole = roleMap[userRole] || userRole;
         
         switch (normalizedUserRole) {
             case 'admin':
                 return <Navigate to="/admin/dashboard" replace />;
             case 'owner':
                 return <Navigate to="/owner/dashboard" replace />;
-            case 'kasir':
+            case 'cashier':
                 return <Navigate to="/cashier/dashboard" replace />;
-            case 'pelanggan':
+            case 'customer':
             case 'user':
             default:
                 // Allow customers to access home page
