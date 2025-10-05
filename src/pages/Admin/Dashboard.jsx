@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { adminService } from '../../services/adminService';
 import { Film, Users, Calendar, DollarSign, TrendingUp, Eye } from 'lucide-react';
+import AdminLayout from '../../components/Layout/AdminLayout';
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
@@ -60,7 +61,8 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className="bg-gray-900 min-h-screen text-white p-6">
+        <AdminLayout>
+            <div className="text-white p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -144,6 +146,6 @@ export default function AdminDashboard() {
                     </div>
                 </div>
             </div>
-        </div>
+        </AdminLayout>
     );
 }

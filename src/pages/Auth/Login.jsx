@@ -19,7 +19,10 @@ export default function Login() {
         try {
             const response = await authService.login(email, password);
             login(response.user, response.token);
-            navigate('/');
+            
+            // Redirect based on user role
+            const redirectPath = authService.getRoleBasedRedirect(response.user);
+            navigate(redirectPath);
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');
         } finally {

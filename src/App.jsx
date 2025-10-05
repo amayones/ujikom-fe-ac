@@ -1,20 +1,30 @@
 import { BrowserRouter, useLocation } from "react-router-dom";
 import AppRoutes from "./Routes";
-import Header from "./components/Header";
+import RoleBasedNavbar from "./components/RoleBasedNavbar";
 import Footer from "./components/Footer";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function Layout() {
   const location = useLocation();
-  const hideLayout = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/forgot-password" || location.pathname === "/profile";
+  const { user } = useAuth();
+  
+  // Hide navbar/footer for auth pages and profile
+  const hideLayout = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/forgot-password";
+  
+  // Hide footer for role-specific dashboards
+  const hideFooter = hideLayout || 
+    location.pathname.startsWith('/admin/') || 
+    location.pathname.startsWith('/owner/') || 
+    location.pathname.startsWith('/cashier/') ||
+    location.pathname === "/profile";
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!hideLayout && <Header />}
+      {!hideLayout && <RoleBasedNavbar />}
       <main className="flex-1">
         <AppRoutes />
       </main>
-      {!hideLayout && <Footer />}
+      {!hideFooter && <Footer />}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ownerService } from '../../services/ownerService';
 import { DollarSign, TrendingUp, TrendingDown, BarChart3, PieChart, Calendar } from 'lucide-react';
+import OwnerLayout from '../../components/Layout/OwnerLayout';
 
 export default function OwnerDashboard() {
     const [financialData, setFinancialData] = useState({
@@ -65,7 +66,8 @@ export default function OwnerDashboard() {
     ];
 
     return (
-        <div className="bg-gray-900 min-h-screen text-white p-6">
+        <OwnerLayout>
+            <div className="text-white p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -173,6 +175,6 @@ export default function OwnerDashboard() {
                     </div>
                 </div>
             </div>
-        </div>
+        </OwnerLayout>
     );
 }

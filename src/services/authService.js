@@ -16,5 +16,25 @@ export const authService = {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     return response.data;
+  },
+
+  getRoleBasedRedirect: (user) => {
+    if (!user) return '/';
+    
+    const role = user.role?.toLowerCase() || user.level?.toLowerCase() || 'user';
+    
+    switch (role) {
+      case 'admin':
+        return '/admin/dashboard';
+      case 'owner':
+        return '/owner/dashboard';
+      case 'kasir':
+      case 'cashier':
+        return '/cashier/dashboard';
+      case 'user':
+      case 'pelanggan':
+      default:
+        return '/';
+    }
   }
 };

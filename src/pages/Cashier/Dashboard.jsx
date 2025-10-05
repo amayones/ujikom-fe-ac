@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { kasirService } from '../../services/kasirService';
 import { Ticket, Users, Clock, CheckCircle, AlertCircle, Printer } from 'lucide-react';
+import CashierLayout from '../../components/Layout/CashierLayout';
 
 export default function CashierDashboard() {
     const [stats, setStats] = useState({
@@ -75,7 +76,8 @@ export default function CashierDashboard() {
     ];
 
     return (
-        <div className="bg-gray-900 min-h-screen text-white p-6">
+        <CashierLayout>
+            <div className="text-white p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -193,6 +195,6 @@ export default function CashierDashboard() {
                     </div>
                 </div>
             </div>
-        </div>
+        </CashierLayout>
     );
 }
