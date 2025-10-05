@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { filmService } from '../../services/filmService';
+import api from '../../services/api';
 import { User, Mail, Phone, MapPin, Calendar, Edit3, Save, X } from 'lucide-react';
 
 export default function Profile() {
@@ -8,11 +9,11 @@ export default function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        nama: user?.nama || '',
+        name: user?.name || user?.nama || '',
         email: user?.email || '',
-        no_hp: user?.no_hp || '',
-        alamat: user?.alamat || '',
-        tanggal_lahir: user?.tanggal_lahir || ''
+        phone: user?.phone || user?.no_hp || '',
+        address: user?.address || user?.alamat || '',
+        birth_date: user?.birth_date || user?.tanggal_lahir || ''
     });
 
     const handleInputChange = (e) => {
@@ -26,7 +27,7 @@ export default function Profile() {
     const handleSave = async () => {
         setLoading(true);
         try {
-            const response = await filmService.updateProfile(formData);
+            const response = await api.put('/customer/profile', formData);
             login(response.user, localStorage.getItem('token'));
             setIsEditing(false);
             alert('Profile berhasil diupdate');
@@ -40,11 +41,11 @@ export default function Profile() {
 
     const handleCancel = () => {
         setFormData({
-            nama: user?.nama || '',
+            name: user?.name || user?.nama || '',
             email: user?.email || '',
-            no_hp: user?.no_hp || '',
-            alamat: user?.alamat || '',
-            tanggal_lahir: user?.tanggal_lahir || ''
+            phone: user?.phone || user?.no_hp || '',
+            address: user?.address || user?.alamat || '',
+            birth_date: user?.birth_date || user?.tanggal_lahir || ''
         });
         setIsEditing(false);
     };
@@ -57,7 +58,7 @@ export default function Profile() {
                     <div className="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
                         <User className="w-12 h-12 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold">{user?.nama || 'User Profile'}</h1>
+                    <h1 className="text-3xl font-bold">{user?.name || user?.nama || 'User Profile'}</h1>
                     <p className="text-gray-400">Kelola informasi profil Anda</p>
                 </div>
 
@@ -104,15 +105,15 @@ export default function Profile() {
                             {isEditing ? (
                                 <input
                                     type="text"
-                                    name="nama"
-                                    value={formData.nama}
+                                    name="name"
+                                    value={formData.name}
                                     onChange={handleInputChange}
                                     className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                     placeholder="Masukkan nama lengkap"
                                 />
                             ) : (
                                 <div className="p-3 bg-gray-700 rounded-lg">
-                                    {formData.nama || 'Belum diisi'}
+                                    {formData.name || 'Belum diisi'}
                                 </div>
                             )}
                         </div>
@@ -138,15 +139,15 @@ export default function Profile() {
                             {isEditing ? (
                                 <input
                                     type="tel"
-                                    name="no_hp"
-                                    value={formData.no_hp}
+                                    name="phone"
+                                    value={formData.phone}
                                     onChange={handleInputChange}
                                     className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                     placeholder="Masukkan nomor HP"
                                 />
                             ) : (
                                 <div className="p-3 bg-gray-700 rounded-lg">
-                                    {formData.no_hp || 'Belum diisi'}
+                                    {formData.phone || 'Belum diisi'}
                                 </div>
                             )}
                         </div>
@@ -159,8 +160,8 @@ export default function Profile() {
                             </label>
                             {isEditing ? (
                                 <textarea
-                                    name="alamat"
-                                    value={formData.alamat}
+                                    name="address"
+                                    value={formData.address}
                                     onChange={handleInputChange}
                                     rows="3"
                                     className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -168,7 +169,7 @@ export default function Profile() {
                                 />
                             ) : (
                                 <div className="p-3 bg-gray-700 rounded-lg">
-                                    {formData.alamat || 'Belum diisi'}
+                                    {formData.address || 'Belum diisi'}
                                 </div>
                             )}
                         </div>
@@ -182,15 +183,15 @@ export default function Profile() {
                             {isEditing ? (
                                 <input
                                     type="date"
-                                    name="tanggal_lahir"
-                                    value={formData.tanggal_lahir}
+                                    name="birth_date"
+                                    value={formData.birth_date}
                                     onChange={handleInputChange}
                                     className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                 />
                             ) : (
                                 <div className="p-3 bg-gray-700 rounded-lg">
-                                    {formData.tanggal_lahir ? 
-                                        new Date(formData.tanggal_lahir).toLocaleDateString('id-ID') : 
+                                    {formData.birth_date ? 
+                                        new Date(formData.birth_date).toLocaleDateString('id-ID') : 
                                         'Belum diisi'
                                     }
                                 </div>

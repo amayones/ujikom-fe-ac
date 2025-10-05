@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { kasirService } from '../../services/kasirService';
+import { cashierService } from '../../services/cashierService';
 import { filmService } from '../../services/filmService';
 import { Plus, Ticket, Users, Calendar, Clock, MapPin, CreditCard } from 'lucide-react';
 
@@ -10,8 +10,8 @@ export default function Transaction() {
     const [selectedSchedule, setSelectedSchedule] = useState(null);
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [customerInfo, setCustomerInfo] = useState({
-        nama: '',
-        no_hp: '',
+        name: '',
+        phone: '',
         email: ''
     });
     const [paymentMethod, setPaymentMethod] = useState('cash');
@@ -62,7 +62,7 @@ export default function Transaction() {
     };
 
     const handleBooking = async () => {
-        if (!selectedSchedule || selectedSeats.length === 0 || !customerInfo.nama) {
+        if (!selectedSchedule || selectedSeats.length === 0 || !customerInfo.name) {
             alert('Mohon lengkapi semua data');
             return;
         }
@@ -77,14 +77,14 @@ export default function Transaction() {
                 total_amount: selectedSeats.length * selectedSchedule.price.harga
             };
 
-            await kasirService.bookOfflineTicket(bookingData);
+            await cashierService.bookOfflineTicket(bookingData);
             alert('Tiket berhasil dipesan!');
             
             // Reset form
             setSelectedFilm('');
             setSelectedSchedule(null);
             setSelectedSeats([]);
-            setCustomerInfo({ nama: '', no_hp: '', email: '' });
+            setCustomerInfo({ name: '', phone: '', email: '' });
         } catch (error) {
             console.error('Failed to book ticket:', error);
             alert('Gagal memesan tiket');
@@ -225,8 +225,8 @@ export default function Transaction() {
                                         <label className="block text-sm font-medium mb-2">Nama Lengkap *</label>
                                         <input
                                             type="text"
-                                            value={customerInfo.nama}
-                                            onChange={(e) => setCustomerInfo(prev => ({ ...prev, nama: e.target.value }))}
+                                            value={customerInfo.name}
+                                            onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
                                             required
                                             className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                         />
@@ -235,8 +235,8 @@ export default function Transaction() {
                                         <label className="block text-sm font-medium mb-2">No HP</label>
                                         <input
                                             type="tel"
-                                            value={customerInfo.no_hp}
-                                            onChange={(e) => setCustomerInfo(prev => ({ ...prev, no_hp: e.target.value }))}
+                                            value={customerInfo.phone}
+                                            onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
                                             className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                         />
                                     </div>
@@ -314,7 +314,7 @@ export default function Transaction() {
 
                                 <button
                                     onClick={handleBooking}
-                                    disabled={loading || !customerInfo.nama}
+                                    disabled={loading || !customerInfo.name)
                                     className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white py-3 rounded-lg font-bold transition flex items-center justify-center gap-2"
                                 >
                                     <CreditCard className="w-5 h-5" />

@@ -12,22 +12,22 @@ export const filmService = {
   },
 
   getSchedules: async (filmId) => {
-    const response = await api.get(`/pelanggan/schedules/${filmId}`);
+    const response = await api.get(`/customer/schedules/${filmId}`);
     return response.data;
   },
 
   getAvailableSeats: async (scheduleId) => {
-    const response = await api.get(`/pelanggan/seats/${scheduleId}`);
+    const response = await api.get(`/customer/seats/${scheduleId}`);
     return response.data;
   },
 
   bookTicket: async (bookingData) => {
-    const response = await api.post('/pelanggan/book', bookingData);
+    const response = await api.post('/customer/book', bookingData);
     return response.data;
   },
 
   getOrderHistory: async () => {
-    const response = await api.get('/pelanggan/orders');
+    const response = await api.get('/customer/orders');
     return response.data;
   }
 };
