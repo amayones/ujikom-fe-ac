@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
 
@@ -74,9 +74,9 @@ export default function Login() {
 
                     {/* Forgot */}
                     <div className="flex items-center justify-between text-sm">
-                        <a href="/forgot-password" className="text-red-500 hover:underline">
+                        <Link to="/forgot-password" className="text-red-500 hover:underline">
                             Lupa password?
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Tombol login */}
@@ -92,9 +92,9 @@ export default function Login() {
                 {/* Link daftar */}
                 <p className="text-sm text-center text-gray-400 mt-6">
                     Belum punya akun?{' '}
-                    <a href="/register" className="text-red-500 hover:underline">
+                    <Link to="/register" className="text-red-500 hover:underline">
                         Daftar sekarang
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>
