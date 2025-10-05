@@ -16,8 +16,8 @@ export const kasirService = {
     return response.data;
   },
 
-  processOnlineTicket: async (orderId, status) => {
-    const response = await api.put(`/kasir/process-order/${orderId}`, { status });
+  processOnlineTicket: async (orderId, action) => {
+    const response = await api.put(`/kasir/process-order/${orderId}`, { action });
     return response.data;
   }
 };
