@@ -25,7 +25,6 @@ import ManageUser from "./pages/Admin/ManageUser";
 // Owner
 import OwnerDashboard from "./pages/Owner/Dashboard";
 import Finance from "./pages/Owner/Finance";
-import Report from "./pages/Owner/Report";
 
 // Cashier
 import CashierDashboard from "./pages/Cashier/Dashboard";
@@ -60,7 +59,6 @@ export default function AppRoutes() {
                 {/* Owner Routes */}
                 <Route path="/owner/dashboard" element={<OwnerDashboard />} />
                 <Route path="/owner/finance" element={<Finance />} />
-                <Route path="/owner/reports" element={<Report />} />
 
                 {/* Cashier Routes */}
                 <Route path="/cashier/dashboard" element={<CashierDashboard />} />
