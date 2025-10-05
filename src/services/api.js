@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://be-ujikom.amayones.my.id/api';
+const API_BASE_URL = 'https://be-ujikom.amayones.my.id/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

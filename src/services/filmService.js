@@ -2,12 +2,12 @@ import api from './api';
 
 export const filmService = {
   getFilms: async (status = 'play_now') => {
-    const response = await api.get(`/pelanggan/films?status=${status}`);
+    const response = await api.get(`/films?status=${status}`);
     return response.data;
   },
 
   getFilmDetail: async (id) => {
-    const response = await api.get(`/pelanggan/films/${id}`);
+    const response = await api.get(`/films/${id}`);
     return response.data;
   },
 
