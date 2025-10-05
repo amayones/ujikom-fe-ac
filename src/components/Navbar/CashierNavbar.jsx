@@ -25,7 +25,6 @@ export default function CashierNavbar() {
         { href: "/cashier/dashboard", label: "Dashboard", icon: <BarChart3 size={16} /> },
         { href: "/cashier/transactions", label: "Transaksi", icon: <ShoppingCart size={16} /> },
         { href: "/cashier/scan-ticket", label: "Scan Tiket", icon: <Scan size={16} /> },
-        { href: "/cashier/receipts", label: "Struk", icon: <Receipt size={16} /> },
     ];
 
     const isActive = (path) => {
@@ -61,9 +60,6 @@ export default function CashierNavbar() {
 
                 <div className="flex items-center gap-4">
                     <span className="hidden md:block text-sm text-green-200">Kasir: {user?.nama || user?.name}</span>
-                    <Link to="/cashier/profile" className="hidden md:flex items-center gap-1 text-sm font-medium hover:text-green-200 transition-colors">
-                        <UserCircle size={18} /> Profile
-                    </Link>
                     <button onClick={handleLogout} className="hidden md:flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition">
                         <LogOut size={14} /> Logout
                     </button>
@@ -81,9 +77,7 @@ export default function CashierNavbar() {
                                 {link.icon} {link.label}
                             </Link>
                         ))}
-                        <Link to="/cashier/profile" className="flex items-center gap-2 hover:text-green-200 py-2">
-                            <UserCircle size={16} /> Profile
-                        </Link>
+
                         <button onClick={handleLogout} className="flex items-center gap-2 hover:text-red-400 py-2 text-left">
                             <LogOut size={16} /> Logout
                         </button>

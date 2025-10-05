@@ -24,8 +24,7 @@ export default function OwnerNavbar() {
     const navLinks = [
         { href: "/owner/dashboard", label: "Dashboard", icon: <BarChart3 size={16} /> },
         { href: "/owner/finance", label: "Keuangan", icon: <DollarSign size={16} /> },
-        { href: "/owner/reports", label: "Laporan", icon: <FileText size={16} /> },
-        { href: "/owner/analytics", label: "Analitik", icon: <TrendingUp size={16} /> },
+        { href: "/owner/report", label: "Laporan", icon: <FileText size={16} /> },
     ];
 
     const isActive = (path) => {
@@ -61,9 +60,6 @@ export default function OwnerNavbar() {
 
                 <div className="flex items-center gap-4">
                     <span className="hidden md:block text-sm text-purple-200">Owner: {user?.nama || user?.name}</span>
-                    <Link to="/owner/profile" className="hidden md:flex items-center gap-1 text-sm font-medium hover:text-yellow-300 transition-colors">
-                        <UserCircle size={18} /> Profile
-                    </Link>
                     <button onClick={handleLogout} className="hidden md:flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition">
                         <LogOut size={14} /> Logout
                     </button>
@@ -81,9 +77,7 @@ export default function OwnerNavbar() {
                                 {link.icon} {link.label}
                             </Link>
                         ))}
-                        <Link to="/owner/profile" className="flex items-center gap-2 hover:text-yellow-300 py-2">
-                            <UserCircle size={16} /> Profile
-                        </Link>
+
                         <button onClick={handleLogout} className="flex items-center gap-2 hover:text-red-400 py-2 text-left">
                             <LogOut size={16} /> Logout
                         </button>

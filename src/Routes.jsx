@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import React from 'react'
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Auth
 import Login from "./pages/Auth/Login";
@@ -25,11 +26,15 @@ import ManageUser from "./pages/Admin/ManageUser";
 // Owner
 import OwnerDashboard from "./pages/Owner/Dashboard";
 import Finance from "./pages/Owner/Finance";
+import Report from "./pages/Owner/Report";
 
 // Cashier
 import CashierDashboard from "./pages/Cashier/Dashboard";
 import Transaction from "./pages/Cashier/Transaction";
 import ScanTicket from "./pages/Cashier/ScanTicket";
+
+// 404 Page
+import NotFound from "./pages/NotFound";
 
 export default function AppRoutes() {
     return (
@@ -51,19 +56,23 @@ export default function AppRoutes() {
                 <Route path="/history" element={<History />} />
 
                 {/* Admin Routes */}
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                <Route path="/admin/movies" element={<ManageMovie />} />
-                <Route path="/admin/schedules" element={<ManageSchedule />} />
-                <Route path="/admin/users" element={<ManageUser />} />
+                <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
+                <Route path="/admin/movies" element={<ProtectedRoute requiredRole="admin"><ManageMovie /></ProtectedRoute>} />
+                <Route path="/admin/schedules" element={<ProtectedRoute requiredRole="admin"><ManageSchedule /></ProtectedRoute>} />
+                <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><ManageUser /></ProtectedRoute>} />
 
                 {/* Owner Routes */}
-                <Route path="/owner/dashboard" element={<OwnerDashboard />} />
-                <Route path="/owner/finance" element={<Finance />} />
+                <Route path="/owner/dashboard" element={<ProtectedRoute requiredRole="owner"><OwnerDashboard /></ProtectedRoute>} />
+                <Route path="/owner/finance" element={<ProtectedRoute requiredRole="owner"><Finance /></ProtectedRoute>} />
+                <Route path="/owner/report" element={<ProtectedRoute requiredRole="owner"><Report /></ProtectedRoute>} />
 
                 {/* Cashier Routes */}
-                <Route path="/cashier/dashboard" element={<CashierDashboard />} />
-                <Route path="/cashier/transactions" element={<Transaction />} />
-                <Route path="/cashier/scan-ticket" element={<ScanTicket />} />
+                <Route path="/cashier/dashboard" element={<ProtectedRoute requiredRole="kasir"><CashierDashboard /></ProtectedRoute>} />
+                <Route path="/cashier/transactions" element={<ProtectedRoute requiredRole="kasir"><Transaction /></ProtectedRoute>} />
+                <Route path="/cashier/scan-ticket" element={<ProtectedRoute requiredRole="kasir"><ScanTicket /></ProtectedRoute>} />
+                
+                {/* 404 Catch-all route */}
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </div>
     )
