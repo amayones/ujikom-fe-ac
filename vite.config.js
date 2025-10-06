@@ -9,4 +9,16 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  build: {
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          utils: ['axios']
+        }
+      }
+    }
+  }
 })

@@ -1,8 +1,6 @@
 import axios from 'axios';
 
 const API_BASE_URL = 'https://be-ujikom.amayones.my.id/api';
-console.log('API_BASE_URL:', API_BASE_URL);
-console.log('Environment:', import.meta.env.MODE);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -27,10 +25,9 @@ api.interceptors.response.use(
       localStorage.removeItem('user');
       window.location.href = '/login';
     } else if (error.response?.status === 429) {
-      alert('Too many requests. Please wait before trying again.');
+      console.warn('Rate limit exceeded');
     } else if (error.response?.status >= 500) {
-      console.error('Server error:', error);
-      alert('Server error. Please try again later.');
+      console.error('Server error:', error.response?.data?.message || 'Unknown server error');
     }
     return Promise.reject(error);
   }
