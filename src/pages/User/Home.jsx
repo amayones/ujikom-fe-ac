@@ -90,14 +90,14 @@ export default function Home() {
                             <div key={film.id} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform">
                                 <div className="h-56 bg-gray-700 flex items-center justify-center">
                                     {film.poster ? (
-                                        <img src={film.poster} alt={film.judul} className="w-full h-full object-cover" />
+                                        <img src={film.poster} alt={film.title || film.judul} className="w-full h-full object-cover" />
                                     ) : (
                                         <span className="text-gray-400">🎬</span>
                                     )}
                                 </div>
                                 <div className="p-5">
-                                    <h3 className="text-lg font-semibold mb-1">{film.judul}</h3>
-                                    <p className="text-sm text-gray-400 mb-3">{film.genre} | {film.durasi} min</p>
+                                    <h3 className="text-lg font-semibold mb-1">{film.title || film.judul}</h3>
+                                    <p className="text-sm text-gray-400 mb-3">{film.genre} | {film.duration || film.durasi} min</p>
                                     <Link 
                                         to={`/movies/${film.id}`}
                                         className="block w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium text-sm text-center transition"
@@ -145,14 +145,14 @@ export default function Home() {
                             <div key={film.id} className="bg-gray-900 rounded-xl shadow-md overflow-hidden hover:scale-105 transition-transform">
                                 <div className="h-48 bg-gray-600 flex items-center justify-center">
                                     {film.poster ? (
-                                        <img src={film.poster} alt={film.judul} className="w-full h-full object-cover" />
+                                        <img src={film.poster} alt={film.title || film.judul} className="w-full h-full object-cover" />
                                     ) : (
                                         <span className="text-gray-400">🎬</span>
                                     )}
                                 </div>
                                 <div className="p-5">
-                                    <h3 className="text-lg font-semibold mb-1">{film.judul}</h3>
-                                    <p className="text-sm text-gray-400">Rilis: {film.tanggal_rilis || 'TBA'}</p>
+                                    <h3 className="text-lg font-semibold mb-1">{film.title || film.judul}</h3>
+                                    <p className="text-sm text-gray-400">Rilis: {film.release_date || film.tanggal_rilis || 'TBA'}</p>
                                 </div>
                             </div>
                         ))

@@ -26,6 +26,11 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
+    } else if (error.response?.status === 429) {
+      alert('Too many requests. Please wait before trying again.');
+    } else if (error.response?.status >= 500) {
+      console.error('Server error:', error);
+      alert('Server error. Please try again later.');
     }
     return Promise.reject(error);
   }

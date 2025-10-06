@@ -1,3 +1,5 @@
+import { normalizePath } from './pathUtils';
+
 // Define all valid routes in the application
 export const validRoutes = [
     // Auth routes
@@ -35,8 +37,10 @@ export const validRoutes = [
 ];
 
 export const isValidRoute = (pathname) => {
+    const normalizedPath = normalizePath(pathname);
+    
     // Check exact matches
-    if (validRoutes.includes(pathname)) {
+    if (validRoutes.includes(normalizedPath)) {
         return true;
     }
     
@@ -47,10 +51,11 @@ export const isValidRoute = (pathname) => {
         /^\/ticket\/[^/]+$/   // /ticket/123 or /ticket/abc
     ];
     
-    return dynamicRoutePatterns.some(pattern => pattern.test(pathname));
+    return dynamicRoutePatterns.some(pattern => pattern.test(normalizedPath));
 };
 
 export const shouldHideLayout = (pathname) => {
+    const normalizedPath = normalizePath(pathname);
     const noLayoutPages = ['/login', '/register', '/forgot-password'];
-    return noLayoutPages.includes(pathname) || !isValidRoute(pathname);
+    return noLayoutPages.includes(normalizedPath) || !isValidRoute(pathname);
 };

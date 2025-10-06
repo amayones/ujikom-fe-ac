@@ -42,8 +42,8 @@ export default function ManageUser() {
     };
 
     const filteredUsers = users.filter(user => {
-        const matchesSearch = user.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                             user.email.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = (user.name || user.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                             (user.email || '').toLowerCase().includes(searchTerm.toLowerCase());
         const matchesFilter = filterRole === 'all' || user.role === filterRole;
         return matchesSearch && matchesFilter;
     });
@@ -112,7 +112,7 @@ export default function ManageUser() {
                                                     <Users className="w-5 h-5" />
                                                 </div>
                                                 <div>
-                                                    <div className="text-sm font-medium">{user.nama}</div>
+                                                    <div className="text-sm font-medium">{user.name || user.nama}</div>
                                                     <div className="text-sm text-gray-400">{user.email}</div>
                                                 </div>
                                             </div>
@@ -126,7 +126,7 @@ export default function ManageUser() {
                                                 {user.role}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-300">{user.no_hp}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">{user.phone || user.no_hp}</td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                                                 user.status === 'active' 

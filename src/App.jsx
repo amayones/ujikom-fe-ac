@@ -4,8 +4,10 @@ import RoleBasedNavbar from "./components/RoleBasedNavbar";
 import Footer from "./components/Footer";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { shouldHideLayout } from "./utils/routeUtils";
+import { normalizePath, startsWithPath } from "./utils/pathUtils";
 import RouteValidator from "./components/RouteValidator";
 import LoadingScreen from "./components/LoadingScreen";
+import TrailingSlashRedirect from "./components/TrailingSlashRedirect";
 
 function Layout() {
   const location = useLocation();
@@ -19,13 +21,14 @@ function Layout() {
   
   // Hide footer for role-specific dashboards and auth pages
   const hideFooter = hideLayout || 
-    location.pathname.startsWith('/admin/') || 
-    location.pathname.startsWith('/owner/') || 
-    location.pathname.startsWith('/cashier/') ||
-    location.pathname === "/profile";
+    startsWithPath(location.pathname, '/admin') || 
+    startsWithPath(location.pathname, '/owner') || 
+    startsWithPath(location.pathname, '/cashier') ||
+    normalizePath(location.pathname) === "/profile";
 
   return (
     <RouteValidator>
+      <TrailingSlashRedirect />
       <div className="flex flex-col min-h-screen">
         {!hideLayout && <RoleBasedNavbar />}
         <main className="flex-1">

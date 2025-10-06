@@ -53,7 +53,7 @@ export default function MovieDetail() {
                     <div className="md:col-span-1">
                         <div className="bg-gray-700 rounded-lg h-96 flex items-center justify-center">
                             {film.poster ? (
-                                <img src={film.poster} alt={film.judul} className="w-full h-full object-cover rounded-lg" />
+                                <img src={film.poster} alt={film.title || film.judul} className="w-full h-full object-cover rounded-lg" />
                             ) : (
                                 <span className="text-6xl">🎬</span>
                             )}
@@ -62,7 +62,7 @@ export default function MovieDetail() {
 
                     {/* Details */}
                     <div className="md:col-span-2">
-                        <h1 className="text-3xl font-bold mb-4">{film.judul}</h1>
+                        <h1 className="text-3xl font-bold mb-4">{film.title || film.judul}</h1>
                         
                         <div className="flex items-center gap-4 mb-4">
                             <div className="flex items-center gap-1">
@@ -71,7 +71,7 @@ export default function MovieDetail() {
                             </div>
                             <div className="flex items-center gap-1">
                                 <Clock className="text-gray-400 w-5 h-5" />
-                                <span>{film.durasi} menit</span>
+                                <span>{film.duration || film.durasi} menit</span>
                             </div>
                         </div>
 
@@ -82,12 +82,12 @@ export default function MovieDetail() {
 
                         <div className="mb-6">
                             <h3 className="text-lg font-semibold mb-2">Sinopsis</h3>
-                            <p className="text-gray-300 leading-relaxed">{film.sinopsis || 'No synopsis available'}</p>
+                            <p className="text-gray-300 leading-relaxed">{film.description || film.sinopsis || 'No synopsis available'}</p>
                         </div>
 
                         <div className="mb-6">
                             <h3 className="text-lg font-semibold mb-2">Sutradara</h3>
-                            <p className="text-gray-300">{film.sutradara || 'Unknown'}</p>
+                            <p className="text-gray-300">{film.director || film.sutradara || 'Unknown'}</p>
                         </div>
 
                         <Link

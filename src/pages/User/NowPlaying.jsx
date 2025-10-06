@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Ticket } from "lucide-react";
 import { filmService } from "../../services/filmService";
@@ -40,7 +40,7 @@ export default function NowPlaying() {
                 <div className="text-center">
                     <p className="text-red-500 mb-4">{error}</p>
                     <button 
-                        onClick={() => window.location.reload()}
+                        onClick={useCallback(() => window.location.reload(), [])}
                         className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
                     >
                         Retry
@@ -69,15 +69,15 @@ export default function NowPlaying() {
                         <div key={film.id} className="flex items-center bg-gray-800 rounded-xl shadow-md hover:shadow-lg border border-gray-700 hover:border-red-500 transition p-4">
                             <div className="w-24 h-32 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
                                 {film.poster ? (
-                                    <img src={film.poster} alt={film.judul} className="w-full h-full object-cover rounded-lg" />
+                                    <img src={film.poster} alt={film.title || film.judul} className="w-full h-full object-cover rounded-lg" />
                                 ) : (
                                     '🎞️'
                                 )}
                             </div>
                             <div className="flex-1 ml-4">
-                                <h3 className="text-lg font-semibold">{film.judul}</h3>
+                                <h3 className="text-lg font-semibold">{film.title || film.judul}</h3>
                                 <p className="text-sm text-gray-400 mb-1">Genre: {film.genre}</p>
-                                <p className="text-sm text-gray-400 mb-2">Durasi: {film.durasi} menit</p>
+                                <p className="text-sm text-gray-400 mb-2">Durasi: {film.duration || film.durasi} menit</p>
 
                                 <div className="flex items-center space-x-1 text-yellow-400 text-sm mb-3">
                                     {"⭐".repeat(Math.floor(film.rating || 4))} ({film.rating || 4.0})

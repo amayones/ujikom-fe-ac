@@ -10,14 +10,14 @@ export default function ManageMovie() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [formData, setFormData] = useState({
-        judul: '',
+        title: '',
         genre: '',
-        durasi: '',
-        sutradara: '',
-        sinopsis: '',
+        duration: '',
+        director: '',
+        description: '',
         poster: '',
         status: 'play_now',
-        tanggal_rilis: ''
+        release_date: ''
     });
 
     useEffect(() => {
@@ -64,14 +64,14 @@ export default function ManageMovie() {
             setShowModal(false);
             setEditingFilm(null);
             setFormData({
-                judul: '',
+                title: '',
                 genre: '',
-                durasi: '',
-                sutradara: '',
-                sinopsis: '',
+                duration: '',
+                director: '',
+                description: '',
                 poster: '',
                 status: 'play_now',
-                tanggal_rilis: ''
+                release_date: ''
             });
         } catch (error) {
             console.error('Failed to save film:', error);
@@ -84,14 +84,14 @@ export default function ManageMovie() {
     const handleEdit = (film) => {
         setEditingFilm(film);
         setFormData({
-            judul: film.judul || '',
+            title: film.title || film.judul || '',
             genre: film.genre || '',
-            durasi: film.durasi || '',
-            sutradara: film.sutradara || '',
-            sinopsis: film.sinopsis || '',
+            duration: film.duration || film.durasi || '',
+            director: film.director || film.sutradara || '',
+            description: film.description || film.sinopsis || '',
             poster: film.poster || '',
             status: film.status || 'play_now',
-            tanggal_rilis: film.tanggal_rilis || ''
+            release_date: film.release_date || film.tanggal_rilis || ''
         });
         setShowModal(true);
     };
@@ -109,7 +109,7 @@ export default function ManageMovie() {
     };
 
     const filteredFilms = films.filter(film => {
-        const matchesSearch = film.judul.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = (film.title || film.judul || '').toLowerCase().includes(searchTerm.toLowerCase());
         const matchesFilter = filterStatus === 'all' || film.status === filterStatus;
         return matchesSearch && matchesFilter;
     });
@@ -127,14 +127,14 @@ export default function ManageMovie() {
                         onClick={() => {
                             setEditingFilm(null);
                             setFormData({
-                                judul: '',
+                                title: '',
                                 genre: '',
-                                durasi: '',
-                                sutradara: '',
-                                sinopsis: '',
+                                duration: '',
+                                director: '',
+                                description: '',
                                 poster: '',
                                 status: 'play_now',
-                                tanggal_rilis: ''
+                                release_date: ''
                             });
                             setShowModal(true);
                         }}
@@ -192,13 +192,13 @@ export default function ManageMovie() {
                                             <div className="flex items-center">
                                                 <div className="w-12 h-16 bg-gray-600 rounded flex items-center justify-center mr-4">
                                                     {film.poster ? (
-                                                        <img src={film.poster} alt={film.judul} className="w-full h-full object-cover rounded" />
+                                                        <img src={film.poster} alt={film.title || film.judul} className="w-full h-full object-cover rounded" />
                                                     ) : (
                                                         '🎬'
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <div className="text-sm font-medium">{film.judul}</div>
+                                                    <div className="text-sm font-medium">{film.title || film.judul}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -206,10 +206,10 @@ export default function ManageMovie() {
                                             {film.genre}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                            {film.durasi} min
+                                            {film.duration || film.durasi} min
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                            {film.sutradara}
+                                            {film.director || film.sutradara || 'N/A'}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -257,8 +257,8 @@ export default function ManageMovie() {
                                         <label className="block text-sm font-medium mb-2">Judul Film</label>
                                         <input
                                             type="text"
-                                            name="judul"
-                                            value={formData.judul}
+                                            name="title"
+                                            value={formData.title}
                                             onChange={handleInputChange}
                                             required
                                             className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -279,8 +279,8 @@ export default function ManageMovie() {
                                         <label className="block text-sm font-medium mb-2">Durasi (menit)</label>
                                         <input
                                             type="number"
-                                            name="durasi"
-                                            value={formData.durasi}
+                                            name="duration"
+                                            value={formData.duration}
                                             onChange={handleInputChange}
                                             required
                                             className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -290,8 +290,8 @@ export default function ManageMovie() {
                                         <label className="block text-sm font-medium mb-2">Sutradara</label>
                                         <input
                                             type="text"
-                                            name="sutradara"
-                                            value={formData.sutradara}
+                                            name="director"
+                                            value={formData.director}
                                             onChange={handleInputChange}
                                             required
                                             className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -313,8 +313,8 @@ export default function ManageMovie() {
                                         <label className="block text-sm font-medium mb-2">Tanggal Rilis</label>
                                         <input
                                             type="date"
-                                            name="tanggal_rilis"
-                                            value={formData.tanggal_rilis}
+                                            name="release_date"
+                                            value={formData.release_date}
                                             onChange={handleInputChange}
                                             className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                         />
@@ -335,8 +335,8 @@ export default function ManageMovie() {
                                 <div>
                                     <label className="block text-sm font-medium mb-2">Sinopsis</label>
                                     <textarea
-                                        name="sinopsis"
-                                        value={formData.sinopsis}
+                                        name="description"
+                                        value={formData.description}
                                         onChange={handleInputChange}
                                         rows="4"
                                         className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"

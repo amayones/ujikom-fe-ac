@@ -49,6 +49,10 @@ export default function Booking() {
             if (isSelected) {
                 return prev.filter(s => s.id !== seat.id);
             } else {
+                if (prev.length >= 6) {
+                    alert('Maximum 6 seats can be selected');
+                    return prev;
+                }
                 return [...prev, seat];
             }
         });
@@ -83,14 +87,14 @@ export default function Booking() {
                     <div className="flex items-center gap-4">
                         <div className="w-20 h-28 bg-gray-700 rounded flex items-center justify-center">
                             {film?.poster ? (
-                                <img src={film.poster} alt={film.judul} className="w-full h-full object-cover rounded" />
+                                <img src={film.poster} alt={film.title || film.judul} className="w-full h-full object-cover rounded" />
                             ) : (
                                 '🎬'
                             )}
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold">{film?.judul}</h1>
-                            <p className="text-gray-400">{film?.genre} • {film?.durasi} min</p>
+                            <h1 className="text-2xl font-bold">{film?.title || film?.judul}</h1>
+                            <p className="text-gray-400">{film?.genre} • {film?.duration || film?.durasi} min</p>
                         </div>
                     </div>
                 </div>
@@ -145,8 +149,9 @@ export default function Booking() {
                         <div className="grid grid-cols-10 gap-2 mb-6">
                             {Array.from({ length: 80 }, (_, i) => {
                                 const seatNumber = i + 1;
-                                const seat = seats.find(s => s.nomor_kursi === seatNumber) || {
-                                    id: seatNumber,
+                                const seat = seats.find(s => s.seat_number === seatNumber || s.nomor_kursi === seatNumber) || {
+                                    id: `temp-${seatNumber}`,
+                                    seat_number: seatNumber,
                                     nomor_kursi: seatNumber,
                                     status: 'available'
                                 };
