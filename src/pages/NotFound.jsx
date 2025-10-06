@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Home, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
+    const goBack = () => window.history.back();
+    
     return (
         <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
             <div className="text-center px-4">
@@ -23,7 +25,7 @@ export default function NotFound() {
                         Back to Home
                     </Link>
                     <button 
-                        onClick={() => window.history.back()} 
+                        onClick={goBack} 
                         className="flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg transition"
                     >
                         <ArrowLeft size={20} />
