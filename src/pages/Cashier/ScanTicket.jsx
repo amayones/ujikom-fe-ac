@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { cashierService } from '../../services/cashierService';
+import { cashierService } from '../../services';
 import { QrCode, Camera, CheckCircle, XCircle, Ticket, User, Calendar, Clock } from 'lucide-react';
 
 export default function ScanTicket() {

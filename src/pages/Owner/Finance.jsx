@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ownerService } from '../../services/ownerService';
+import { ownerService } from '../../services';
 import { Plus, TrendingUp, TrendingDown, DollarSign, Calendar, Filter } from 'lucide-react';
 
 export default function Finance() {

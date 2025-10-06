@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { filmService } from '../../services/filmService';
+import { filmService } from '../../services';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 
 export default function Booking() {

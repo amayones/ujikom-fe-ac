@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Ticket } from "lucide-react";
-import { filmService } from "../../services/filmService";
+import { filmService } from '../../services';
 
 export default function NowPlaying() {
     const [films, setFilms] = useState([]);

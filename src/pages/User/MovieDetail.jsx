@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { filmService } from '../../services/filmService';
+import { filmService } from '../../services';
 import { Calendar, Clock, Star } from 'lucide-react';
 
 export default function MovieDetail() {

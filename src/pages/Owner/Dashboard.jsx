@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ownerService } from '../../services/ownerService';
+import { ownerService } from '../../services';
 import { DollarSign, TrendingUp, TrendingDown, BarChart3, PieChart, Calendar } from 'lucide-react';
 import OwnerLayout from '../../components/Layout/OwnerLayout';
 

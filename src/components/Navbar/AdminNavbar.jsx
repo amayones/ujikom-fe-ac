@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { UserCircle, Menu, X, Film, Users, Calendar, Settings, BarChart3, LogOut } from "lucide-react";
 import { useAuth } from '../../context/AuthContext';
-import { authService } from '../../services/authService';
+import { authService } from '../../services';
 
 export default function AdminNavbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

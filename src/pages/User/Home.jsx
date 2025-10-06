@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Film, Ticket, Popcorn, Star, Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { filmService } from "../../services/filmService";
+import { filmService } from '../../services';
 
 export default function Home() {
     const [nowPlayingFilms, setNowPlayingFilms] = useState([]);

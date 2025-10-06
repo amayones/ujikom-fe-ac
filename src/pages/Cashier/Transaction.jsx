@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { cashierService } from '../../services/cashierService';
-import { filmService } from '../../services/filmService';
+import { cashierService } from '../../services';
+import { filmService } from '../../services';
 import { Plus, Ticket, Users, Calendar, Clock, MapPin, CreditCard } from 'lucide-react';
 
 export default function Transaction() {

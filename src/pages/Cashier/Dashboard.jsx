@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { cashierService } from '../../services/cashierService';
+import { cashierService } from '../../services';
 import { Ticket, Users, Clock, CheckCircle, AlertCircle, Printer } from 'lucide-react';
 import CashierLayout from '../../components/Layout/CashierLayout';
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { filmService } from '../../services/filmService';
+import { filmService } from '../../services';
 import { CreditCard, Wallet, Building2, CheckCircle } from 'lucide-react';
 
 export default function Payment() {

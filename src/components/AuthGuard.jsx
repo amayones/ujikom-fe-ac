@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { authService } from '../services/authService';
+import { authService } from '../services';
 
 export default function AuthGuard({ children }) {
     const { user, isAuthenticated } = useAuth();

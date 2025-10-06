@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { adminService } from '../../services/adminService';
+import { adminService } from '../../services';
 import { Plus, Edit, Trash2, Calendar, Clock, MapPin } from 'lucide-react';
 
 export default function ManageSchedule() {

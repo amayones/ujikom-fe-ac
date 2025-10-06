@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { adminService } from '../../services/adminService';
+import { adminService } from '../../services';
 import { Plus, Edit, Trash2, Search, Filter, Eye } from 'lucide-react';
 
 export default function ManageMovie() {

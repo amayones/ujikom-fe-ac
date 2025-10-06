@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { adminService } from '../../services/adminService';
+import { adminService } from '../../services';
 import { Film, Users, Calendar, DollarSign, TrendingUp, Eye } from 'lucide-react';
 import AdminLayout from '../../components/Layout/AdminLayout';
 
