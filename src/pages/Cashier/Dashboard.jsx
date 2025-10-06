@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { kasirService } from '../../services/kasirService';
+import { cashierService } from '../../services/cashierService';
 import { Ticket, Users, Clock, CheckCircle, AlertCircle, Printer } from 'lucide-react';
 import CashierLayout from '../../components/Layout/CashierLayout';
 
@@ -19,7 +19,7 @@ export default function CashierDashboard() {
 
     const fetchDashboardData = async () => {
         try {
-            const ordersData = await kasirService.getOnlineOrders();
+            const ordersData = await cashierService.getOnlineOrders();
             setOnlineOrders(ordersData);
             
             setStats({
@@ -48,7 +48,7 @@ export default function CashierDashboard() {
 
     const handleProcessOrder = async (orderId, status) => {
         try {
-            await kasirService.processOnlineTicket(orderId, status);
+            await cashierService.processOnlineTicket(orderId, status);
             await fetchDashboardData();
         } catch (error) {
             console.error('Failed to process order:', error);
@@ -58,7 +58,7 @@ export default function CashierDashboard() {
 
     const handlePrintTicket = async (orderId) => {
         try {
-            await kasirService.printTicket(orderId);
+            await cashierService.printTicket(orderId);
             alert('Tiket berhasil dicetak');
         } catch (error) {
             console.error('Failed to print ticket:', error);

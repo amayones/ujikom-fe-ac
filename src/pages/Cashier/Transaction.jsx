@@ -29,8 +29,8 @@ export default function Transaction() {
             console.error('Failed to fetch films:', error);
             // Mock data
             setFilms([
-                { id: 1, judul: 'Avengers: Endgame', genre: 'Action', durasi: 181 },
-                { id: 2, judul: 'Oppenheimer', genre: 'Drama', durasi: 180 }
+                { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 181 },
+                { id: 2, title: 'Oppenheimer', genre: 'Drama', duration: 180 }
             ]);
         }
     };
@@ -44,8 +44,8 @@ export default function Transaction() {
             console.error('Failed to fetch schedules:', error);
             // Mock data
             setSchedules([
-                { id: 1, jam: '14:00', tanggal: '2024-01-15', studio: { nama: 'Studio 1' }, price: { harga: 50000 } },
-                { id: 2, jam: '17:00', tanggal: '2024-01-15', studio: { nama: 'Studio 2' }, price: { harga: 55000 } }
+                { id: 1, time: '14:00', date: '2024-01-15', studio: { name: 'Studio 1' }, price: { price: 50000 } },
+                { id: 2, time: '17:00', date: '2024-01-15', studio: { name: 'Studio 2' }, price: { price: 55000 } }
             ]);
         }
     };
@@ -74,7 +74,7 @@ export default function Transaction() {
                 seats: selectedSeats,
                 customer: customerInfo,
                 payment_method: paymentMethod,
-                total_amount: selectedSeats.length * selectedSchedule.price.harga
+                total_amount: selectedSeats.length * selectedSchedule.price.price
             };
 
             await cashierService.bookOfflineTicket(bookingData);
@@ -95,7 +95,7 @@ export default function Transaction() {
 
     const selectedFilmData = films.find(f => f.id.toString() === selectedFilm);
     const totalPrice = selectedSchedule && selectedSeats.length > 0 
-        ? selectedSeats.length * selectedSchedule.price.harga 
+        ? selectedSeats.length * selectedSchedule.price.price 
         : 0;
 
     return (
@@ -124,7 +124,7 @@ export default function Transaction() {
                                 <option value="">Pilih Film</option>
                                 {films.map(film => (
                                     <option key={film.id} value={film.id}>
-                                        {film.judul} ({film.genre}) - {film.durasi} min
+                                        {film.title} ({film.genre}) - {film.duration} min
                                     </option>
                                 ))}
                             </select>
@@ -150,14 +150,14 @@ export default function Transaction() {
                                         >
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Clock className="w-4 h-4" />
-                                                <span className="font-semibold">{schedule.jam}</span>
+                                                <span className="font-semibold">{schedule.time}</span>
                                             </div>
                                             <div className="flex items-center gap-2 mb-2">
                                                 <MapPin className="w-4 h-4" />
-                                                <span>{schedule.studio.nama}</span>
+                                                <span>{schedule.studio.name}</span>
                                             </div>
                                             <div className="text-green-400 font-bold">
-                                                Rp {schedule.price.harga.toLocaleString()}
+                                                Rp {schedule.price.price.toLocaleString()}
                                             </div>
                                         </div>
                                     ))}
@@ -260,16 +260,16 @@ export default function Transaction() {
                         
                         {selectedFilmData && (
                             <div className="mb-4">
-                                <h3 className="font-semibold">{selectedFilmData.judul}</h3>
+                                <h3 className="font-semibold">{selectedFilmData.title}</h3>
                                 <p className="text-sm text-gray-400">{selectedFilmData.genre}</p>
                             </div>
                         )}
 
                         {selectedSchedule && (
                             <div className="mb-4 text-sm">
-                                <p>Tanggal: {selectedSchedule.tanggal}</p>
-                                <p>Waktu: {selectedSchedule.jam}</p>
-                                <p>Studio: {selectedSchedule.studio.nama}</p>
+                                <p>Tanggal: {selectedSchedule.date}</p>
+                                <p>Waktu: {selectedSchedule.time}</p>
+                                <p>Studio: {selectedSchedule.studio.name}</p>
                             </div>
                         )}
 
@@ -289,7 +289,7 @@ export default function Transaction() {
                                     </div>
                                     <div className="flex justify-between mb-2">
                                         <span>Harga per tiket:</span>
-                                        <span>Rp {selectedSchedule.price.harga.toLocaleString()}</span>
+                                        <span>Rp {selectedSchedule.price.price.toLocaleString()}</span>
                                     </div>
                                     <div className="flex justify-between text-xl font-bold text-green-400">
                                         <span>Total:</span>
@@ -314,7 +314,7 @@ export default function Transaction() {
 
                                 <button
                                     onClick={handleBooking}
-                                    disabled={loading || !customerInfo.name)
+                                    disabled={loading || !customerInfo.name}
                                     className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white py-3 rounded-lg font-bold transition flex items-center justify-center gap-2"
                                 >
                                     <CreditCard className="w-5 h-5" />

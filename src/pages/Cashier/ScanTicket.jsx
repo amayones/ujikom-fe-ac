@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { kasirService } from '../../services/kasirService';
+import { cashierService } from '../../services/cashierService';
 import { QrCode, Camera, CheckCircle, XCircle, Ticket, User, Calendar, Clock } from 'lucide-react';
 
 export default function ScanTicket() {
@@ -17,9 +17,9 @@ export default function ScanTicket() {
                 customer: 'John Doe',
                 film: 'Avengers: Endgame',
                 schedule: {
-                    tanggal: '2024-01-15',
-                    jam: '19:30',
-                    studio: { nama: 'Studio 1' }
+                    date: '2024-01-15',
+                    time: '19:30',
+                    studio: { name: 'Studio 1' }
                 },
                 seats: ['A1', 'A2'],
                 status: 'valid', // 'valid', 'used', 'expired', 'invalid'
@@ -48,7 +48,7 @@ export default function ScanTicket() {
 
         try {
             // Mark ticket as used
-            await kasirService.processOnlineTicket(scanResult.id, 'used');
+            await cashierService.processOnlineTicket(scanResult.id, 'used');
             setScanResult(prev => ({ ...prev, status: 'used' }));
             alert('Tiket berhasil diproses');
         } catch (error) {
@@ -205,7 +205,7 @@ export default function ScanTicket() {
                                             <Calendar className="w-5 h-5 text-gray-400" />
                                             <div>
                                                 <p className="text-sm text-gray-400">Tanggal & Waktu</p>
-                                                <p className="font-semibold">{scanResult.schedule?.tanggal} - {scanResult.schedule?.jam}</p>
+                                                <p className="font-semibold">{scanResult.schedule?.date} - {scanResult.schedule?.time}</p>
                                             </div>
                                         </div>
                                         
@@ -213,7 +213,7 @@ export default function ScanTicket() {
                                             <Clock className="w-5 h-5 text-gray-400" />
                                             <div>
                                                 <p className="text-sm text-gray-400">Studio & Kursi</p>
-                                                <p className="font-semibold">{scanResult.schedule?.studio?.nama} - {scanResult.seats?.join(', ')}</p>
+                                                <p className="font-semibold">{scanResult.schedule?.studio?.name} - {scanResult.seats?.join(', ')}</p>
                                             </div>
                                         </div>
                                         
