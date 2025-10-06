@@ -25,9 +25,9 @@ api.interceptors.response.use(
       localStorage.removeItem('user');
       window.location.href = '/login';
     } else if (error.response?.status === 429) {
-      console.warn('Rate limit exceeded');
+      console.warn('Terlalu banyak permintaan, coba lagi nanti');
     } else if (error.response?.status >= 500) {
-      console.error('Server error:', error.response?.data?.message || 'Unknown server error');
+      console.error('Server error:', error.response?.data?.message || 'Terjadi kesalahan server');
     }
     return Promise.reject(error);
   }

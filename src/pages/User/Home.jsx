@@ -71,7 +71,7 @@ export default function Home() {
             {/* Now Showing */}
             <section className="w-full py-16 px-6">
                 <h2 className="text-3xl font-bold mb-10 text-center flex items-center justify-center gap-2">
-                    <Film className="w-7 h-7 text-red-500" /> Now Showing
+                    <Film className="w-7 h-7 text-red-500" /> Sedang Tayang
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                     {loading ? (
@@ -109,7 +109,7 @@ export default function Home() {
                         ))
                     ) : (
                         <div className="col-span-3 text-center py-12">
-                            <p className="text-gray-400">No films available</p>
+                            <p className="text-gray-400">Tidak ada film tersedia</p>
                         </div>
                     )}
                 </div>
@@ -127,7 +127,7 @@ export default function Home() {
             {/* Coming Soon */}
             <section className="w-full py-16 px-6 bg-gray-800">
                 <h2 className="text-3xl font-bold mb-10 text-center flex items-center justify-center gap-2">
-                    <Calendar className="w-7 h-7 text-yellow-400" /> Coming Soon
+                    <Calendar className="w-7 h-7 text-yellow-400" /> Segera Tayang
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                     {loading ? (
@@ -158,7 +158,7 @@ export default function Home() {
                         ))
                     ) : (
                         <div className="col-span-3 text-center py-12">
-                            <p className="text-gray-400">No upcoming films</p>
+                            <p className="text-gray-400">Tidak ada film yang akan datang</p>
                         </div>
                     )}
                 </div>
