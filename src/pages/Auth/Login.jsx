@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services';
 
@@ -10,17 +10,26 @@ export default function Login() {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
     const navigate = useNavigate();
+    const location = useLocation();
     const { login, isAuthenticated } = useAuth();
 
-    // Redirect if already authenticated
+    // Redirect if already authenticated and handle success message
     useEffect(() => {
         if (isAuthenticated) {
             navigate('/', { replace: true });
         }
-    }, [isAuthenticated, navigate]);
+        
+        // Check for success message from registration
+        if (location.state?.message) {
+            setSuccessMessage(location.state.message);
+            // Clear the message from location state
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [isAuthenticated, navigate, location]);
 
     const validateForm = () => {
         const errors = {};
@@ -50,8 +59,9 @@ export default function Login() {
             setFieldErrors(prev => ({ ...prev, [name]: '' }));
         }
         
-        // Clear general error
+        // Clear general error and success message
         if (error) setError('');
+        if (successMessage) setSuccessMessage('');
     };
 
     const handleSubmit = async (e) => {
@@ -96,6 +106,15 @@ export default function Login() {
                         Masuk untuk melanjutkan ke akun Anda
                     </p>
                 </div>
+
+                {successMessage && (
+                    <div className="bg-green-600 text-white p-3 rounded mb-4 text-sm flex items-center">
+                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        {successMessage}
+                    </div>
+                )}
 
                 {error && (
                     <div className="bg-red-600 text-white p-3 rounded mb-4 text-sm flex items-center">
