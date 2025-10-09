@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services';
+import ApiTest from '../../components/ApiTest';
 
 export default function Login() {
     const [formData, setFormData] = useState({
@@ -219,6 +220,13 @@ export default function Login() {
                     </Link>
                 </p>
             </div>
+            
+            {/* Debug API Test - Remove in production */}
+            {process.env.NODE_ENV === 'development' && (
+                <div className="mt-8 max-w-4xl">
+                    <ApiTest />
+                </div>
+            )}
         </div>
     );
 }

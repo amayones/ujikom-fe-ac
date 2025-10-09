@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://be-ujikom.amayones.my.id/api';
+const API_BASE_URL = 'https://be-ujikom.amayones.my.id/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  withCredentials: true,
 });
 
 api.interceptors.request.use(
@@ -28,14 +27,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const { response, code } = error;
+    console.error('API Error:', error);
+    const { response, code, message } = error;
     
-    // Network error
-    if (code === 'ECONNABORTED' || !response) {
-      console.error('Network error atau timeout');
+    // CORS or Network error
+    if (code === 'ECONNABORTED' || !response || message.includes('CORS') || message.includes('blocked')) {
+      console.error('Network/CORS error:', message);
       return Promise.reject({
         ...error,
-        message: 'Koneksi bermasalah. Periksa internet Anda.'
+        message: 'Koneksi bermasalah atau CORS error. Periksa server.'
       });
     }
     
