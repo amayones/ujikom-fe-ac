@@ -5,6 +5,9 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   base: "/",
+  define: {
+    'import.meta.env.VITE_API_URL': JSON.stringify('https://be-ujikom.amayones.my.id/api')
+  },
   plugins: [
     react(),
     tailwindcss()
