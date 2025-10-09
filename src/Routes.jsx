@@ -1,9 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import React from 'react'
-import ProtectedRoute from "./components/ProtectedRoute";
-import RoleGuard from "./components/RoleGuard";
-import AuthGuard from "./components/AuthGuard";
-import RoleBasedRedirect from "./components/RoleBasedRedirect";
 
 // Auth
 import Login from "./pages/Auth/Login";
@@ -44,35 +40,35 @@ export default function AppRoutes() {
         <div>
             <Routes>
                 {/* Auth */}
-                <Route path="/login" element={<AuthGuard><Login /></AuthGuard>} />
-                <Route path="/register" element={<AuthGuard><Register /></AuthGuard>} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
                 {/* User */}
-                <Route path="/" element={<RoleBasedRedirect><Home /></RoleBasedRedirect>} />
-                <Route path="/profile" element={<RoleGuard allowedRoles={['customer', 'user']}><Profile /></RoleGuard>} />
-                <Route path="/play-now" element={<RoleGuard allowedRoles={['customer', 'user']}><NowPlaying /></RoleGuard>} />
-                <Route path="/coming-soon" element={<RoleGuard allowedRoles={['customer', 'user']}><ComingSoon /></RoleGuard>} />
-                <Route path="/movies/:id" element={<RoleGuard allowedRoles={['customer', 'user']}><MovieDetail /></RoleGuard>} />
-                <Route path="/booking/:id" element={<RoleGuard allowedRoles={['customer', 'user']}><Booking /></RoleGuard>} />
-                <Route path="/payment" element={<RoleGuard allowedRoles={['customer', 'user']}><Payment /></RoleGuard>} />
-                <Route path="/ticket/:id" element={<RoleGuard allowedRoles={['customer', 'user']}><Ticket /></RoleGuard>} />
-                <Route path="/history" element={<RoleGuard allowedRoles={['customer', 'user']}><History /></RoleGuard>} />
+                <Route path="/" element={<Home />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/play-now" element={<NowPlaying />} />
+                <Route path="/coming-soon" element={<ComingSoon />} />
+                <Route path="/movies/:id" element={<MovieDetail />} />
+                <Route path="/booking/:id" element={<Booking />} />
+                <Route path="/payment" element={<Payment />} />
+                <Route path="/ticket/:id" element={<Ticket />} />
+                <Route path="/history" element={<History />} />
 
                 {/* Admin Routes */}
-                <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
-                <Route path="/admin/movies" element={<ProtectedRoute requiredRole="admin"><ManageMovie /></ProtectedRoute>} />
-                <Route path="/admin/schedules" element={<ProtectedRoute requiredRole="admin"><ManageSchedule /></ProtectedRoute>} />
-                <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><ManageUser /></ProtectedRoute>} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/movies" element={<ManageMovie />} />
+                <Route path="/admin/schedules" element={<ManageSchedule />} />
+                <Route path="/admin/users" element={<ManageUser />} />
 
                 {/* Owner Routes */}
-                <Route path="/owner/dashboard" element={<ProtectedRoute requiredRole="owner"><OwnerDashboard /></ProtectedRoute>} />
-                <Route path="/owner/finance" element={<ProtectedRoute requiredRole="owner"><Finance /></ProtectedRoute>} />
-                <Route path="/owner/report" element={<ProtectedRoute requiredRole="owner"><Report /></ProtectedRoute>} />
+                <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+                <Route path="/owner/finance" element={<Finance />} />
+                <Route path="/owner/report" element={<Report />} />
 
                 {/* Cashier Routes */}
-                <Route path="/cashier/dashboard" element={<ProtectedRoute requiredRole="cashier"><CashierDashboard /></ProtectedRoute>} />
-                <Route path="/cashier/transactions" element={<ProtectedRoute requiredRole="cashier"><Transaction /></ProtectedRoute>} />
-                <Route path="/cashier/scan-ticket" element={<ProtectedRoute requiredRole="cashier"><ScanTicket /></ProtectedRoute>} />
+                <Route path="/cashier/dashboard" element={<CashierDashboard />} />
+                <Route path="/cashier/transactions" element={<Transaction />} />
+                <Route path="/cashier/scan-ticket" element={<ScanTicket />} />
                 
                 {/* 404 Catch-all route */}
                 <Route path="*" element={<NotFound />} />

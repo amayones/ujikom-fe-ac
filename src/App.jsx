@@ -2,20 +2,13 @@ import { BrowserRouter, useLocation } from "react-router-dom";
 import AppRoutes from "./Routes";
 import RoleBasedNavbar from "./components/RoleBasedNavbar";
 import Footer from "./components/Footer";
-import { AuthProvider, useAuth } from "./context/AuthContext";
 import { shouldHideLayout } from "./utils/routeUtils";
 import { normalizePath, startsWithPath } from "./utils/pathUtils";
 import RouteValidator from "./components/RouteValidator";
-import LoadingScreen from "./components/LoadingScreen";
 import TrailingSlashRedirect from "./components/TrailingSlashRedirect";
 
 function Layout() {
   const location = useLocation();
-  const { user, isAuthenticated, loading } = useAuth();
-  
-  if (loading) {
-    return <LoadingScreen />;
-  }
   
   const hideLayout = shouldHideLayout(location.pathname);
   
@@ -42,10 +35,8 @@ function Layout() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter basename="/">
-        <Layout />
-      </BrowserRouter>
-    </AuthProvider>
+    <BrowserRouter basename="/">
+      <Layout />
+    </BrowserRouter>
   );
 }

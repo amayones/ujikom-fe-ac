@@ -1,34 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Login() {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
-    const navigate = useNavigate();
-    const location = useLocation();
-    const { login, isAuthenticated } = useAuth();
-
-    // Redirect if already authenticated and handle success message
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/', { replace: true });
-        }
-
-        // Check for success message from registration
-        if (location.state?.message) {
-            setSuccessMessage(location.state.message);
-            // Clear the message from location state
-            navigate(location.pathname, { replace: true, state: {} });
-        }
-    }, [isAuthenticated, navigate, location]);
 
     const validateForm = () => {
         const errors = {};
@@ -52,41 +31,22 @@ export default function Login() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-
+        
         // Clear field error when user starts typing
         if (fieldErrors[name]) {
             setFieldErrors(prev => ({ ...prev, [name]: '' }));
         }
-
-        // Clear general error and success message
-        if (error) setError('');
-        if (successMessage) setSuccessMessage('');
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
+        
         if (!validateForm()) {
             return;
         }
-
-        setLoading(true);
-        setError('');
-
-        // Mock login for testing - always succeeds
-        setTimeout(() => {
-            const mockUser = {
-                id: 1,
-                email: formData.email,
-                role: 'customer',
-                name: 'Test User'
-            };
-            const mockToken = 'mock-token-123';
-
-            login(mockUser, mockToken);
-            navigate('/', { replace: true });
-            setLoading(false);
-        }, 1000);
+        
+        // Just show a simple alert for demo purposes
+        alert(`Login form submitted!\nEmail: ${formData.email}\nPassword: ${formData.password}`);
     };
 
     return (
@@ -102,23 +62,6 @@ export default function Login() {
                     </p>
                 </div>
 
-                {successMessage && (
-                    <div className="bg-green-600 text-white p-3 rounded mb-4 text-sm flex items-center">
-                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        {successMessage}
-                    </div>
-                )}
-
-                {error && (
-                    <div className="bg-red-600 text-white p-3 rounded mb-4 text-sm flex items-center">
-                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
-                        {error}
-                    </div>
-                )}
 
                 {/* Form */}
                 <form className="space-y-5" onSubmit={handleSubmit} noValidate>
@@ -133,7 +76,6 @@ export default function Login() {
                             onChange={handleInputChange}
                             className={`w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${fieldErrors.email ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
                                 }`}
-                            disabled={loading}
                         />
                         {fieldErrors.email && (
                             <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
@@ -152,13 +94,11 @@ export default function Login() {
                                 onChange={handleInputChange}
                                 className={`w-full px-4 py-2 pr-10 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${fieldErrors.password ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
                                     }`}
-                                disabled={loading}
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                                disabled={loading}
                             >
                                 {showPassword ? (
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -187,20 +127,9 @@ export default function Login() {
                     {/* Tombol login */}
                     <button
                         type="submit"
-                        disabled={loading}
-                        className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 rounded transition-colors flex items-center justify-center"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded transition-colors"
                     >
-                        {loading ? (
-                            <>
-                                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Memproses...
-                            </>
-                        ) : (
-                            'Login'
-                        )}
+                        Login
                     </button>
                 </form>
 
