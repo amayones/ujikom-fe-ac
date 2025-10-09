@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { authService } from '../../services';
-import ApiTest from '../../components/ApiTest';
 
 export default function Login() {
     const [formData, setFormData] = useState({
@@ -23,7 +21,7 @@ export default function Login() {
         if (isAuthenticated) {
             navigate('/', { replace: true });
         }
-        
+
         // Check for success message from registration
         if (location.state?.message) {
             setSuccessMessage(location.state.message);
@@ -34,19 +32,19 @@ export default function Login() {
 
     const validateForm = () => {
         const errors = {};
-        
+
         if (!formData.email.trim()) {
             errors.email = 'Email harus diisi';
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
             errors.email = 'Format email tidak valid';
         }
-        
+
         if (!formData.password) {
             errors.password = 'Password harus diisi';
         } else if (formData.password.length < 3) {
             errors.password = 'Password minimal 3 karakter';
         }
-        
+
         setFieldErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -54,12 +52,12 @@ export default function Login() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
+
         // Clear field error when user starts typing
         if (fieldErrors[name]) {
             setFieldErrors(prev => ({ ...prev, [name]: '' }));
         }
-        
+
         // Clear general error and success message
         if (error) setError('');
         if (successMessage) setSuccessMessage('');
@@ -67,32 +65,28 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
-        
+
         setLoading(true);
         setError('');
 
-        try {
-            const response = await authService.login(formData.email, formData.password);
-            
-            if (response.success && response.user && response.token) {
-                login(response.user, response.token);
-                
-                // Show success message briefly
-                const redirectPath = authService.getRoleBasedRedirect(response.user);
-                navigate(redirectPath, { replace: true });
-            } else {
-                setError('Response tidak valid dari server');
-            }
-        } catch (err) {
-            console.error('Login error:', err);
-            setError(err.message || 'Terjadi kesalahan saat login');
-        } finally {
+        // Mock login for testing - always succeeds
+        setTimeout(() => {
+            const mockUser = {
+                id: 1,
+                email: formData.email,
+                role: 'customer',
+                name: 'Test User'
+            };
+            const mockToken = 'mock-token-123';
+
+            login(mockUser, mockToken);
+            navigate('/', { replace: true });
             setLoading(false);
-        }
+        }, 1000);
     };
 
     return (
@@ -137,9 +131,8 @@ export default function Login() {
                             placeholder="masukkan email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${
-                                fieldErrors.email ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
-                            }`}
+                            className={`w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${fieldErrors.email ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
+                                }`}
                             disabled={loading}
                         />
                         {fieldErrors.email && (
@@ -157,9 +150,8 @@ export default function Login() {
                                 placeholder="masukkan password"
                                 value={formData.password}
                                 onChange={handleInputChange}
-                                className={`w-full px-4 py-2 pr-10 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${
-                                    fieldErrors.password ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
-                                }`}
+                                className={`w-full px-4 py-2 pr-10 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${fieldErrors.password ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
+                                    }`}
                                 disabled={loading}
                             />
                             <button
@@ -220,13 +212,7 @@ export default function Login() {
                     </Link>
                 </p>
             </div>
-            
-            {/* Debug API Test - Remove in production */}
-            {process.env.NODE_ENV === 'development' && (
-                <div className="mt-8 max-w-4xl">
-                    <ApiTest />
-                </div>
-            )}
+
         </div>
     );
 }
