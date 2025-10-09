@@ -69,7 +69,7 @@ export default function AppRoutes() {
                 <Route path="/cashier/dashboard" element={<CashierDashboard />} />
                 <Route path="/cashier/transactions" element={<Transaction />} />
                 <Route path="/cashier/scan-ticket" element={<ScanTicket />} />
-                
+
                 {/* 404 Catch-all route */}
                 <Route path="*" element={<NotFound />} />
             </Routes>

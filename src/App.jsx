@@ -9,13 +9,13 @@ import TrailingSlashRedirect from "./components/TrailingSlashRedirect";
 
 function Layout() {
   const location = useLocation();
-  
+
   const hideLayout = shouldHideLayout(location.pathname);
-  
+
   // Hide footer for role-specific dashboards and auth pages
-  const hideFooter = hideLayout || 
-    startsWithPath(location.pathname, '/admin') || 
-    startsWithPath(location.pathname, '/owner') || 
+  const hideFooter = hideLayout ||
+    startsWithPath(location.pathname, '/admin') ||
+    startsWithPath(location.pathname, '/owner') ||
     startsWithPath(location.pathname, '/cashier') ||
     normalizePath(location.pathname) === "/profile";
 

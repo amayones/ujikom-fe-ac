@@ -31,7 +31,7 @@ export default function Login() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
+
         // Clear field error when user starts typing
         if (fieldErrors[name]) {
             setFieldErrors(prev => ({ ...prev, [name]: '' }));
@@ -40,11 +40,11 @@ export default function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
-        
+
         // Just show a simple alert for demo purposes
         alert(`Login form submitted!\nEmail: ${formData.email}\nPassword: ${formData.password}`);
     };
