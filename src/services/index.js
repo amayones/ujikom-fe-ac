@@ -3,19 +3,78 @@ import api from './api';
 // Consolidated service functions
 export const authService = {
   login: async (email, password) => {
-    const response = await api.post('/login', { email, password });
-    return response.data;
+    try {
+      if (!email || !password) {
+        throw new Error('Email dan password harus diisi');
+      }
+      
+      const response = await api.post('/login', { 
+        email: email.trim().toLowerCase(), 
+        password 
+      });
+      
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Login gagal');
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 429) {
+        const retryAfter = error.response.data?.retry_after || 60;
+        throw new Error(`Terlalu banyak percobaan login. Coba lagi dalam ${retryAfter} detik.`);
+      }
+      
+      if (error.response?.status === 422) {
+        const errors = error.response.data?.errors;
+        if (errors) {
+          const firstError = Object.values(errors)[0];
+          throw new Error(Array.isArray(firstError) ? firstError[0] : firstError);
+        }
+      }
+      
+      throw new Error(
+        error.response?.data?.message || 
+        error.message || 
+        'Terjadi kesalahan saat login'
+      );
+    }
   },
+  
   register: async (userData) => {
-    const response = await api.post('/register', userData);
-    return response.data;
+    try {
+      const response = await api.post('/register', userData);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 422) {
+        const errors = error.response.data?.errors;
+        if (errors) {
+          const firstError = Object.values(errors)[0];
+          throw new Error(Array.isArray(firstError) ? firstError[0] : firstError);
+        }
+      }
+      
+      throw new Error(
+        error.response?.data?.message || 
+        error.message || 
+        'Terjadi kesalahan saat registrasi'
+      );
+    }
   },
+  
   logout: async () => {
-    const response = await api.post('/logout');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    return response.data;
+    try {
+      const response = await api.post('/logout');
+      return response.data;
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if logout fails on server, clear local storage
+      return { success: true, message: 'Logout berhasil' };
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
   },
+  
   getRoleBasedRedirect: (user) => {
     if (!user) return '/';
     const role = user.role?.toLowerCase() || user.level?.toLowerCase() || 'customer';
@@ -27,6 +86,22 @@ export const authService = {
       case 'owner': return '/owner/dashboard';
       case 'cashier': return '/cashier/dashboard';
       default: return '/';
+    }
+  },
+  
+  validateToken: () => {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    
+    if (!token || !user) return false;
+    
+    try {
+      JSON.parse(user);
+      return true;
+    } catch {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      return false;
     }
   }
 };
