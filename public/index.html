@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="bg-black p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-red-500 text-xl font-bold">Cinema</a>
+            <div class="space-x-4">
+                <a href="#" class="hover:text-red-500">Home</a>
+                <a href="#films" class="hover:text-red-500">Films</a>
+                <a href="#login" class="hover:text-red-500">Login</a>
+                <a href="#register" class="hover:text-red-500">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="container mx-auto py-16 text-center">
+        <h1 class="text-5xl font-bold text-white mb-4">Welcome to Cinema</h1>
+        <p class="text-gray-400 text-xl mb-8">Nikmati pengalaman menonton film terbaik</p>
+        <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg text-lg">
+            Mulai Menonton
+        </button>
+    </section>
+
+    <!-- Films Section -->
+    <section id="films" class="container mx-auto py-16">
+        <h2 class="text-3xl font-bold text-white mb-8 text-center">Film Sedang Tayang</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Film Card 1 -->
+            <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                <div class="w-full h-64 bg-gray-700 flex items-center justify-center">
+                    <span class="text-gray-400">Film Poster</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">Judul Film 1</h3>
+                    <p class="text-gray-400 text-sm mb-2">Action, Adventure</p>
+                    <p class="text-gray-400 text-sm mb-4">120 menit</p>
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+                        Lihat Detail
+                    </button>
+                </div>
+            </div>
+
+            <!-- Film Card 2 -->
+            <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                <div class="w-full h-64 bg-gray-700 flex items-center justify-center">
+                    <span class="text-gray-400">Film Poster</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">Judul Film 2</h3>
+                    <p class="text-gray-400 text-sm mb-2">Comedy, Romance</p>
+                    <p class="text-gray-400 text-sm mb-4">95 menit</p>
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+                        Lihat Detail
+                    </button>
+                </div>
+            </div>
+
+            <!-- Film Card 3 -->
+            <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                <div class="w-full h-64 bg-gray-700 flex items-center justify-center">
+                    <span class="text-gray-400">Film Poster</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">Judul Film 3</h3>
+                    <p class="text-gray-400 text-sm mb-2">Horror, Thriller</p>
+                    <p class="text-gray-400 text-sm mb-4">110 menit</p>
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+                        Lihat Detail
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="login" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="w-full max-w-md bg-black rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-center text-white mb-6">Login Akun Cinema</h2>
+            
+            <form class="space-y-5">
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Email</label>
+                    <input
+                        type="email"
+                        placeholder="masukkan email"
+                        class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Password</label>
+                    <input
+                        type="password"
+                        placeholder="masukkan password"
+                        class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded transition"
+                >
+                    Login
+                </button>
+            </form>
+
+            <p class="text-sm text-center text-gray-400 mt-6">
+                Belum punya akun? 
+                <a href="#register" class="text-red-500 hover:underline">Daftar sekarang</a>
+            </p>
+            
+            <button onclick="closeModal('login')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                ✕
+            </button>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="w-full max-w-md bg-black rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-center text-white mb-6">Daftar Akun Cinema</h2>
+            
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Nama Lengkap</label>
+                    <input
+                        type="text"
+                        placeholder="masukkan nama lengkap"
+                        class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Email</label>
+                    <input
+                        type="email"
+                        placeholder="masukkan email"
+                        class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Nomor HP</label>
+                    <input
+                        type="tel"
+                        placeholder="masukkan nomor HP"
+                        class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Alamat</label>
+                    <textarea
+                        placeholder="masukkan alamat lengkap"
+                        rows="3"
+                        class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                    ></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Password</label>
+                    <input
+                        type="password"
+                        placeholder="buat password"
+                        class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Konfirmasi Password</label>
+                    <input
+                        type="password"
+                        placeholder="ulangi password"
+                        class="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded transition mt-6"
+                >
+                    Daftar
+                </button>
+            </form>
+
+            <p class="text-sm text-center text-gray-400 mt-6">
+                Sudah punya akun? 
+                <a href="#login" class="text-red-500 hover:underline">Login di sini</a>
+            </p>
+            
+            <button onclick="closeModal('register')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                ✕
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Simple modal functionality
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.getElementById(modalId).classList.add('flex');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.getElementById(modalId).classList.remove('flex');
+        }
+
+        // Handle navigation clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.getAttribute('href') === '#login') {
+                e.preventDefault();
+                openModal('login');
+            }
+            if (e.target.getAttribute('href') === '#register') {
+                e.preventDefault();
+                openModal('register');
+            }
+        });
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('bg-opacity-50')) {
+                closeModal('login');
+                closeModal('register');
+            }
+        });
+    </script>
+</body>
+</html>
