@@ -1,24 +1,14 @@
 import React, { useState } from "react";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { UserCircle, Menu, X, Film, Users, Calendar, Settings, BarChart3, LogOut } from "lucide-react";
-import { useAuth } from '../../context/AuthContext';
-import { authService } from '../../services';
 
 export default function AdminNavbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
 
-    const handleLogout = async () => {
-        try {
-            await authService.logout();
-            logout();
-            navigate('/login');
-        } catch (error) {
-            logout();
-            navigate('/login');
-        }
+    const handleLogout = () => {
+        // Simple logout - just navigate to login
+        window.location.href = '/login';
     };
 
     const navLinks = [
@@ -60,7 +50,7 @@ export default function AdminNavbar() {
                 </nav>
 
                 <div className="flex items-center gap-4">
-                    <span className="hidden md:block text-sm text-gray-300">Admin: {user?.name || user?.nama}</span>
+                    <span className="hidden md:block text-sm text-gray-300">Admin: Demo User</span>
                     <button onClick={handleLogout} className="hidden md:flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition">
                         <LogOut size={14} /> Logout
                     </button>
