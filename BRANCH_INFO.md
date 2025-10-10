@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Absolute Cinema - Frontend Features
 
 ## Merged Features:
@@ -22,3 +23,9 @@
 - Schedule management (ManageSchedule.jsx) 
 - User management (ManageUser.jsx)
 - Admin layout and navbar components
+
+### Cashier System
+- Cashier dashboard and transaction management
+- Ticket scanning functionality (ScanTicket.jsx)
+- Transaction processing (Transaction.jsx)
+- Cashier layout and navbar components
