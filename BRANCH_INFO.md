@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Absolute Cinema - Frontend Features
 
 ## Merged Features:
@@ -36,3 +37,13 @@
 - Financial management and reporting (Finance.jsx)
 - Comprehensive business reports (Report.jsx)
 - Owner layout and navbar components
+
+### User Interface
+- Customer-facing pages (Home, NowPlaying, ComingSoon)
+- Movie booking and payment system (Booking.jsx, Payment.jsx)
+- User profile and history management (Profile.jsx, History.jsx)
+- Movie details and ticket management (MovieDetail.jsx, Ticket.jsx)
+- User navbar component
+
+## Summary:
+Complete cinema management system with role-based interfaces for Admin, Cashier, Owner, and Customers.
