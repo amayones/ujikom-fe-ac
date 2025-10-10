@@ -6,6 +6,7 @@ import { shouldHideLayout } from "./utils/routeUtils";
 import { normalizePath, startsWithPath } from "./utils/pathUtils";
 import RouteValidator from "./components/RouteValidator";
 import TrailingSlashRedirect from "./components/TrailingSlashRedirect";
+import { AuthProvider } from "./context/AuthContext";
 
 function Layout() {
   const location = useLocation();
@@ -35,8 +36,10 @@ function Layout() {
 
 export default function App() {
   return (
-    <BrowserRouter basename="/">
-      <Layout />
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter basename="/">
+        <Layout />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
