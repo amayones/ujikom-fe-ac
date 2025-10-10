@@ -117,6 +117,24 @@ export const adminService = {
       throw new Error('Gagal hapus film');
     }
   },
+  getGenres: async () => {
+    try {
+      const response = await api.get('/admin/genres');
+      return response.data.success ? response.data.data : [];
+    } catch (error) {
+      console.error('Genres Error:', error);
+      // Fallback genres
+      return [
+        { id: 1, name: 'Action' },
+        { id: 2, name: 'Comedy' },
+        { id: 3, name: 'Drama' },
+        { id: 4, name: 'Horror' },
+        { id: 5, name: 'Romance' },
+        { id: 6, name: 'Sci-Fi' },
+        { id: 7, name: 'Thriller' }
+      ];
+    }
+  },
   getSchedules: async () => {
     return [
       { id: 1, movie: 'Avengers: Endgame', time: '14:00', studio: 'Studio 1' },

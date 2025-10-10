@@ -4,6 +4,7 @@ import { Plus, Edit, Trash2, Search, Filter, Eye } from 'lucide-react';
 
 export default function ManageMovie() {
     const [films, setFilms] = useState([]);
+    const [genres, setGenres] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingFilm, setEditingFilm] = useState(null);
@@ -12,6 +13,8 @@ export default function ManageMovie() {
     const [formData, setFormData] = useState({
         title: '',
         genre: '',
+        startTime: '',
+        endTime: '',
         duration: '',
         director: '',
         description: '',
@@ -22,7 +25,17 @@ export default function ManageMovie() {
 
     useEffect(() => {
         fetchFilms();
+        fetchGenres();
     }, []);
+
+    const fetchGenres = async () => {
+        try {
+            const data = await adminService.getGenres();
+            setGenres(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error('Failed to fetch genres:', error);
+        }
+    };
 
     const fetchFilms = async () => {
         try {
@@ -40,10 +53,29 @@ export default function ManageMovie() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFormData(prev => {
+            const newData = { ...prev, [name]: value };
+            
+            // Calculate duration when start or end time changes
+            if (name === 'startTime' || name === 'endTime') {
+                const start = name === 'startTime' ? value : prev.startTime;
+                const end = name === 'endTime' ? value : prev.endTime;
+                
+                if (start && end) {
+                    const startMinutes = timeToMinutes(start);
+                    const endMinutes = timeToMinutes(end);
+                    const duration = endMinutes - startMinutes;
+                    newData.duration = duration > 0 ? duration : '';
+                }
+            }
+            
+            return newData;
+        });
+    };
+    
+    const timeToMinutes = (time) => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes;
     };
 
     const handleSubmit = async (e) => {
@@ -269,12 +301,36 @@ export default function ManageMovie() {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium mb-2">Genre</label>
-                                        <input
-                                            type="text"
+                                        <select
                                             name="genre"
                                             value={formData.genre}
                                             onChange={handleInputChange}
                                             required
+                                            className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                                        >
+                                            <option value="">Pilih Genre</option>
+                                            {genres.map(genre => (
+                                                <option key={genre.id} value={genre.name}>{genre.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Waktu Mulai</label>
+                                        <input
+                                            type="time"
+                                            name="startTime"
+                                            value={formData.startTime}
+                                            onChange={handleInputChange}
+                                            className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Waktu Selesai</label>
+                                        <input
+                                            type="time"
+                                            name="endTime"
+                                            value={formData.endTime}
+                                            onChange={handleInputChange}
                                             className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                         />
                                     </div>
@@ -284,9 +340,9 @@ export default function ManageMovie() {
                                             type="number"
                                             name="duration"
                                             value={formData.duration}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            readOnly
+                                            className="w-full p-3 bg-gray-600 rounded-lg text-gray-300"
+                                            placeholder="Otomatis dihitung"
                                         />
                                     </div>
                                     <div>
