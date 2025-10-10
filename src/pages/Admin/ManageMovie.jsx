@@ -26,16 +26,13 @@ export default function ManageMovie() {
 
     const fetchFilms = async () => {
         try {
+            setLoading(true);
             const data = await adminService.getFilms();
-            setFilms(data);
+            setFilms(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Failed to fetch films:', error);
-            // Mock data for demo
-            setFilms([
-                { id: 1, judul: 'Avengers: Endgame', genre: 'Action, Sci-Fi', durasi: 181, sutradara: 'Russo Brothers', status: 'play_now' },
-                { id: 2, judul: 'Oppenheimer', genre: 'Biography, Drama', durasi: 180, sutradara: 'Christopher Nolan', status: 'play_now' },
-                { id: 3, judul: 'Spider-Man 4', genre: 'Action, Adventure', durasi: 120, sutradara: 'Jon Watts', status: 'coming_soon' }
-            ]);
+            alert('Gagal memuat data film: ' + error.message);
+            setFilms([]);
         } finally {
             setLoading(false);
         }
@@ -56,8 +53,10 @@ export default function ManageMovie() {
         try {
             if (editingFilm) {
                 await adminService.updateFilm(editingFilm.id, formData);
+                alert('Film berhasil diupdate!');
             } else {
-                await adminService.storeFilm(formData);
+                await adminService.createFilm(formData);
+                alert('Film berhasil ditambahkan!');
             }
             
             await fetchFilms();
@@ -75,7 +74,7 @@ export default function ManageMovie() {
             });
         } catch (error) {
             console.error('Failed to save film:', error);
-            alert('Gagal menyimpan film');
+            alert('Gagal menyimpan film: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -99,11 +98,15 @@ export default function ManageMovie() {
     const handleDelete = async (id) => {
         if (window.confirm('Yakin ingin menghapus film ini?')) {
             try {
+                setLoading(true);
                 await adminService.deleteFilm(id);
+                alert('Film berhasil dihapus!');
                 await fetchFilms();
             } catch (error) {
                 console.error('Failed to delete film:', error);
-                alert('Gagal menghapus film');
+                alert('Gagal menghapus film: ' + error.message);
+            } finally {
+                setLoading(false);
             }
         }
     };

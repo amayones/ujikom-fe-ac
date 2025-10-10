@@ -75,20 +75,49 @@ export const filmService = {
 
 export const adminService = {
   getFilms: async () => {
-    return [
-      { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: '/ac.jpg' },
-      { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: '/ac.jpg' },
-      { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: '/ac.jpg' }
-    ];
+    try {
+      const response = await api.get('/admin/films');
+      return response.data.success ? response.data.data : [];
+    } catch (error) {
+      console.error('Error fetching films:', error);
+      throw new Error(error.response?.data?.message || 'Failed to fetch films');
+    }
   },
   createFilm: async (filmData) => {
-    return { id: Math.random(), ...filmData };
+    try {
+      const response = await api.post('/admin/films', filmData);
+      if (response.data.success) {
+        return response.data.data;
+      }
+      throw new Error(response.data.message);
+    } catch (error) {
+      console.error('Error creating film:', error);
+      throw new Error(error.response?.data?.message || 'Failed to create film');
+    }
   },
   updateFilm: async (id, filmData) => {
-    return { id, ...filmData };
+    try {
+      const response = await api.put(`/admin/films/${id}`, filmData);
+      if (response.data.success) {
+        return response.data.data;
+      }
+      throw new Error(response.data.message);
+    } catch (error) {
+      console.error('Error updating film:', error);
+      throw new Error(error.response?.data?.message || 'Failed to update film');
+    }
   },
   deleteFilm: async (id) => {
-    return { message: 'Film deleted' };
+    try {
+      const response = await api.delete(`/admin/films/${id}`);
+      if (response.data.success) {
+        return response.data;
+      }
+      throw new Error(response.data.message);
+    } catch (error) {
+      console.error('Error deleting film:', error);
+      throw new Error(error.response?.data?.message || 'Failed to delete film');
+    }
   },
   getSchedules: async () => {
     return [
