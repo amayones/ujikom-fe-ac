@@ -84,7 +84,7 @@ export default function Report() {
                                 </div>
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-purple-400">{totalTickets.toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-purple-400">{(totalTickets || 0).toLocaleString()}</p>
                                 <p className="text-sm text-gray-400">Total Tiket Terjual</p>
                             </div>
                         </div>
@@ -149,7 +149,7 @@ export default function Report() {
                                 </thead>
                                 <tbody>
                                     {reports.map((report, index) => {
-                                        const margin = ((report.profit / report.total_income) * 100).toFixed(1);
+                                        const margin = (((report.profit || 0) / (report.total_income || 1)) * 100).toFixed(1);
                                         return (
                                             <tr key={index} className="border-b border-gray-700">
                                                 <td className="py-4 font-semibold">
@@ -165,7 +165,7 @@ export default function Report() {
                                                     Rp {(report.profit / 1000000).toFixed(1)}M
                                                 </td>
                                                 <td className="py-4">
-                                                    {report.tickets_sold?.toLocaleString() || 0}
+                                                    {(report.tickets_sold || 0).toLocaleString()}
                                                 </td>
                                                 <td className="py-4">
                                                     <span className={`px-2 py-1 rounded text-xs ${

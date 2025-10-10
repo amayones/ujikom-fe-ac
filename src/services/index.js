@@ -120,16 +120,21 @@ export const adminService = {
 
 export const ownerService = {
   getFinancialReport: async (startDate, endDate) => {
-    return { report: { total: 1000000, period: `${startDate} - ${endDate}` } };
+    return { 
+      report: { 
+        total: 1000000 || 0, 
+        period: `${startDate || 'N/A'} - ${endDate || 'N/A'}` 
+      } 
+    };
   },
   getMonthlyReport: async () => {
     return {
       monthly_report: [
-        { month: 1, year: 2024, total_income: 125000000, total_expense: 85000000, profit: 40000000, tickets_sold: 2500 },
-        { month: 2, year: 2024, total_income: 135000000, total_expense: 90000000, profit: 45000000, tickets_sold: 2800 },
-        { month: 3, year: 2024, total_income: 145000000, total_expense: 95000000, profit: 50000000, tickets_sold: 3200 },
-        { month: 4, year: 2024, total_income: 155000000, total_expense: 100000000, profit: 55000000, tickets_sold: 3500 },
-        { month: 5, year: 2024, total_income: 165000000, total_expense: 105000000, profit: 60000000, tickets_sold: 3800 }
+        { month: 1, year: 2024, total_income: 125000000 || 0, total_expense: 85000000 || 0, profit: 40000000 || 0, tickets_sold: 2500 || 0 },
+        { month: 2, year: 2024, total_income: 135000000 || 0, total_expense: 90000000 || 0, profit: 45000000 || 0, tickets_sold: 2800 || 0 },
+        { month: 3, year: 2024, total_income: 145000000 || 0, total_expense: 95000000 || 0, profit: 50000000 || 0, tickets_sold: 3200 || 0 },
+        { month: 4, year: 2024, total_income: 155000000 || 0, total_expense: 100000000 || 0, profit: 55000000 || 0, tickets_sold: 3500 || 0 },
+        { month: 5, year: 2024, total_income: 165000000 || 0, total_expense: 105000000 || 0, profit: 60000000 || 0, tickets_sold: 3800 || 0 }
       ]
     };
   }

@@ -68,11 +68,11 @@ export default function Finance() {
 
     const totalIncome = transactions
         .filter(t => t.type === 'income')
-        .reduce((sum, t) => sum + t.amount, 0);
+        .reduce((sum, t) => sum + (t.amount || 0), 0);
     
     const totalExpense = transactions
         .filter(t => t.type === 'expense')
-        .reduce((sum, t) => sum + t.amount, 0);
+        .reduce((sum, t) => sum + (t.amount || 0), 0);
 
     return (
         <div className="bg-gray-900 min-h-screen text-white p-6">
@@ -183,7 +183,7 @@ export default function Finance() {
                                     <p className={`text-lg font-bold ${
                                         transaction.type === 'income' ? 'text-green-400' : 'text-red-400'
                                     }`}>
-                                        {transaction.type === 'income' ? '+' : '-'}Rp {transaction.amount.toLocaleString()}
+                                        {transaction.type === 'income' ? '+' : '-'}Rp {(transaction.amount || 0).toLocaleString()}
                                     </p>
                                 </div>
                             </div>
