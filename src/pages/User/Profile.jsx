@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { filmService } from '../../services';
-import api from '../../services/api';
 import { User, Mail, Phone, MapPin, Calendar, Edit3, Save, X } from 'lucide-react';
 
 export default function Profile() {
@@ -27,8 +26,13 @@ export default function Profile() {
     const handleSave = async () => {
         setLoading(true);
         try {
-            const response = await api.put('/customer/profile', formData);
-            login(response.user, localStorage.getItem('token'));
+            // Mock update - in real app this would call API
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Update user context with new data
+            const updatedUser = { ...user, ...formData };
+            login(updatedUser, localStorage.getItem('token'));
+            
             setIsEditing(false);
             alert('Profile berhasil diupdate');
         } catch (error) {
