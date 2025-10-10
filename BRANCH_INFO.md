@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Absolute Cinema - Frontend Features
 
 ## Merged Features:
@@ -14,3 +15,10 @@
 - Auth context and guards
 - Role-based components
 - Route protection utilities
+
+### Admin Panel
+- Admin dashboard and management pages
+- Movie management (ManageMovie.jsx)
+- Schedule management (ManageSchedule.jsx) 
+- User management (ManageUser.jsx)
+- Admin layout and navbar components
