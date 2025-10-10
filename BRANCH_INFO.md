@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 # Absolute Cinema - Frontend Features
 
 ## Merged Features:
@@ -47,3 +43,13 @@
 
 ## Summary:
 Complete cinema management system with role-based interfaces for Admin, Cashier, Owner, and Customers.
+
+## Branch Structure:
+- `feature/core-components` - Foundation and shared utilities
+- `feature/auth-system` - Authentication and authorization
+- `feature/admin-panel` - Administrative management interface
+- `feature/cashier-system` - Point of sale and ticket processing
+- `feature/owner-dashboard` - Business analytics and reporting
+- `feature/user-interface` - Customer-facing application
+
+All branches have been successfully merged into `main` branch.
