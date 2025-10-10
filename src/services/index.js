@@ -77,26 +77,45 @@ export const filmService = {
 
 export const adminService = {
   getFilms: async () => {
-    // Temporarily use mock data only to avoid 500 errors
-    return [
-      { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Russo Brothers', status: 'play_now' },
-      { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Jon Watts', status: 'play_now' },
-      { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Joseph Kosinski', status: 'play_now' },
-      { id: 4, title: 'Black Panther: Wakanda Forever', genre: 'Action', duration: 161, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Ryan Coogler', status: 'coming_soon' },
-      { id: 5, title: 'Avatar: The Way of Water', genre: 'Sci-Fi', duration: 192, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'James Cameron', status: 'coming_soon' }
-    ];
+    try {
+      const response = await api.get('/admin/films');
+      return response.data.success ? response.data.data : [];
+    } catch (error) {
+      console.error('API Error:', error);
+      // Return mock data as fallback
+      return [
+        { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Russo Brothers', status: 'play_now' },
+        { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Jon Watts', status: 'play_now' },
+        { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Joseph Kosinski', status: 'play_now' }
+      ];
+    }
   },
   createFilm: async (filmData) => {
-    // Mock create - return success with new ID
-    return { id: Date.now(), ...filmData };
+    try {
+      const response = await api.post('/admin/films', filmData);
+      return response.data.data;
+    } catch (error) {
+      console.error('Create Error:', error);
+      throw new Error('Gagal menambah film');
+    }
   },
   updateFilm: async (id, filmData) => {
-    // Mock update - return success
-    return { id, ...filmData };
+    try {
+      const response = await api.put(`/admin/films/${id}`, filmData);
+      return response.data.data;
+    } catch (error) {
+      console.error('Update Error:', error);
+      throw new Error('Gagal update film');
+    }
   },
   deleteFilm: async (id) => {
-    // Mock delete - return success
-    return { success: true, message: 'Film deleted successfully' };
+    try {
+      const response = await api.delete(`/admin/films/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Delete Error:', error);
+      throw new Error('Gagal hapus film');
+    }
   },
   getSchedules: async () => {
     return [
