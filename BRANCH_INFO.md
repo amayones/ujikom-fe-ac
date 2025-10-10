@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Absolute Cinema - Frontend Features
 
 ## Merged Features:
@@ -29,3 +30,9 @@
 - Ticket scanning functionality (ScanTicket.jsx)
 - Transaction processing (Transaction.jsx)
 - Cashier layout and navbar components
+
+### Owner Dashboard
+- Owner dashboard with business analytics
+- Financial management and reporting (Finance.jsx)
+- Comprehensive business reports (Report.jsx)
+- Owner layout and navbar components
