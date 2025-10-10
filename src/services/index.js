@@ -38,10 +38,10 @@ export const filmService = {
   getFilms: async (status = 'play_now') => {
     // Mock film data - return array directly
     return [
-      { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: 'https://be-ujikom.amayones.my.id/ac.jpg' },
-      { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: 'https://be-ujikom.amayones.my.id/ac.jpg' },
-      { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: 'https://be-ujikom.amayones.my.id/ac.jpg' },
-      { id: 4, title: 'Black Panther: Wakanda Forever', genre: 'Action', duration: 161, poster: 'https://be-ujikom.amayones.my.id/ac.jpg' }
+      { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: 'https://via.placeholder.com/300x400/1f2937/ef4444?text=Avengers' },
+      { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: 'https://via.placeholder.com/300x400/1f2937/ef4444?text=Spider-Man' },
+      { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: 'https://via.placeholder.com/300x400/1f2937/ef4444?text=Top+Gun' },
+      { id: 4, title: 'Black Panther: Wakanda Forever', genre: 'Action', duration: 161, poster: 'https://via.placeholder.com/300x400/1f2937/ef4444?text=Black+Panther' }
     ];
   },
   getFilmDetail: async (id) => {

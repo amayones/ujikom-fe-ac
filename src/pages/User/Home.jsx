@@ -5,15 +5,15 @@ import { Link } from "react-router-dom";
 export default function Home() {
     // Static mock data for testing
     const nowPlayingFilms = [
-        { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: '/ac.jpg' },
-        { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: '/ac.jpg' },
-        { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: '/ac.jpg' }
+        { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: 'https://via.placeholder.com/300x400/1f2937/ef4444?text=Avengers' },
+        { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: 'https://via.placeholder.com/300x400/1f2937/ef4444?text=Spider-Man' },
+        { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: 'https://via.placeholder.com/300x400/1f2937/ef4444?text=Top+Gun' }
     ];
 
     const comingSoonFilms = [
-        { id: 4, title: 'Black Panther: Wakanda Forever', genre: 'Action', duration: 161, poster: '/ac.jpg' },
-        { id: 5, title: 'Avatar: The Way of Water', genre: 'Sci-Fi', duration: 192, poster: '/ac.jpg' },
-        { id: 6, title: 'The Batman', genre: 'Action', duration: 176, poster: '/ac.jpg' }
+        { id: 4, title: 'Black Panther: Wakanda Forever', genre: 'Action', duration: 161, poster: 'https://via.placeholder.com/300x400/374151/eab308?text=Black+Panther' },
+        { id: 5, title: 'Avatar: The Way of Water', genre: 'Sci-Fi', duration: 192, poster: 'https://via.placeholder.com/300x400/374151/eab308?text=Avatar' },
+        { id: 6, title: 'The Batman', genre: 'Action', duration: 176, poster: 'https://via.placeholder.com/300x400/374151/eab308?text=Batman' }
     ];
 
     return (
