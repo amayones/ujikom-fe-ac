@@ -12,7 +12,7 @@ export default function ManageMovie() {
     const [filterStatus, setFilterStatus] = useState('all');
     const [formData, setFormData] = useState({
         title: '',
-        genre: '',
+        genre: [],
         startTime: '',
         endTime: '',
         duration: '',
@@ -52,9 +52,20 @@ export default function ManageMovie() {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
+        
         setFormData(prev => {
-            const newData = { ...prev, [name]: value };
+            let newData = { ...prev };
+            
+            if (name === 'genre' && type === 'checkbox') {
+                if (checked) {
+                    newData.genre = [...prev.genre, value];
+                } else {
+                    newData.genre = prev.genre.filter(g => g !== value);
+                }
+            } else {
+                newData[name] = value;
+            }
             
             // Calculate duration when start or end time changes
             if (name === 'startTime' || name === 'endTime') {
@@ -83,20 +94,31 @@ export default function ManageMovie() {
         setLoading(true);
         
         try {
+            const submitData = {
+                ...formData,
+                genre: Array.isArray(formData.genre) ? formData.genre.join(', ') : formData.genre
+            };
+            
+            let newFilm;
             if (editingFilm) {
-                await adminService.updateFilm(editingFilm.id, formData);
+                newFilm = await adminService.updateFilm(editingFilm.id, submitData);
+                setFilms(prev => prev.map(film => 
+                    film.id === editingFilm.id ? { ...film, ...newFilm } : film
+                ));
                 alert('Film berhasil diupdate!');
             } else {
-                await adminService.createFilm(formData);
+                newFilm = await adminService.createFilm(submitData);
+                setFilms(prev => [newFilm, ...prev]);
                 alert('Film berhasil ditambahkan!');
             }
             
-            await fetchFilms();
             setShowModal(false);
             setEditingFilm(null);
             setFormData({
                 title: '',
-                genre: '',
+                genre: [],
+                startTime: '',
+                endTime: '',
                 duration: '',
                 director: '',
                 description: '',
@@ -114,9 +136,12 @@ export default function ManageMovie() {
 
     const handleEdit = (film) => {
         setEditingFilm(film);
+        const filmGenres = film.genre ? film.genre.split(', ') : [];
         setFormData({
             title: film.title || film.judul || '',
-            genre: film.genre || '',
+            genre: filmGenres,
+            startTime: '',
+            endTime: '',
             duration: film.duration || film.durasi || '',
             director: film.director || film.sutradara || '',
             description: film.description || film.sinopsis || '',
@@ -132,8 +157,8 @@ export default function ManageMovie() {
             try {
                 setLoading(true);
                 await adminService.deleteFilm(id);
+                setFilms(prev => prev.filter(film => film.id !== id));
                 alert('Film berhasil dihapus!');
-                await fetchFilms();
             } catch (error) {
                 console.error('Failed to delete film:', error);
                 alert('Gagal menghapus film: ' + error.message);
@@ -163,7 +188,9 @@ export default function ManageMovie() {
                             setEditingFilm(null);
                             setFormData({
                                 title: '',
-                                genre: '',
+                                genre: [],
+                                startTime: '',
+                                endTime: '',
                                 duration: '',
                                 director: '',
                                 description: '',
@@ -299,20 +326,26 @@ export default function ManageMovie() {
                                             className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                         />
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2">Genre</label>
-                                        <select
-                                            name="genre"
-                                            value={formData.genre}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                                        >
-                                            <option value="">Pilih Genre</option>
+                                    <div className="col-span-2">
+                                        <label className="block text-sm font-medium mb-2">Genre (Pilih beberapa)</label>
+                                        <div className="grid grid-cols-4 gap-2 p-3 bg-gray-700 rounded-lg max-h-32 overflow-y-auto">
                                             {genres.map(genre => (
-                                                <option key={genre.id} value={genre.name}>{genre.name}</option>
+                                                <label key={genre.id} className="flex items-center space-x-2 text-sm">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="genre"
+                                                        value={genre.name}
+                                                        checked={formData.genre.includes(genre.name)}
+                                                        onChange={handleInputChange}
+                                                        className="rounded"
+                                                    />
+                                                    <span>{genre.name}</span>
+                                                </label>
                                             ))}
-                                        </select>
+                                        </div>
+                                        <div className="mt-2 text-sm text-gray-400">
+                                            Dipilih: {formData.genre.length > 0 ? formData.genre.join(', ') : 'Belum ada yang dipilih'}
+                                        </div>
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium mb-2">Waktu Mulai</label>
