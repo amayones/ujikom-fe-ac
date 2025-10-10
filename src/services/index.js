@@ -77,63 +77,46 @@ export const filmService = {
 
 export const adminService = {
   getFilms: async () => {
-    try {
-      const response = await api.get('/admin/films');
-      return response.data.success ? response.data.data : [];
-    } catch (error) {
-      console.error('API Error:', error);
-      // Return mock data as fallback
-      return [
-        { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Russo Brothers', status: 'play_now' },
-        { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Jon Watts', status: 'play_now' },
-        { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Joseph Kosinski', status: 'play_now' }
-      ];
-    }
+    // Use mock data only - no API calls
+    return [
+      { id: 1, title: 'Avengers: Endgame', genre: 'Action', duration: 180, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Russo Brothers', status: 'play_now' },
+      { id: 2, title: 'Spider-Man: No Way Home', genre: 'Action', duration: 148, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Jon Watts', status: 'play_now' },
+      { id: 3, title: 'Top Gun: Maverick', genre: 'Action', duration: 130, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Joseph Kosinski', status: 'play_now' },
+      { id: 4, title: 'Black Panther: Wakanda Forever', genre: 'Drama', duration: 161, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'Ryan Coogler', status: 'coming_soon' },
+      { id: 5, title: 'Avatar: The Way of Water', genre: 'Sci-Fi', duration: 192, poster: 'https://be-ujikom.amayones.my.id/ac.jpg', director: 'James Cameron', status: 'coming_soon' }
+    ];
   },
   createFilm: async (filmData) => {
-    try {
-      const response = await api.post('/admin/films', filmData);
-      return response.data.data;
-    } catch (error) {
-      console.error('Create Error:', error);
-      throw new Error('Gagal menambah film');
-    }
+    // Mock create - simulate success
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate delay
+    return { id: Date.now(), ...filmData };
   },
   updateFilm: async (id, filmData) => {
-    try {
-      const response = await api.put(`/admin/films/${id}`, filmData);
-      return response.data.data;
-    } catch (error) {
-      console.error('Update Error:', error);
-      throw new Error('Gagal update film');
-    }
+    // Mock update - simulate success
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate delay
+    return { id, ...filmData };
   },
   deleteFilm: async (id) => {
-    try {
-      const response = await api.delete(`/admin/films/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error('Delete Error:', error);
-      throw new Error('Gagal hapus film');
-    }
+    // Mock delete - simulate success
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate delay
+    return { success: true, message: 'Film berhasil dihapus' };
   },
   getGenres: async () => {
-    try {
-      const response = await api.get('/admin/genres');
-      return response.data.success ? response.data.data : [];
-    } catch (error) {
-      console.error('Genres Error:', error);
-      // Fallback genres
-      return [
-        { id: 1, name: 'Action' },
-        { id: 2, name: 'Comedy' },
-        { id: 3, name: 'Drama' },
-        { id: 4, name: 'Horror' },
-        { id: 5, name: 'Romance' },
-        { id: 6, name: 'Sci-Fi' },
-        { id: 7, name: 'Thriller' }
-      ];
-    }
+    // Use mock genres only - no API calls
+    return [
+      { id: 1, name: 'Action' },
+      { id: 2, name: 'Adventure' },
+      { id: 3, name: 'Comedy' },
+      { id: 4, name: 'Drama' },
+      { id: 5, name: 'Horror' },
+      { id: 6, name: 'Romance' },
+      { id: 7, name: 'Sci-Fi' },
+      { id: 8, name: 'Thriller' },
+      { id: 9, name: 'Fantasy' },
+      { id: 10, name: 'Animation' },
+      { id: 11, name: 'Crime' },
+      { id: 12, name: 'Mystery' }
+    ];
   },
   getSchedules: async () => {
     return [
