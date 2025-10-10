@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { adminService } from '../../services';
 import { Plus, Edit, Trash2, Search, Filter, Eye } from 'lucide-react';
+import Toast from '../../components/Toast';
 
 export default function ManageMovie() {
     const [films, setFilms] = useState([]);
@@ -22,6 +23,11 @@ export default function ManageMovie() {
         status: 'play_now',
         release_date: ''
     });
+    const [toast, setToast] = useState(null);
+
+    const showToast = (message, type = 'success') => {
+        setToast({ message, type });
+    };
 
     useEffect(() => {
         fetchFilms();
@@ -44,7 +50,7 @@ export default function ManageMovie() {
             setFilms(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Failed to fetch films:', error);
-            alert('Gagal memuat data film: ' + error.message);
+            showToast('Gagal memuat data film', 'error');
             setFilms([]);
         } finally {
             setLoading(false);
@@ -105,11 +111,11 @@ export default function ManageMovie() {
                 setFilms(prev => prev.map(film => 
                     film.id === editingFilm.id ? { ...film, ...newFilm } : film
                 ));
-                alert('Film berhasil diupdate!');
+                showToast('Film berhasil diupdate!', 'success');
             } else {
                 newFilm = await adminService.createFilm(submitData);
                 setFilms(prev => [newFilm, ...prev]);
-                alert('Film berhasil ditambahkan!');
+                showToast('Film berhasil ditambahkan!', 'success');
             }
             
             setShowModal(false);
@@ -128,7 +134,7 @@ export default function ManageMovie() {
             });
         } catch (error) {
             console.error('Failed to save film:', error);
-            alert('Gagal menyimpan film: ' + error.message);
+            showToast('Gagal menyimpan film', 'error');
         } finally {
             setLoading(false);
         }
@@ -158,10 +164,10 @@ export default function ManageMovie() {
                 setLoading(true);
                 await adminService.deleteFilm(id);
                 setFilms(prev => prev.filter(film => film.id !== id));
-                alert('Film berhasil dihapus!');
+                showToast('Film berhasil dihapus!', 'success');
             } catch (error) {
                 console.error('Failed to delete film:', error);
-                alert('Gagal menghapus film: ' + error.message);
+                showToast('Gagal menghapus film', 'error');
             } finally {
                 setLoading(false);
             }
@@ -307,8 +313,8 @@ export default function ManageMovie() {
 
                 {/* Modal */}
                 {showModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+                        <div className="bg-gray-800/95 backdrop-blur-md border border-gray-700/50 rounded-xl shadow-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                             <h2 className="text-xl font-bold mb-4">
                                 {editingFilm ? 'Edit Film' : 'Tambah Film Baru'}
                             </h2>
@@ -454,6 +460,15 @@ export default function ManageMovie() {
                             </form>
                         </div>
                     </div>
+                )}
+                
+                {/* Toast Notifications */}
+                {toast && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={() => setToast(null)}
+                    />
                 )}
             </div>
         </div>
