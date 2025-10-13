@@ -1,7 +1,10 @@
 import { BrowserRouter, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import AppRoutes from "./Routes";
 import RoleBasedNavbar from "./components/RoleBasedNavbar";
 import Footer from "./components/Footer";
+import GlobalToast, { toast } from "./components/GlobalToast";
+import { setToastFunction } from "./api/config";
 import { shouldHideLayout } from "./utils/routeUtils";
 import { normalizePath, startsWithPath } from "./utils/pathUtils";
 import RouteValidator from "./components/RouteValidator";
@@ -10,6 +13,11 @@ import { AuthProvider } from "./context/AuthContext";
 
 function Layout() {
   const location = useLocation();
+
+  // Setup toast function untuk axios
+  useEffect(() => {
+    setToastFunction(toast);
+  }, []);
 
   const hideLayout = shouldHideLayout(location.pathname);
 
@@ -30,6 +38,7 @@ function Layout() {
         </main>
         {!hideFooter && <Footer />}
       </div>
+      <GlobalToast />
     </RouteValidator>
   );
 }
