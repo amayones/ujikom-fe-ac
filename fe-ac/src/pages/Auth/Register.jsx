@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { useAuthStore } from '../../stores/index.js';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -13,12 +11,9 @@ export default function Register() {
     const [fieldErrors, setFieldErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const { register, loading, error, clearError } = useAuthStore();
+    const [loading, setLoading] = useState(false);
 
-    // Clear error on component mount
-    useEffect(() => {
-        clearError();
-    }, [clearError]);
+
 
     const validateForm = () => {
         const errors = {};
@@ -74,17 +69,13 @@ export default function Register() {
             return;
         }
         
-        clearError();
+        setLoading(true);
         
-        try {
-            await register(formData);
-        } catch (err) {
-            console.error('Register error:', err);
-            // Handle validation errors
-            if (err.errors) {
-                setFieldErrors(err.errors);
-            }
-        }
+        // Simulate register process
+        setTimeout(() => {
+            setLoading(false);
+            alert('Registrasi berhasil! (Demo mode)');
+        }, 1000);
     };
 
     return (
@@ -100,12 +91,7 @@ export default function Register() {
                     </p>
                 </div>
 
-                {/* Error Message */}
-                {error && (
-                    <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4">
-                        <p className="text-sm">{error}</p>
-                    </div>
-                )}
+
 
                 {/* Form */}
                 <form className="space-y-4" onSubmit={handleSubmit} noValidate>

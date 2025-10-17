@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthStore } from '../../stores/index.js';
 
 export default function Login() {
     const [formData, setFormData] = useState({
@@ -9,7 +8,7 @@ export default function Login() {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
-    const { login, loading, error, clearError } = useAuthStore();
+    const [loading, setLoading] = useState(false);
 
     const validateForm = () => {
         const errors = {};
@@ -44,14 +43,13 @@ export default function Login() {
         e.preventDefault();
         if (!validateForm()) return;
         
-        clearError();
+        setLoading(true);
         
-        try {
-            await login(formData.email, formData.password);
-        } catch (error) {
-            console.error('Login error:', error);
-            // Error sudah di-handle di store
-        }
+        // Simulate login process
+        setTimeout(() => {
+            setLoading(false);
+            alert('Login berhasil! (Demo mode)');
+        }, 1000);
     };
 
     return (
@@ -68,12 +66,7 @@ export default function Login() {
                 </div>
 
 
-                {/* Error Message */}
-                {error && (
-                    <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4">
-                        <p className="text-sm">{error}</p>
-                    </div>
-                )}
+
 
                 {/* Form */}
                 <form className="space-y-5" onSubmit={handleSubmit} noValidate>
