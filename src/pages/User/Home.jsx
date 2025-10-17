@@ -80,7 +80,7 @@ export default function Home() {
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                        {nowPlayingFilms.map((movie, index) => (
+                        {nowPlayingFilms.map((movie) => (
                             <div key={movie.id} className="bg-gray-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-transform">
                                 <img 
                                     src={movie.poster} 
@@ -127,7 +127,7 @@ export default function Home() {
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                        {comingSoonFilms.map((movie, index) => (
+                        {comingSoonFilms.map((movie) => (
                             <div key={movie.id} className="bg-gray-800 rounded-lg overflow-hidden">
                                 <img 
                                     src={movie.poster} 

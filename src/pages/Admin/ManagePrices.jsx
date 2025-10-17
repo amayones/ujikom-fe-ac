@@ -9,11 +9,11 @@ export default function ManagePrices() {
     ]);
     const [editing, setEditing] = useState(null);
 
-    const handleEdit = (id) => {
-        setEditing(id);
+    const handleEdit = (priceId) => {
+        setEditing(priceId);
     };
 
-    const handleSave = (id) => {
+    const handleSave = () => {
         setEditing(null);
     };
 
@@ -72,7 +72,7 @@ export default function ManagePrices() {
                                     <td className="px-6 py-4">
                                         {editing === price.id ? (
                                             <button
-                                                onClick={() => handleSave(price.id)}
+                                                onClick={() => handleSave()}
                                                 className="flex items-center gap-1 bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm"
                                             >
                                                 <Save className="w-3 h-3" />
