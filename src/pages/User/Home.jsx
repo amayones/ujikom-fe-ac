@@ -12,9 +12,31 @@ export default function Home() {
     const comingSoonFilms = movies.filter(movie => movie.status === 'coming_soon');
 
     return (
-        <div className="relative bg-gray-900 text-white min-h-screen overflow-hidden">
+        <div className="relative bg-gray-900 text-white overflow-hidden">
+            {/* Animated Background - Safe positioning */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-black to-gray-900"></div>
+                {/* Floating particles */}
+                <div className="absolute inset-0 opacity-30">
+                    {[...Array(15)].map((_, i) => (
+                        <div
+                            key={i}
+                            className="absolute w-1 h-1 bg-red-500 rounded-full animate-pulse"
+                            style={{
+                                left: `${Math.random() * 100}%`,
+                                top: `${Math.random() * 100}%`,
+                                animationDelay: `${Math.random() * 3}s`,
+                                animationDuration: `${2 + Math.random() * 2}s`
+                            }}
+                        />
+                    ))}
+                </div>
+                {/* Moving gradient */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent animate-pulse" />
+            </div>
+            
             {/* Hero Section */}
-            <section className="relative w-full h-screen flex items-center justify-center bg-gradient-to-br from-red-900 via-black to-gray-900">
+            <section className="relative w-full h-screen flex items-center justify-center z-10">
                 <div className="text-center z-10 px-6">
                     <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-red-500 to-yellow-500 bg-clip-text text-transparent">
                         Absolute Cinema
@@ -32,7 +54,7 @@ export default function Home() {
             </section>
 
             {/* Enhanced Features Section */}
-            <section className="relative w-full py-20 px-6 bg-gradient-to-b from-gray-900 to-gray-800">
+            <section className="relative w-full py-20 px-6 bg-gradient-to-b from-gray-900 to-gray-800 z-10">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16 animate-slide-up">
                         <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-red-500 to-yellow-500 bg-clip-text text-transparent">
@@ -67,7 +89,7 @@ export default function Home() {
             </section>
 
             {/* Now Showing - Enhanced */}
-            <section className="relative w-full py-20 px-6 bg-gray-900">
+            <section className="relative w-full py-20 px-6 bg-gray-900 z-10">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16 animate-slide-up">
                         <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
@@ -114,7 +136,7 @@ export default function Home() {
             </section>
 
             {/* Coming Soon - Enhanced */}
-            <section className="relative w-full py-20 px-6 bg-gradient-to-b from-gray-800 to-gray-900">
+            <section className="relative w-full py-20 px-6 bg-gradient-to-b from-gray-800 to-gray-900 z-10">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16 animate-slide-up">
                         <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
@@ -158,7 +180,7 @@ export default function Home() {
             </section>
 
             {/* Enhanced Call To Action */}
-            <section className="relative w-full py-24 px-6 bg-gradient-to-br from-red-900 via-red-700 to-red-500 text-center overflow-hidden">
+            <section className="relative w-full py-24 px-6 bg-gradient-to-br from-red-900 via-red-700 to-red-500 text-center overflow-hidden z-10">
                 <div className="absolute inset-0 opacity-20">
                     <div className="w-full h-full bg-repeat" style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E")`
