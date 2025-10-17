@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Studio;
-use Illuminate\Http\JsonResponse;
 
-class StudioController extends BaseController
+class StudioController extends Controller
 {
-    public function index(): JsonResponse
+    public function index()
     {
         $studios = Studio::all();
-        return $this->success($studios);
+        return response()->json(['success' => true, 'data' => $studios]);
     }
 }

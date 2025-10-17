@@ -2,61 +2,60 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use App\Models\Schedule;
 use App\Models\Film;
 use App\Models\Studio;
-use App\Models\Price;
-use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class ScheduleSeeder extends Seeder
 {
     public function run(): void
     {
-        $films = Film::all();
+        $films = Film::where('status', 'now_playing')->get();
         $studios = Studio::all();
-        $prices = Price::all();
-
-        if ($films->isEmpty() || $studios->isEmpty() || $prices->isEmpty()) {
-            return;
+        $times = ['10:00:00', '13:00:00', '16:00:00', '19:00:00', '21:30:00'];
+        
+        // Generate schedules for next 7 days
+        for ($day = 0; $day < 7; $day++) {
+            $date = Carbon::now()->addDays($day);
+            
+            foreach ($films as $film) {
+                // Each film gets 2-3 showtimes per day
+                $filmTimes = collect($times)->random(rand(2, 3));
+                
+                foreach ($filmTimes as $time) {
+                    $studio = $studios->random();
+                    
+                    Schedule::firstOrCreate([
+                        'film_id' => $film->id,
+                        'studio_id' => $studio->id,
+                        'show_date' => $date->format('Y-m-d'),
+                        'show_time' => $time
+                    ], [
+                        'film_id' => $film->id,
+                        'studio_id' => $studio->id,
+                        'show_date' => $date->format('Y-m-d'),
+                        'show_time' => $time,
+                        'price' => $this->calculatePrice($studio->type, $date),
+                        'available_seats' => $studio->capacity - rand(0, 10) // Some seats already booked
+                    ]);
+                }
+            }
         }
-
-        $schedules = [
-            [
-                'film_id' => $films->first()->id,
-                'studio_id' => $studios->where('name', 'Studio 1')->first()->id,
-                'date' => '2024-12-15',
-                'time' => '14:00:00',
-                'price_id' => $prices->where('type', 'Regular')->first()->id,
-                'created_by' => 1,
-            ],
-            [
-                'film_id' => $films->skip(1)->first()->id ?? $films->first()->id,
-                'studio_id' => $studios->where('name', 'Studio 2')->first()->id,
-                'date' => '2024-12-15',
-                'time' => '16:30:00',
-                'price_id' => $prices->where('type', 'Weekend')->first()->id,
-                'created_by' => 1,
-            ],
-            [
-                'film_id' => $films->first()->id,
-                'studio_id' => $studios->where('name', 'Studio 1')->first()->id,
-                'date' => '2024-12-15',
-                'time' => '19:00:00',
-                'price_id' => $prices->where('type', 'VIP')->first()->id,
-                'created_by' => 1,
-            ],
-            [
-                'film_id' => $films->skip(2)->first()->id ?? $films->first()->id,
-                'studio_id' => $studios->where('name', 'Studio 3')->first()->id,
-                'date' => '2024-12-16',
-                'time' => '15:00:00',
-                'price_id' => $prices->where('type', 'Regular')->first()->id,
-                'created_by' => 1,
-            ],
+    }
+    
+    private function calculatePrice($studioType, $date)
+    {
+        $isWeekend = $date->isWeekend();
+        $dayType = $isWeekend ? 'weekend' : 'weekday';
+        
+        $basePrices = [
+            'Regular' => $isWeekend ? 55000 : 45000,
+            'Premium' => $isWeekend ? 75000 : 65000,
+            'VIP' => $isWeekend ? 100000 : 85000
         ];
-
-        foreach ($schedules as $schedule) {
-            Schedule::create($schedule);
-        }
+        
+        return $basePrices[$studioType] ?? 50000;
     }
 }

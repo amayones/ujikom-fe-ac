@@ -2,8 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Owner routes (require auth:sanctum)
-Route::middleware('auth:sanctum')->group(function () {
+// Owner routes (NO MIDDLEWARE)
     
     // Dashboard & Analytics
     Route::get('/dashboard', function () {
@@ -54,5 +53,3 @@ Route::middleware('auth:sanctum')->group(function () {
             ]
         ]);
     });
-    
-});

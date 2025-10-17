@@ -4,20 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends BaseController
+class UserController extends Controller
 {
-    public function index(): JsonResponse
+    public function index()
     {
         $users = User::orderBy('created_at', 'desc')->get();
-        return $this->success($users);
+        return response()->json(['success' => true, 'data' => $users]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        $validated = $this->validateRequest($request, [
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
@@ -31,12 +30,17 @@ class UserController extends BaseController
             'role' => $validated['role'],
         ]);
 
-        return $this->success($user, 'User berhasil ditambahkan', 201);
+        return response()->json(['success' => true, 'data' => $user, 'message' => 'User created successfully'], 201);
     }
 
-    public function update(Request $request, User $user): JsonResponse
+    public function show(User $user)
     {
-        $validated = $this->validateRequest($request, [
+        return response()->json(['success' => true, 'data' => $user]);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,owner,cashier,customer',
@@ -54,12 +58,12 @@ class UserController extends BaseController
         }
 
         $user->update($updateData);
-        return $this->success($user, 'User berhasil diupdate');
+        return response()->json(['success' => true, 'data' => $user, 'message' => 'User updated successfully']);
     }
 
-    public function destroy(User $user): JsonResponse
+    public function destroy(User $user)
     {
         $user->delete();
-        return $this->success(null, 'User berhasil dihapus');
+        return response()->json(['success' => true, 'message' => 'User deleted successfully']);
     }
 }

@@ -3,49 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
-use App\Http\Requests\StoreScheduleRequest;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 
-class ScheduleController extends BaseController
+class ScheduleController extends Controller
 {
-    public function index(): JsonResponse
+    public function index()
     {
         $schedules = Schedule::with(['film', 'studio'])
             ->orderBy('date', 'asc')
             ->orderBy('time', 'asc')
             ->get();
 
-        return $this->success($schedules);
+        return response()->json(['success' => true, 'data' => $schedules]);
     }
 
-    public function store(StoreScheduleRequest $request): JsonResponse
+    public function store(Request $request)
     {
-        $validated = $request->validated();
-        $schedule = Schedule::create(array_merge($validated, [
-            'created_by' => auth()->id(),
-        ]));
+        $validated = $request->validate([
+            'film_id' => 'required|exists:films,id',
+            'studio_id' => 'required|exists:studios,id',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
+            'price_id' => 'required|exists:prices,id'
+        ]);
+        
+        $validated['created_by'] = 1; // Default user ID
+        $schedule = Schedule::create($validated);
 
-        return $this->success($schedule->load(['film', 'studio']), 'Jadwal berhasil ditambahkan', 201);
+        return response()->json(['success' => true, 'data' => $schedule->load(['film', 'studio']), 'message' => 'Schedule created successfully'], 201);
     }
 
-    public function show(Schedule $schedule): JsonResponse
+    public function show(Schedule $schedule)
     {
         $schedule->load(['film', 'studio']);
-        return $this->success($schedule);
+        return response()->json(['success' => true, 'data' => $schedule]);
     }
 
-    public function update(StoreScheduleRequest $request, Schedule $schedule): JsonResponse
+    public function update(Request $request, Schedule $schedule)
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'film_id' => 'required|exists:films,id',
+            'studio_id' => 'required|exists:studios,id',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
+            'price_id' => 'required|exists:prices,id'
+        ]);
+        
         $schedule->update($validated);
 
-        return $this->success($schedule->load(['film', 'studio']), 'Jadwal berhasil diupdate');
+        return response()->json(['success' => true, 'data' => $schedule->load(['film', 'studio']), 'message' => 'Schedule updated successfully']);
     }
 
-    public function destroy(Schedule $schedule): JsonResponse
+    public function destroy(Schedule $schedule)
     {
         $schedule->delete();
-        return $this->success(null, 'Jadwal berhasil dihapus');
+        return response()->json(['success' => true, 'message' => 'Schedule deleted successfully']);
     }
 }

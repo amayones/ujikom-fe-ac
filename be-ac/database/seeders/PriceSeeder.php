@@ -2,21 +2,60 @@
 
 namespace Database\Seeders;
 
-use App\Models\Price;
 use Illuminate\Database\Seeder;
+use App\Models\Price;
 
 class PriceSeeder extends Seeder
 {
     public function run(): void
     {
         $prices = [
-            ['type' => 'Regular', 'price' => 45000, 'created_by' => 1],
-            ['type' => 'Weekend', 'price' => 55000, 'created_by' => 1],
-            ['type' => 'VIP', 'price' => 75000, 'created_by' => 1],
+            // Regular Studio
+            [
+                'type' => 'Regular',
+                'price' => 45000,
+                'day_type' => 'weekday',
+                'description' => 'Harga regular hari biasa'
+            ],
+            [
+                'type' => 'Regular',
+                'price' => 55000,
+                'day_type' => 'weekend',
+                'description' => 'Harga regular akhir pekan'
+            ],
+            // Premium Studio
+            [
+                'type' => 'Premium',
+                'price' => 65000,
+                'day_type' => 'weekday',
+                'description' => 'Harga premium hari biasa'
+            ],
+            [
+                'type' => 'Premium',
+                'price' => 75000,
+                'day_type' => 'weekend',
+                'description' => 'Harga premium akhir pekan'
+            ],
+            // VIP Studio
+            [
+                'type' => 'VIP',
+                'price' => 85000,
+                'day_type' => 'weekday',
+                'description' => 'Harga VIP hari biasa'
+            ],
+            [
+                'type' => 'VIP',
+                'price' => 100000,
+                'day_type' => 'weekend',
+                'description' => 'Harga VIP akhir pekan'
+            ]
         ];
 
-        foreach ($prices as $price) {
-            Price::create($price);
+        foreach ($prices as $priceData) {
+            Price::firstOrCreate([
+                'type' => $priceData['type'],
+                'day_type' => $priceData['day_type']
+            ], $priceData);
         }
     }
 }

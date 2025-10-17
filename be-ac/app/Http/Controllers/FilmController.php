@@ -24,11 +24,13 @@ class FilmController extends Controller
             'description' => 'required|string',
             'genre' => 'required|string',
             'duration' => 'required|integer',
-            'rating' => 'required|string',
-            'poster_url' => 'nullable|url',
-            'price' => 'required|numeric'
+            'status' => 'required|string',
+            'poster' => 'nullable|string',
+            'director' => 'nullable|string',
+            'release_date' => 'nullable|date'
         ]);
         
+        $validated['created_by'] = 1; // Default user ID
         $film = Film::create($validated);
         
         return response()->json([
@@ -54,9 +56,10 @@ class FilmController extends Controller
             'description' => 'sometimes|string',
             'genre' => 'sometimes|string',
             'duration' => 'sometimes|integer',
-            'rating' => 'sometimes|string',
-            'poster_url' => 'nullable|url',
-            'price' => 'sometimes|numeric'
+            'status' => 'sometimes|string',
+            'poster' => 'nullable|string',
+            'director' => 'nullable|string',
+            'release_date' => 'nullable|date'
         ]);
         
         $film->update($validated);
