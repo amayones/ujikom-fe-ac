@@ -32,7 +32,7 @@ export default function ManageSeats() {
             await updateSeat(seat.id, { status: newStatus });
             setNotification(`Seat ${seat.id} status updated`);
             setTimeout(() => setNotification(''), 2000);
-        } catch (error) {
+        } catch {
             // Error handled by store
         }
     };

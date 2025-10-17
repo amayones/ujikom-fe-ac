@@ -46,7 +46,7 @@ export default function ManageSchedules() {
             }
             setShowModal(false);
             setTimeout(() => setNotification(''), 3000);
-        } catch (error) {
+        } catch {
             // Error handled by store
         }
     };

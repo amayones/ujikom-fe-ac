@@ -33,7 +33,7 @@ export default function ManagePrices() {
             setEditing(null);
             setNotification('Price updated successfully');
             setTimeout(() => setNotification(''), 3000);
-        } catch (error) {
+        } catch {
             // Error handled by store
         }
     };
