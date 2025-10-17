@@ -5,76 +5,77 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
-class AuthController extends BaseController
+class AuthController extends Controller
 {
     public function register(Request $request): JsonResponse
     {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8',
-                'password_confirmation' => 'required|same:password'
-            ]);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'password_confirmation' => 'required|same:password'
+        ]);
 
-            $user = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'role' => 'customer'
-            ]);
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'customer'
+        ]);
 
-            return $this->success($user, 'Registrasi berhasil', 201);
-        } catch (ValidationException $e) {
-            return $this->error('Validasi gagal', 422, $e->errors());
-        } catch (\Exception $e) {
-            return $this->error('Registrasi gagal: ' . $e->getMessage(), 500);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Registrasi berhasil',
+            'data' => $user
+        ], 201);
     }
 
     public function login(Request $request): JsonResponse
     {
-        try {
-            $validated = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required'
-            ]);
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-            if (!Auth::attempt($validated)) {
-                return $this->error('Email atau password salah', 401);
-            }
+        $user = User::where('email', $validated['email'])->first();
 
-            $user = Auth::user();
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            return $this->success([
-                'user' => $user,
-                'token' => $token,
-                'token_type' => 'Bearer'
-            ], 'Login berhasil');
-        } catch (ValidationException $e) {
-            return $this->error('Validasi gagal', 422, $e->errors());
-        } catch (\Exception $e) {
-            return $this->error('Login gagal: ' . $e->getMessage(), 500);
+        if (!$user || !Hash::check($validated['password'], $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email atau password salah'
+            ], 401);
         }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login berhasil',
+            'data' => [
+                'user' => $user,
+                'token' => $token
+            ]
+        ]);
     }
 
     public function logout(Request $request): JsonResponse
     {
-        try {
-            $request->user()->currentAccessToken()->delete();
-            return $this->success(null, 'Logout berhasil');
-        } catch (\Exception $e) {
-            return $this->error('Logout gagal: ' . $e->getMessage(), 500);
-        }
+        $request->user()->currentAccessToken()->delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout berhasil'
+        ]);
     }
 
     public function me(Request $request): JsonResponse
     {
-        return $this->success($request->user(), 'Data user berhasil diambil');
+        return response()->json([
+            'success' => true,
+            'message' => 'Data user berhasil diambil',
+            'data' => $request->user()
+        ]);
     }
 }
