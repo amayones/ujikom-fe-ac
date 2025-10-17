@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Search, Edit, Trash2, UserPlus } from 'lucide-react';
 import useCustomerStore from '../../store/customerStore';
 import CustomerForm from '../admin/CustomerForm';
+import ConfirmModal from '../../components/ConfirmModal';
+import Toast from '../../components/Toast';
 
 export default function ManageCustomers() {
     const { customers, loading, error, fetchCustomers, addCustomer, updateCustomer, deleteCustomer, clearError } = useCustomerStore();
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState(null);
-    const [notification, setNotification] = useState('');
+    const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
+    const [confirmModal, setConfirmModal] = useState({ show: false, customerId: null });
 
     useEffect(() => {
         fetchCustomers();
@@ -16,11 +19,8 @@ export default function ManageCustomers() {
 
     useEffect(() => {
         if (error) {
-            setNotification(error);
-            setTimeout(() => {
-                setNotification('');
-                clearError();
-            }, 3000);
+            setToast({ show: true, type: 'error', message: error });
+            clearError();
         }
     }, [error, clearError]);
 
@@ -43,27 +43,28 @@ export default function ManageCustomers() {
         try {
             if (editingCustomer) {
                 await updateCustomer(editingCustomer.id, formData);
-                setNotification('Customer updated successfully');
+                setToast({ show: true, type: 'success', message: 'Customer updated successfully' });
             } else {
                 await addCustomer(formData);
-                setNotification('Customer added successfully');
+                setToast({ show: true, type: 'success', message: 'Customer added successfully' });
             }
             setShowModal(false);
-            setTimeout(() => setNotification(''), 3000);
         } catch {
             // Error handled by store
         }
     };
 
-    const handleDelete = async (customerId) => {
-        if (confirm('Are you sure you want to delete this customer?')) {
-            try {
-                await deleteCustomer(customerId);
-                setNotification('Customer deleted successfully');
-                setTimeout(() => setNotification(''), 3000);
-            } catch (error) {
-                // Error handled by store
-            }
+    const handleDeleteClick = (customerId) => {
+        setConfirmModal({ show: true, customerId });
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await deleteCustomer(confirmModal.customerId);
+            setToast({ show: true, type: 'success', message: 'Customer deleted successfully' });
+            setConfirmModal({ show: false, customerId: null });
+        } catch {
+            // Error handled by store
         }
     };
 
@@ -81,12 +82,7 @@ export default function ManageCustomers() {
                     </button>
                 </div>
 
-                {/* Notification */}
-                {notification && (
-                    <div className="mb-4 p-3 bg-green-600 text-white rounded">
-                        {notification}
-                    </div>
-                )}
+
 
                 {/* Loading */}
                 {loading && (
@@ -147,7 +143,7 @@ export default function ManageCustomers() {
                                                         Edit
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDelete(customer.id)}
+                                                        onClick={() => handleDeleteClick(customer.id)}
                                                         className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
                                                     >
                                                         <Trash2 className="w-3 h-3" />
@@ -182,6 +178,23 @@ export default function ManageCustomers() {
                         loading={loading}
                     />
                 )}
+
+                {/* Confirm Modal */}
+                <ConfirmModal
+                    isOpen={confirmModal.show}
+                    title="Delete Customer"
+                    message="Are you sure you want to delete this customer? This action cannot be undone."
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setConfirmModal({ show: false, customerId: null })}
+                />
+
+                {/* Toast */}
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    isVisible={toast.show}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
             </div>
         </div>
     );

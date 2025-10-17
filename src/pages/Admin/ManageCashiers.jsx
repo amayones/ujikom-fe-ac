@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Search, Edit, Trash2, UserPlus } from 'lucide-react';
 import useCashierStore from '../../store/cashierStore';
 import CashierForm from '../admin/CashierForm';
+import ConfirmModal from '../../components/ConfirmModal';
+import Toast from '../../components/Toast';
 
 export default function ManageCashiers() {
     const { cashiers, loading, error, fetchCashiers, addCashier, updateCashier, deleteCashier, clearError } = useCashierStore();
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [editingCashier, setEditingCashier] = useState(null);
-    const [notification, setNotification] = useState('');
+    const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
+    const [confirmModal, setConfirmModal] = useState({ show: false, cashierId: null });
 
     useEffect(() => {
         fetchCashiers();
@@ -16,11 +19,8 @@ export default function ManageCashiers() {
 
     useEffect(() => {
         if (error) {
-            setNotification(error);
-            setTimeout(() => {
-                setNotification('');
-                clearError();
-            }, 3000);
+            setToast({ show: true, type: 'error', message: error });
+            clearError();
         }
     }, [error, clearError]);
 
@@ -43,27 +43,28 @@ export default function ManageCashiers() {
         try {
             if (editingCashier) {
                 await updateCashier(editingCashier.id, formData);
-                setNotification('Cashier updated successfully');
+                setToast({ show: true, type: 'success', message: 'Cashier updated successfully' });
             } else {
                 await addCashier(formData);
-                setNotification('Cashier added successfully');
+                setToast({ show: true, type: 'success', message: 'Cashier added successfully' });
             }
             setShowModal(false);
-            setTimeout(() => setNotification(''), 3000);
         } catch {
             // Error handled by store
         }
     };
 
-    const handleDelete = async (cashierId) => {
-        if (confirm('Are you sure you want to delete this cashier?')) {
-            try {
-                await deleteCashier(cashierId);
-                setNotification('Cashier deleted successfully');
-                setTimeout(() => setNotification(''), 3000);
-            } catch (error) {
-                // Error handled by store
-            }
+    const handleDeleteClick = (cashierId) => {
+        setConfirmModal({ show: true, cashierId });
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await deleteCashier(confirmModal.cashierId);
+            setToast({ show: true, type: 'success', message: 'Cashier deleted successfully' });
+            setConfirmModal({ show: false, cashierId: null });
+        } catch {
+            // Error handled by store
         }
     };
 
@@ -81,12 +82,7 @@ export default function ManageCashiers() {
                     </button>
                 </div>
 
-                {/* Notification */}
-                {notification && (
-                    <div className="mb-4 p-3 bg-green-600 text-white rounded">
-                        {notification}
-                    </div>
-                )}
+
 
                 {/* Loading */}
                 {loading && (
@@ -146,7 +142,7 @@ export default function ManageCashiers() {
                                                 Edit
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(cashier.id)}
+                                                onClick={() => handleDeleteClick(cashier.id)}
                                                 className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
                                             >
                                                 <Trash2 className="w-3 h-3" />
@@ -169,6 +165,23 @@ export default function ManageCashiers() {
                         loading={loading}
                     />
                 )}
+
+                {/* Confirm Modal */}
+                <ConfirmModal
+                    isOpen={confirmModal.show}
+                    title="Delete Cashier"
+                    message="Are you sure you want to delete this cashier? This action cannot be undone."
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setConfirmModal({ show: false, cashierId: null })}
+                />
+
+                {/* Toast */}
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    isVisible={toast.show}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
             </div>
         </div>
     );
