@@ -1,5 +1,5 @@
 import React from "react";
-import { Film, Calendar, ArrowRight, Zap, Shield, Heart } from "lucide-react";
+import { Film, Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Home() {
@@ -13,27 +13,7 @@ export default function Home() {
 
     return (
         <div className="relative bg-gray-900 text-white overflow-hidden">
-            {/* Animated Background - Safe positioning */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-black to-gray-900"></div>
-                {/* Floating particles */}
-                <div className="absolute inset-0 opacity-30">
-                    {[...Array(15)].map((_, i) => (
-                        <div
-                            key={i}
-                            className="absolute w-1 h-1 bg-red-500 rounded-full animate-pulse"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                animationDelay: `${Math.random() * 3}s`,
-                                animationDuration: `${2 + Math.random() * 2}s`
-                            }}
-                        />
-                    ))}
-                </div>
-                {/* Moving gradient */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent animate-pulse" />
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-black to-gray-900"></div>
             
             {/* Hero Section */}
             <section className="relative w-full h-screen flex items-center justify-center z-10">
@@ -53,45 +33,12 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Enhanced Features Section */}
-            <section className="relative w-full py-20 px-6 bg-gradient-to-b from-gray-900 to-gray-800 z-10">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16 animate-slide-up">
-                        <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-red-500 to-yellow-500 bg-clip-text text-transparent">
-                            Mengapa Memilih Absolute Cinema?
-                        </h2>
-                        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                            Pengalaman menonton yang tak terlupakan dengan teknologi terdepan
-                        </p>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {[
-                            { icon: <Film className="w-12 h-12 text-red-500" />, title: "4K Dolby Vision", desc: "Kualitas visual terbaik dengan teknologi HDR terdepan", color: "red" },
-                            { icon: <Zap className="w-12 h-12 text-yellow-400" />, title: "Dolby Atmos", desc: "Sistem audio surround 360° yang memukau", color: "yellow" },
-                            { icon: <Shield className="w-12 h-12 text-green-500" />, title: "Booking Aman", desc: "Sistem pembayaran terpercaya dan mudah", color: "green" },
-                            { icon: <Heart className="w-12 h-12 text-pink-500" />, title: "Kursi Premium", desc: "Kenyamanan maksimal dengan kursi recliner", color: "pink" },
-                        ].map((feature, i) => (
-                            <div 
-                                key={i} 
-                                className="group bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 text-center hover:scale-105 hover:bg-gray-700/50 transition-all duration-300 border border-gray-700/50 animate-fade-scale"
-                                style={{ animationDelay: `${i * 0.1}s` }}
-                            >
-                                <div className={`inline-flex p-4 rounded-2xl bg-${feature.color}-500/10 mb-6 group-hover:scale-110 transition-transform`}>
-                                    {feature.icon}
-                                </div>
-                                <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
-                                <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+
 
             {/* Now Showing - Enhanced */}
             <section className="relative w-full py-20 px-6 bg-gray-900 z-10">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16 animate-slide-up">
+                    <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
                             <Film className="w-10 h-10 text-red-500" /> 
                             <span className="bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
@@ -138,7 +85,7 @@ export default function Home() {
             {/* Coming Soon - Enhanced */}
             <section className="relative w-full py-20 px-6 bg-gradient-to-b from-gray-800 to-gray-900 z-10">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16 animate-slide-up">
+                    <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
                             <Calendar className="w-10 h-10 text-yellow-400" /> 
                             <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { QrCode, Download, Share2, Calendar, Clock, MapPin, Users } from 'lucide-react';
+import { QrCode, Calendar, Clock, MapPin, Users } from 'lucide-react';
 
 export default function Ticket() {
     const { id } = useParams();
@@ -14,22 +14,7 @@ export default function Ticket() {
         }
     }, [id, order, film, schedule, seats, totalPrice]);
 
-    const handleDownload = () => {
-        alert('Download tiket akan segera tersedia');
-    };
 
-    const handleShare = () => {
-        if (navigator.share) {
-            navigator.share({
-                title: `Tiket ${film?.judul}`,
-                text: `Saya akan menonton ${film?.judul} di Absolute Cinema`,
-                url: window.location.href
-            });
-        } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Link tiket disalin ke clipboard');
-        }
-    };
 
     if (!ticketData && !id) {
         return (
@@ -139,23 +124,7 @@ export default function Ticket() {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex gap-4 mt-6">
-                    <button
-                        onClick={handleDownload}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
-                    >
-                        <Download className="w-5 h-5" />
-                        Download Tiket
-                    </button>
-                    <button
-                        onClick={handleShare}
-                        className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
-                    >
-                        <Share2 className="w-5 h-5" />
-                        Share Tiket
-                    </button>
-                </div>
+
 
                 {/* Important Notes */}
                 <div className="bg-yellow-600 rounded-lg p-4 mt-6">
