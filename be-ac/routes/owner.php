@@ -2,37 +2,57 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('owner')->group(function () {
+// Owner routes (require auth:sanctum)
+Route::middleware('auth:sanctum')->group(function () {
+    
+    // Dashboard & Analytics
     Route::get('/dashboard', function () {
         return response()->json([
-            'revenue_today' => 2500000,
-            'revenue_month' => 45000000,
-            'total_bookings' => 1250,
-            'popular_films' => [
-                ['title' => 'Avengers', 'bookings' => 85],
-                ['title' => 'Spider-Man', 'bookings' => 72]
+            'success' => true,
+            'message' => 'Owner dashboard data',
+            'data' => [
+                'total_revenue' => 15000000,
+                'total_tickets' => 1250,
+                'total_movies' => 12,
+                'monthly_growth' => 15.5
             ]
         ]);
     });
     
-    Route::get('/finance', function () {
+    // Financial Reports
+    Route::get('/reports/financial', function () {
         return response()->json([
-            'daily_revenue' => [
-                ['date' => '2024-01-01', 'amount' => 1500000],
-                ['date' => '2024-01-02', 'amount' => 2200000]
-            ],
-            'expenses' => 5000000,
-            'profit' => 40000000
-        ]);
-    });
-    
-    Route::get('/reports', function () {
-        return response()->json([
-            'monthly_report' => ['jan' => 45000000, 'feb' => 52000000],
-            'film_performance' => [
-                ['film' => 'Avengers', 'revenue' => 15000000],
-                ['film' => 'Spider-Man', 'revenue' => 12000000]
+            'success' => true,
+            'message' => 'Financial reports',
+            'data' => [
+                'daily_revenue' => [
+                    ['date' => '2024-01-01', 'revenue' => 500000],
+                    ['date' => '2024-01-02', 'revenue' => 750000],
+                    ['date' => '2024-01-03', 'revenue' => 600000]
+                ],
+                'monthly_summary' => [
+                    'total_revenue' => 15000000,
+                    'total_expenses' => 8000000,
+                    'net_profit' => 7000000
+                ]
             ]
         ]);
     });
+    
+    // Performance Reports
+    Route::get('/reports/performance', function () {
+        return response()->json([
+            'success' => true,
+            'message' => 'Performance reports',
+            'data' => [
+                'top_movies' => [
+                    ['title' => 'Spider-Man', 'tickets_sold' => 450, 'revenue' => 2250000],
+                    ['title' => 'Batman', 'tickets_sold' => 380, 'revenue' => 1900000]
+                ],
+                'occupancy_rate' => 75.5,
+                'customer_satisfaction' => 4.2
+            ]
+        ]);
+    });
+    
 });

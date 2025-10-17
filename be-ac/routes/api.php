@@ -1,65 +1,55 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudioController;
 use App\Http\Controllers\PriceController;
-use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Health check
 Route::get('/', function () {
     return response()->json([
         'success' => true,
-        'message' => 'API is running',
+        'message' => 'Absolute Cinema API is running',
         'data' => [
-            'app' => config('app.name'),
+            'app' => 'Absolute Cinema',
             'version' => '1.0.0',
-            'environment' => config('app.env'),
             'timestamp' => now()->toISOString()
         ]
     ]);
 });
 
-// Auth routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/user', [AuthController::class, 'user']);
+// Include route files by role
+Route::prefix('auth')->group(base_path('routes/auth.php'));
+Route::prefix('admin')->group(base_path('routes/admin.php'));
+Route::prefix('owner')->group(base_path('routes/owner.php'));
 
-// Protected auth routes
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/me', [AuthController::class, 'me']);
-});
-
-// Public film routes
+// Public routes (no authentication required)
 Route::get('/films', [FilmController::class, 'index']);
 Route::get('/films/{film}', [FilmController::class, 'show']);
-
-// Public schedule routes
 Route::get('/schedules', [ScheduleController::class, 'index']);
 Route::get('/schedules/{schedule}', [ScheduleController::class, 'show']);
-
-// Public studio and price routes
 Route::get('/studios', [StudioController::class, 'index']);
 Route::get('/prices', [PriceController::class, 'index']);
-// Admin only routes
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-    // Films
-    Route::post('/films', [FilmController::class, 'store']);
-    Route::put('/films/{film}', [FilmController::class, 'update']);
-    Route::delete('/films/{film}', [FilmController::class, 'destroy']);
 
-    // Schedules
-    Route::post('/schedules', [ScheduleController::class, 'store']);
-    Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);
-    Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
-
-    // Users
-    Route::get('/users', [UserController::class, 'index']);
-    Route::post('/users', [UserController::class, 'store']);
-    Route::put('/users/{user}', [UserController::class, 'update']);
-    Route::delete('/users/{user}', [UserController::class, 'destroy']);
+// Customer routes (require auth:sanctum)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/bookings', function () {
+        return response()->json([
+            'success' => true,
+            'message' => 'User bookings',
+            'data' => [
+                ['id' => 1, 'movie' => 'Spider-Man', 'date' => '2024-01-15', 'seats' => 'A1,A2', 'total' => 100000],
+                ['id' => 2, 'movie' => 'Batman', 'date' => '2024-01-16', 'seats' => 'B5', 'total' => 55000]
+            ]
+        ]);
+    });
+    
+    Route::post('/bookings', function () {
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking created successfully',
+            'data' => ['id' => 3, 'status' => 'confirmed']
+        ]);
+    });
 });
