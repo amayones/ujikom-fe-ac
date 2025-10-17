@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Film, Calendar, User, Settings, BarChart3, CreditCard, Users, Clock, Armchair, Receipt, Printer, Scan } from 'lucide-react';
+import { Home, Film, Calendar, User, BarChart3, CreditCard, Users, Clock, Armchair, Receipt, Printer, Scan, LogOut } from 'lucide-react';
 
 export default function Navbar() {
     const location = useLocation();
@@ -15,52 +15,59 @@ export default function Navbar() {
     };
 
     const currentRole = getCurrentRole();
-    const isActive = (path) => currentPath === path || currentPath.startsWith(path + '/');
+    const isActive = (path) => {
+        // Exact match for home and dashboard routes
+        if (path === '/' || path === '/admin' || path === '/owner' || path === '/cashier') {
+            return currentPath === path;
+        }
+        // For other routes, check if current path starts with the link path
+        return currentPath === path || currentPath.startsWith(path + '/');
+    };
 
     const getNavConfig = () => {
         switch (currentRole) {
             case 'admin':
                 return {
-                    bgColor: 'bg-gradient-to-r from-green-800 to-green-900',
+                    bgColor: 'bg-gradient-to-r from-slate-800 via-slate-900 to-gray-900',
                     roleLabel: 'Admin Panel',
                     links: [
                         { to: '/admin', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
-                        { to: '/admin/movies', label: 'Kelola Film', icon: <Film className="w-4 h-4" /> },
-                        { to: '/admin/customers', label: 'Kelola Pelanggan', icon: <Users className="w-4 h-4" /> },
-                        { to: '/admin/schedules', label: 'Kelola Jadwal', icon: <Clock className="w-4 h-4" /> },
-                        { to: '/admin/prices', label: 'Kelola Harga', icon: <CreditCard className="w-4 h-4" /> },
-                        { to: '/admin/cashiers', label: 'Kelola Kasir', icon: <User className="w-4 h-4" /> },
-                        { to: '/admin/seats', label: 'Kelola Kursi', icon: <Armchair className="w-4 h-4" /> }
+                        { to: '/admin/movies', label: 'Film', icon: <Film className="w-4 h-4" /> },
+                        { to: '/admin/customers', label: 'Pelanggan', icon: <Users className="w-4 h-4" /> },
+                        { to: '/admin/schedules', label: 'Jadwal', icon: <Clock className="w-4 h-4" /> },
+                        { to: '/admin/prices', label: 'Harga', icon: <CreditCard className="w-4 h-4" /> },
+                        { to: '/admin/cashiers', label: 'Kasir', icon: <User className="w-4 h-4" /> },
+                        { to: '/admin/seats', label: 'Kursi', icon: <Armchair className="w-4 h-4" /> }
                     ]
                 };
             case 'owner':
                 return {
-                    bgColor: 'bg-gradient-to-r from-purple-800 to-purple-900',
-                    roleLabel: 'Owner Dashboard',
+                    bgColor: 'bg-gradient-to-r from-indigo-800 via-purple-900 to-slate-900',
+                    roleLabel: 'Owner Panel',
                     links: [
-                        { to: '/owner', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> }
+                        { to: '/owner', label: 'Laporan Keuangan', icon: <BarChart3 className="w-4 h-4" /> }
                     ]
                 };
             case 'cashier':
                 return {
-                    bgColor: 'bg-gradient-to-r from-yellow-700 to-yellow-800',
-                    roleLabel: 'Kasir',
+                    bgColor: 'bg-gradient-to-r from-orange-700 via-amber-800 to-yellow-900',
+                    roleLabel: 'Kasir Panel',
                     links: [
                         { to: '/cashier', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
-                        { to: '/cashier/offline-booking', label: 'Pesan Tiket Offline', icon: <Receipt className="w-4 h-4" /> },
+                        { to: '/cashier/offline-booking', label: 'Pesan Offline', icon: <Receipt className="w-4 h-4" /> },
                         { to: '/cashier/print-ticket', label: 'Cetak Tiket', icon: <Printer className="w-4 h-4" /> },
-                        { to: '/cashier/process-online', label: 'Proses Tiket Online', icon: <Scan className="w-4 h-4" /> }
+                        { to: '/cashier/process-online', label: 'Proses Online', icon: <Scan className="w-4 h-4" /> }
                     ]
                 };
             default: // customer
                 return {
-                    bgColor: 'bg-gradient-to-r from-red-800 to-red-900',
+                    bgColor: 'bg-gradient-to-r from-red-700 via-rose-800 to-pink-900',
                     roleLabel: 'Absolute Cinema',
                     links: [
                         { to: '/', label: 'Home', icon: <Home className="w-4 h-4" /> },
                         { to: '/now-playing', label: 'Sedang Tayang', icon: <Film className="w-4 h-4" /> },
                         { to: '/coming-soon', label: 'Segera Tayang', icon: <Calendar className="w-4 h-4" /> },
-                        { to: '/history', label: 'Riwayat Pemesanan', icon: <Receipt className="w-4 h-4" /> },
+                        { to: '/history', label: 'Riwayat', icon: <Receipt className="w-4 h-4" /> },
                         { to: '/profile', label: 'Profile', icon: <User className="w-4 h-4" /> }
                     ]
                 };
@@ -70,25 +77,28 @@ export default function Navbar() {
     const navConfig = getNavConfig();
 
     return (
-        <nav className={`${navConfig.bgColor} shadow-xl border-b border-gray-700`}>
-            <div className="max-w-7xl mx-auto px-4">
-                <div className="flex justify-between items-center h-16">
+        <nav className={`${navConfig.bgColor} shadow-xl border-b border-white/10 sticky top-0 z-50`}>
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="flex items-center justify-between h-16">
                     {/* Logo */}
-                    <Link to={currentRole === 'customer' ? '/' : `/${currentRole}`} className="flex items-center space-x-3 group">
-                        <div className="text-white text-2xl font-bold group-hover:scale-110 transition-transform">🎬</div>
-                        <span className="text-white text-xl font-bold">{navConfig.roleLabel}</span>
+                    <Link 
+                        to={currentRole === 'customer' ? '/' : `/${currentRole}`} 
+                        className="flex items-center space-x-3 group hover:scale-105 transition-all duration-300"
+                    >
+                        <Film className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                        <span className="text-white text-xl font-bold tracking-wide">{navConfig.roleLabel}</span>
                     </Link>
 
-                    {/* Navigation Links */}
-                    <div className="hidden md:flex items-center space-x-1">
+                    {/* Navigation Links - Centered */}
+                    <div className="hidden lg:flex items-center space-x-1 absolute left-1/2 transform -translate-x-1/2">
                         {navConfig.links.map((link) => (
                             <Link 
                                 key={link.to}
                                 to={link.to} 
                                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                                     isActive(link.to) 
-                                        ? 'bg-white/20 text-white shadow-lg' 
-                                        : 'text-gray-200 hover:text-white hover:bg-white/10'
+                                        ? 'bg-white text-gray-900' 
+                                        : 'text-white/90 hover:text-white hover:bg-white/10'
                                 }`}
                             >
                                 {link.icon}
@@ -99,21 +109,27 @@ export default function Navbar() {
 
                     {/* Auth Section */}
                     <div className="flex items-center space-x-3">
-                        {currentRole === 'customer' && (
+                        {currentRole === 'customer' ? (
                             <Link 
                                 to="/login" 
-                                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-white/20"
+                                className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200"
                             >
                                 Login
                             </Link>
+                        ) : (
+                            <button 
+                                onClick={() => window.location.href = '/'}
+                                className="flex items-center space-x-2 text-white/90 hover:text-white hover:bg-white/10 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                <span>Logout</span>
+                            </button>
                         )}
-                        <div className="flex items-center space-x-2 bg-white/10 px-3 py-2 rounded-lg">
-                            <Settings className="w-4 h-4 text-white" />
-                            <span className="text-white text-sm font-medium capitalize">{currentRole}</span>
-                        </div>
                     </div>
                 </div>
             </div>
+            
+
         </nav>
     );
 }
