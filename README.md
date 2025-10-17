@@ -6,10 +6,8 @@ React-based web application for cinema ticket booking with role-based interfaces
 
 - **Multi-role Dashboards** (Customer, Admin, Owner, Cashier)
 - **Film Browsing & Booking** with seat selection
-- **Real-time Seat Availability**
 - **Payment Integration** simulation
 - **Responsive Design** with Tailwind CSS
-- **Secure Authentication** with JWT tokens
 
 ## Quick Start
 
@@ -91,32 +89,13 @@ src/
 - Handle walk-in customers
 - Manage pending online orders
 
-## API Integration
-
-### Service Architecture
-All API calls are centralized in `src/services/index.js`:
-
-```javascript
-import { authService, filmService, adminService } from './services';
-
-// Usage examples
-const films = await filmService.getFilms('play_now');
-const user = await authService.login(email, password);
-const report = await ownerService.getFinancialReport(startDate, endDate);
-```
+## Component Structure
 
 ### Authentication Flow
-1. User logs in via `authService.login()`
-2. JWT token stored in localStorage
-3. Token automatically attached to API requests
+1. Role-based login simulation
+2. Local state management
+3. Protected routes check authentication
 4. Role-based redirect after login
-5. Protected routes check authentication
-
-### Error Handling
-- Global error interceptor in `api.js`
-- Automatic token refresh on 401 errors
-- Rate limiting notifications
-- User-friendly error messages
 
 ## Routing & Navigation
 
@@ -177,19 +156,10 @@ const { user, login, logout, isAuthenticated } = useAuth();
 
 ## Deployment
 
-### AWS Amplify
-Automated deployment on push to main branch:
-```yaml
-- Builds React application
-- Deploys to CDN
-- Configures custom domain
-- Handles redirects for SPA
-```
-
-### Environment Configuration
-```javascript
-// API base URL automatically configured
-const API_BASE_URL = 'https://be-ujikom.amayones.my.id/api';
+### Build for Production
+```bash
+npm run build
+npm run preview
 ```
 
 ## Development

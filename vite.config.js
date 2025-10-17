@@ -4,10 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/",
-  define: {
-    'import.meta.env.VITE_API_URL': JSON.stringify('https://be-ujikom.amayones.my.id/api')
-  },
   plugins: [
     react(),
     tailwindcss()
@@ -18,8 +14,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          utils: ['axios']
+          router: ['react-router-dom']
         }
       }
     }
