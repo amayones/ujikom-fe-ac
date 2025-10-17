@@ -1,251 +1,165 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { filmService } from '../../services';
-import { CreditCard, Wallet, Building2, CheckCircle } from 'lucide-react';
+import { CreditCard, Smartphone, Banknote, Building } from 'lucide-react';
 
 export default function Payment() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { film, schedule, seats, totalPrice } = location.state || {};
+    const [selectedMethod, setSelectedMethod] = useState('');
     
-    const [paymentMethod, setPaymentMethod] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        cardNumber: '',
-        expiryDate: '',
-        cvv: '',
-        cardName: ''
-    });
+    // Mock booking data
+    const bookingData = {
+        movie: 'Spider-Man: No Way Home',
+        date: '2024-01-15',
+        time: '19:00',
+        studio: 'Studio 1',
+        seats: ['A1', 'A2'],
+        price: 50000,
+        total: 100000
+    };
 
     const paymentMethods = [
-        { id: 'credit_card', name: 'Credit Card', icon: CreditCard, color: 'blue' },
-        { id: 'debit_card', name: 'Debit Card', icon: CreditCard, color: 'green' },
-        { id: 'e_wallet', name: 'E-Wallet (OVO, GoPay, DANA)', icon: Wallet, color: 'purple' },
-        { id: 'bank_transfer', name: 'Bank Transfer', icon: Building2, color: 'orange' }
+        { id: 'card', name: 'Credit/Debit Card', icon: CreditCard, description: 'Visa, Mastercard, etc.' },
+        { id: 'qris', name: 'QRIS', icon: Smartphone, description: 'Scan QR code to pay' },
+        { id: 'transfer', name: 'Bank Transfer', icon: Building, description: 'Transfer to our account' },
+        { id: 'cash', name: 'Cash (At Counter)', icon: Banknote, description: 'Pay at cinema counter' }
     ];
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handlePayment = async () => {
-        if (!paymentMethod) {
-            alert('Pilih metode pembayaran');
+    const handlePayment = () => {
+        if (!selectedMethod) {
+            alert('Please select a payment method');
             return;
         }
-
-        setLoading(true);
-        try {
-            const bookingData = {
-                schedule_id: schedule.id,
-                seat_ids: seats.map(seat => seat.id),
-                payment_method: paymentMethod,
-                total_amount: totalPrice
-            };
-
-            const response = await filmService.bookTicket(bookingData);
-            
-            // Redirect to ticket page
-            navigate(`/ticket/${response.order.id}`, {
-                state: { 
-                    order: response.order,
-                    film,
-                    schedule,
-                    seats,
-                    totalPrice
-                }
-            });
-        } catch (error) {
-            console.error('Payment failed:', error);
-            alert('Pembayaran gagal. Silakan coba lagi.');
-        } finally {
-            setLoading(false);
-        }
+        
+        alert(`Payment processed with ${selectedMethod}! Redirecting to ticket...`);
     };
 
-    if (!film || !schedule || !seats) {
-        return (
-            <div className="bg-gray-900 min-h-screen text-white flex items-center justify-center">
-                <div className="text-center">
-                    <p className="text-red-500 mb-4">Data pemesanan tidak ditemukan</p>
-                    <button 
-                        onClick={() => navigate('/')}
-                        className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
-                    >
-                        Kembali ke Home
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="bg-gray-900 min-h-screen text-white p-6">
+        <div className="min-h-screen bg-gray-900 text-white p-6">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8 text-center">Pembayaran</h1>
-
-                <div className="grid md:grid-cols-2 gap-8">
-                    {/* Order Summary */}
+                <h1 className="text-3xl font-bold mb-8">Payment</h1>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Booking Summary */}
                     <div className="bg-gray-800 rounded-lg p-6">
-                        <h2 className="text-xl font-bold mb-4">Ringkasan Pesanan</h2>
+                        <h2 className="text-xl font-semibold mb-4">Booking Summary</h2>
                         
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-4">
-                                <div className="w-16 h-20 bg-gray-700 rounded flex items-center justify-center">
-                                    {film.poster ? (
-                                        <img src={film.poster} alt={film.judul} className="w-full h-full object-cover rounded" />
-                                    ) : (
-                                        '🎬'
-                                    )}
-                                </div>
-                                <div>
-                                    <h3 className="font-bold">{film.judul}</h3>
-                                    <p className="text-gray-400">{film.genre}</p>
-                                </div>
+                        <div className="space-y-3">
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Movie:</span>
+                                <span>{bookingData.movie}</span>
                             </div>
-
-                            <div className="border-t border-gray-700 pt-4">
-                                <div className="flex justify-between mb-2">
-                                    <span>Tanggal & Waktu:</span>
-                                    <span>{schedule.tanggal} - {schedule.jam}</span>
-                                </div>
-                                <div className="flex justify-between mb-2">
-                                    <span>Studio:</span>
-                                    <span>{schedule.studio?.nama || 'Studio 1'}</span>
-                                </div>
-                                <div className="flex justify-between mb-2">
-                                    <span>Kursi:</span>
-                                    <span>{seats.map(s => s.nomor_kursi).join(', ')}</span>
-                                </div>
-                                <div className="flex justify-between mb-2">
-                                    <span>Jumlah Tiket:</span>
-                                    <span>{seats.length} tiket</span>
-                                </div>
-                                <div className="flex justify-between mb-2">
-                                    <span>Harga per tiket:</span>
-                                    <span>Rp {(schedule.price?.harga || 50000).toLocaleString()}</span>
-                                </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Date & Time:</span>
+                                <span>{bookingData.date} at {bookingData.time}</span>
                             </div>
-
-                            <div className="border-t border-gray-700 pt-4">
-                                <div className="flex justify-between text-xl font-bold text-green-400">
-                                    <span>Total:</span>
-                                    <span>Rp {totalPrice.toLocaleString()}</span>
-                                </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Studio:</span>
+                                <span>{bookingData.studio}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Seats:</span>
+                                <span>{bookingData.seats.join(', ')}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Price per ticket:</span>
+                                <span>Rp {bookingData.price.toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Quantity:</span>
+                                <span>{bookingData.seats.length} tickets</span>
+                            </div>
+                            
+                            <hr className="border-gray-600" />
+                            
+                            <div className="flex justify-between text-xl font-bold">
+                                <span>Total:</span>
+                                <span className="text-red-500">Rp {bookingData.total.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Payment Methods */}
                     <div className="bg-gray-800 rounded-lg p-6">
-                        <h2 className="text-xl font-bold mb-4">Metode Pembayaran</h2>
+                        <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
                         
-                        <div className="space-y-3 mb-6">
-                            {paymentMethods.map(method => {
-                                const IconComponent = method.icon;
-                                return (
-                                    <div
-                                        key={method.id}
-                                        onClick={() => setPaymentMethod(method.id)}
-                                        className={`p-4 rounded-lg border-2 cursor-pointer transition ${
-                                            paymentMethod === method.id
-                                                ? 'border-red-500 bg-red-500/20'
-                                                : 'border-gray-600 hover:border-gray-500'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <IconComponent className={`w-6 h-6 text-${method.color}-400`} />
-                                            <span className="font-semibold">{method.name}</span>
-                                            {paymentMethod === method.id && (
-                                                <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />
-                                            )}
+                        <div className="space-y-4">
+                            {paymentMethods.map((method) => (
+                                <div
+                                    key={method.id}
+                                    onClick={() => setSelectedMethod(method.id)}
+                                    className={`p-4 rounded-lg border cursor-pointer transition ${
+                                        selectedMethod === method.id
+                                            ? 'border-red-500 bg-red-900/20'
+                                            : 'border-gray-600 hover:border-gray-500'
+                                    }`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <method.icon className="w-6 h-6 text-red-500" />
+                                        <div>
+                                            <h3 className="font-semibold">{method.name}</h3>
+                                            <p className="text-gray-400 text-sm">{method.description}</p>
                                         </div>
                                     </div>
-                                );
-                            })}\n                        </div>
-
-                        {/* Payment Form */}
-                        {(paymentMethod === 'credit_card' || paymentMethod === 'debit_card') && (
-                            <div className="space-y-4 mb-6">
-                                <div>
-                                    <label className="block text-sm font-medium mb-2">Nomor Kartu</label>
-                                    <input
-                                        type="text"
-                                        name="cardNumber"
-                                        value={formData.cardNumber}
-                                        onChange={handleInputChange}
-                                        placeholder="1234 5678 9012 3456"
-                                        className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2">Tanggal Kadaluarsa</label>
+                            ))}
+                        </div>
+
+                        {/* Payment Details */}
+                        {selectedMethod && (
+                            <div className="mt-6 p-4 bg-gray-700 rounded-lg">
+                                {selectedMethod === 'card' && (
+                                    <div className="space-y-4">
                                         <input
                                             type="text"
-                                            name="expiryDate"
-                                            value={formData.expiryDate}
-                                            onChange={handleInputChange}
-                                            placeholder="MM/YY"
-                                            className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            placeholder="Card Number"
+                                            className="w-full bg-gray-600 text-white px-4 py-2 rounded"
                                         />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <input
+                                                type="text"
+                                                placeholder="MM/YY"
+                                                className="bg-gray-600 text-white px-4 py-2 rounded"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="CVV"
+                                                className="bg-gray-600 text-white px-4 py-2 rounded"
+                                            />
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2">CVV</label>
-                                        <input
-                                            type="text"
-                                            name="cvv"
-                                            value={formData.cvv}
-                                            onChange={handleInputChange}
-                                            placeholder="123"
-                                            className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                                        />
+                                )}
+                                
+                                {selectedMethod === 'qris' && (
+                                    <div className="text-center">
+                                        <div className="w-48 h-48 bg-white mx-auto mb-4 flex items-center justify-center">
+                                            <span className="text-black">QR Code Here</span>
+                                        </div>
+                                        <p className="text-gray-400">Scan this QR code with your mobile banking app</p>
                                     </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-2">Nama di Kartu</label>
-                                    <input
-                                        type="text"
-                                        name="cardName"
-                                        value={formData.cardName}
-                                        onChange={handleInputChange}
-                                        placeholder="John Doe"
-                                        className="w-full p-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        {paymentMethod === 'e_wallet' && (
-                            <div className="bg-gray-700 p-4 rounded-lg mb-6">
-                                <p className="text-sm text-gray-300">
-                                    Anda akan diarahkan ke aplikasi e-wallet untuk menyelesaikan pembayaran.
-                                </p>
-                            </div>
-                        )}
-
-                        {paymentMethod === 'bank_transfer' && (
-                            <div className="bg-gray-700 p-4 rounded-lg mb-6">
-                                <p className="text-sm text-gray-300 mb-2">
-                                    Transfer ke rekening berikut:
-                                </p>
-                                <p className="font-mono text-sm">
-                                    Bank BCA: 1234567890<br />
-                                    A.n. Absolute Cinema
-                                </p>
+                                )}
+                                
+                                {selectedMethod === 'transfer' && (
+                                    <div className="space-y-2">
+                                        <p><strong>Bank:</strong> Bank Central Asia (BCA)</p>
+                                        <p><strong>Account Number:</strong> 1234567890</p>
+                                        <p><strong>Account Name:</strong> Absolute Cinema</p>
+                                        <p className="text-yellow-400 text-sm">Please transfer the exact amount and keep the receipt</p>
+                                    </div>
+                                )}
+                                
+                                {selectedMethod === 'cash' && (
+                                    <div className="text-center">
+                                        <p className="text-yellow-400">Please pay at the cinema counter before the show time.</p>
+                                        <p className="text-gray-400 text-sm mt-2">Show this booking confirmation to the cashier.</p>
+                                    </div>
+                                )}
                             </div>
                         )}
 
                         <button
                             onClick={handlePayment}
-                            disabled={!paymentMethod || loading}
-                            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white py-3 rounded-lg font-bold transition"
+                            disabled={!selectedMethod}
+                            className="w-full mt-6 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold"
                         >
-                            {loading ? 'Memproses...' : `Bayar Rp ${totalPrice.toLocaleString()}`}
+                            {selectedMethod === 'cash' ? 'Confirm Booking' : 'Process Payment'}
                         </button>
                     </div>
                 </div>

@@ -27,20 +27,20 @@ export default function Navbar() {
                             Home
                         </Link>
                         <Link 
-                            to="/movies" 
+                            to="/now-playing" 
                             className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${
-                                isActive('/movies') ? 'text-white bg-gray-900' : ''
+                                isActive('/now-playing') ? 'text-white bg-gray-900' : ''
                             }`}
                         >
-                            Movies
+                            Now Playing
                         </Link>
                         <Link 
-                            to="/schedules" 
+                            to="/coming-soon" 
                             className={`text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${
-                                isActive('/schedules') ? 'text-white bg-gray-900' : ''
+                                isActive('/coming-soon') ? 'text-white bg-gray-900' : ''
                             }`}
                         >
-                            Schedules
+                            Coming Soon
                         </Link>
                     </div>
 

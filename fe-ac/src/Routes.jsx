@@ -18,19 +18,19 @@ import Register from "./pages/Auth/Register";
 
 // Admin Pages
 import AdminDashboard from "./pages/Admin/Dashboard";
-import ManageMovie from "./pages/Admin/ManageMovie";
-import ManageSchedule from "./pages/Admin/ManageSchedule";
-import ManageUser from "./pages/Admin/ManageUser";
+import ManageMovies from "./pages/Admin/ManageMovies";
+import ManageCustomers from "./pages/Admin/ManageCustomers";
+import ManageSchedules from "./pages/Admin/ManageSchedules";
+import ManagePrices from "./pages/Admin/ManagePrices";
+import ManageCashiers from "./pages/Admin/ManageCashiers";
+import ManageSeats from "./pages/Admin/ManageSeats";
 
 // Owner Pages
 import OwnerDashboard from "./pages/Owner/Dashboard";
-import Finance from "./pages/Owner/Finance";
-import Report from "./pages/Owner/Report";
 
 // Cashier Pages
 import CashierDashboard from "./pages/Cashier/Dashboard";
-import Transaction from "./pages/Cashier/Transaction";
-import ScanTicket from "./pages/Cashier/ScanTicket";
+import OfflineBooking from "./pages/Cashier/OfflineBooking";
 
 // Other
 import NotFound from "./pages/NotFound";
@@ -55,19 +55,19 @@ export default function AppRoutes() {
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/movies" element={<ManageMovie />} />
-            <Route path="/admin/schedules" element={<ManageSchedule />} />
-            <Route path="/admin/users" element={<ManageUser />} />
+            <Route path="/admin/movies" element={<ManageMovies />} />
+            <Route path="/admin/customers" element={<ManageCustomers />} />
+            <Route path="/admin/schedules" element={<ManageSchedules />} />
+            <Route path="/admin/prices" element={<ManagePrices />} />
+            <Route path="/admin/cashiers" element={<ManageCashiers />} />
+            <Route path="/admin/seats" element={<ManageSeats />} />
             
             {/* Owner Routes */}
             <Route path="/owner/dashboard" element={<OwnerDashboard />} />
-            <Route path="/owner/finance" element={<Finance />} />
-            <Route path="/owner/report" element={<Report />} />
             
             {/* Cashier Routes */}
             <Route path="/cashier/dashboard" element={<CashierDashboard />} />
-            <Route path="/cashier/transactions" element={<Transaction />} />
-            <Route path="/cashier/scan-ticket" element={<ScanTicket />} />
+            <Route path="/cashier/offline-booking" element={<OfflineBooking />} />
             
             <Route path="*" element={<NotFound />} />
         </Routes>

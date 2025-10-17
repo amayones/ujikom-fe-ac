@@ -1,11 +1,15 @@
 import React from "react";
 import { Film, Calendar, ArrowRight, Zap, Shield, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
-import { mockMovies } from "../../data/mockData";
 
 export default function Home() {
-    const nowPlayingFilms = mockMovies.filter(movie => movie.status === 'now_playing');
-    const comingSoonFilms = mockMovies.filter(movie => movie.status === 'coming_soon');
+    const movies = [
+        { id: 1, title: "Spider-Man: No Way Home", genre: "Action, Adventure", duration: "148 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Spider-Man", status: "now_playing" },
+        { id: 2, title: "The Batman", genre: "Action, Crime", duration: "176 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Batman", status: "now_playing" },
+        { id: 3, title: "Doctor Strange 2", genre: "Action, Fantasy", duration: "126 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Dr+Strange", status: "coming_soon" }
+    ];
+    const nowPlayingFilms = movies.filter(movie => movie.status === 'now_playing');
+    const comingSoonFilms = movies.filter(movie => movie.status === 'coming_soon');
 
     return (
         <div className="relative bg-gray-900 text-white min-h-screen overflow-hidden">
