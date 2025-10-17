@@ -1,33 +1,31 @@
-import React, { useEffect } from "react";
-import { Film, Ticket, Popcorn, Star, Calendar, ArrowRight, Zap, Shield, Heart } from "lucide-react";
+import React from "react";
+import { Film, Calendar, ArrowRight, Zap, Shield, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
-import CinemaBackground from "../../components/CinemaBackground";
-import HeroSection from "../../components/HeroSection";
-import MovieCard from "../../components/MovieCard";
-import { useFilmsStore } from "../../stores/index.js";
+import { mockMovies } from "../../data/mockData";
 
 export default function Home() {
-    const { nowPlaying: nowPlayingFilms, comingSoon: comingSoonFilms, loading, fetchHomeFilms } = useFilmsStore();
-
-    useEffect(() => {
-        loadHomeFilms();
-    }, []);
-
-    const loadHomeFilms = async () => {
-        try {
-            await fetchHomeFilms();
-        } catch (error) {
-            console.error('Failed to fetch films:', error);
-        }
-    };
+    const nowPlayingFilms = mockMovies.filter(movie => movie.status === 'now_playing');
+    const comingSoonFilms = mockMovies.filter(movie => movie.status === 'coming_soon');
 
     return (
         <div className="relative bg-gray-900 text-white min-h-screen overflow-hidden">
-            {/* Animated Background */}
-            <CinemaBackground />
-            
             {/* Hero Section */}
-            <HeroSection />
+            <section className="relative w-full h-screen flex items-center justify-center bg-gradient-to-br from-red-900 via-black to-gray-900">
+                <div className="text-center z-10 px-6">
+                    <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-red-500 to-yellow-500 bg-clip-text text-transparent">
+                        Absolute Cinema
+                    </h1>
+                    <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                        Rasakan pengalaman menonton yang tak terlupakan dengan teknologi terdepan dan kenyamanan maksimal
+                    </p>
+                    <Link
+                        to="/now-playing"
+                        className="inline-flex items-center gap-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 transform hover:scale-105"
+                    >
+                        Jelajahi Film <ArrowRight className="w-5 h-5" />
+                    </Link>
+                </div>
+            </section>
 
             {/* Enhanced Features Section */}
             <section className="relative w-full py-20 px-6 bg-gradient-to-b from-gray-900 to-gray-800">
@@ -78,31 +76,32 @@ export default function Home() {
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                        {loading ? (
-                            Array.from({ length: 4 }).map((_, index) => (
-                                <div key={index} className="bg-gray-800 rounded-lg h-80 animate-pulse" />
-                            ))
-                        ) : nowPlayingFilms.length > 0 ? (
-                            nowPlayingFilms.map((film, index) => (
-                                <div 
-                                    key={film.id} 
-                                    className="animate-fade-scale"
-                                    style={{ animationDelay: `${index * 0.1}s` }}
-                                >
-                                    <MovieCard film={film} />
+                        {nowPlayingFilms.map((movie, index) => (
+                            <div key={movie.id} className="bg-gray-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-transform">
+                                <img 
+                                    src={movie.poster} 
+                                    alt={movie.title}
+                                    className="w-full h-64 object-cover"
+                                />
+                                <div className="p-4">
+                                    <h3 className="text-xl font-semibold text-white mb-2">{movie.title}</h3>
+                                    <p className="text-gray-400 mb-2">{movie.genre}</p>
+                                    <p className="text-gray-400 mb-4">{movie.duration}</p>
+                                    <Link 
+                                        to={`/movies/${movie.id}`}
+                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                                    >
+                                        Lihat Detail
+                                    </Link>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="col-span-4 text-center text-gray-400 py-8">
-                                Tidak ada film yang sedang tayang
                             </div>
-                        )}
+                        ))}
                     </div>
                     
                     <div className="text-center">
                         <Link
-                            to="/play-now"
-                            className="inline-flex items-center gap-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-2xl transition-all duration-300 transform hover:scale-105"
+                            to="/now-playing"
+                            className="inline-flex items-center gap-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 transform hover:scale-105"
                         >
                             Lihat Semua Film <ArrowRight className="w-5 h-5" />
                         </Link>
@@ -124,25 +123,23 @@ export default function Home() {
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                        {loading ? (
-                            Array.from({ length: 3 }).map((_, index) => (
-                                <div key={index} className="bg-gray-800 rounded-lg h-80 animate-pulse" />
-                            ))
-                        ) : comingSoonFilms.length > 0 ? (
-                            comingSoonFilms.map((film, index) => (
-                                <div 
-                                    key={film.id} 
-                                    className="animate-fade-scale"
-                                    style={{ animationDelay: `${index * 0.1}s` }}
-                                >
-                                    <MovieCard film={film} isComingSoon={true} />
+                        {comingSoonFilms.map((movie, index) => (
+                            <div key={movie.id} className="bg-gray-800 rounded-lg overflow-hidden">
+                                <img 
+                                    src={movie.poster} 
+                                    alt={movie.title}
+                                    className="w-full h-64 object-cover"
+                                />
+                                <div className="p-4">
+                                    <h3 className="text-xl font-semibold text-white mb-2">{movie.title}</h3>
+                                    <p className="text-gray-400 mb-2">{movie.genre}</p>
+                                    <p className="text-gray-400">{movie.duration}</p>
+                                    <span className="inline-block mt-2 px-3 py-1 bg-yellow-600 text-white text-sm rounded">
+                                        Coming Soon
+                                    </span>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="col-span-3 text-center text-gray-400 py-8">
-                                Tidak ada film yang akan datang
                             </div>
-                        )}
+                        ))}
                     </div>
                     
                     <div className="text-center">
