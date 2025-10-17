@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import api from '../api.js';
 
-const useSeatStore = create((set, get) => ({
+const useSeatStore = create((set) => ({
   seats: [],
   loading: false,
   error: null,

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import api from '../api.js';
 
-const useDashboardStore = create((set, get) => ({
+const useDashboardStore = create((set) => ({
   stats: {
     totalMovies: 0,
     totalCustomers: 0,

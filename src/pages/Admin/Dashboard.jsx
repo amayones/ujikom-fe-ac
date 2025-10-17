@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import useDashboardStore from '../../store/dashboardStore';
 
 export default function AdminDashboard() {
-    const { stats, recentMovies, recentCustomers, upcomingSchedules, loading, error, fetchDashboardData, clearError } = useDashboardStore();
+    const { stats, recentMovies, recentCustomers, upcomingSchedules, loading, error, fetchDashboardData } = useDashboardStore();
 
     useEffect(() => {
         fetchDashboardData();
-    }, []);
+    }, [fetchDashboardData]);
 
     const statsCards = [
         { 
@@ -104,7 +104,7 @@ export default function AdminDashboard() {
                             <h3 className="text-xl font-semibold">Recent Movies</h3>
                         </div>
                         <div className="space-y-4">
-                            {recentMovies.slice(0, 4).map((movie, index) => (
+                            {recentMovies.slice(0, 4).map((movie) => (
                                 <div key={movie.id} className="flex items-center gap-3 p-3 bg-gray-700 rounded-lg">
                                     <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                                         <Film className="w-6 h-6 text-white" />
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
                             <h3 className="text-xl font-semibold">New Customers</h3>
                         </div>
                         <div className="space-y-4">
-                            {recentCustomers.slice(0, 4).map((customer, index) => (
+                            {recentCustomers.slice(0, 4).map((customer) => (
                                 <div key={customer.id} className="flex items-center gap-3 p-3 bg-gray-700 rounded-lg">
                                     <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center">
                                         <span className="text-white font-semibold text-sm">
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
                             <h3 className="text-xl font-semibold">Today's Schedules</h3>
                         </div>
                         <div className="space-y-4">
-                            {upcomingSchedules.slice(0, 4).map((schedule, index) => (
+                            {upcomingSchedules.slice(0, 4).map((schedule) => (
                                 <div key={schedule.id} className="flex items-center gap-3 p-3 bg-gray-700 rounded-lg">
                                     <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
                                         <Clock className="w-5 h-5 text-white" />

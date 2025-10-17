@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import api from '../api.js';
 
-const useMovieStore = create((set, get) => ({
+const useMovieStore = create((set) => ({
   movies: [],
   loading: false,
   error: null,

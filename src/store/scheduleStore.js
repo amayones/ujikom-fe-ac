@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import api from '../api.js';
 
-const useScheduleStore = create((set, get) => ({
+const useScheduleStore = create((set) => ({
   schedules: [],
   films: [],
   studios: [],

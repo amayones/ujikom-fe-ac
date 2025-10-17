@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import api from '../api.js';
 
-const usePriceStore = create((set, get) => ({
+const usePriceStore = create((set) => ({
   prices: [],
   loading: false,
   error: null,
