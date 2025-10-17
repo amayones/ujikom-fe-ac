@@ -8,14 +8,20 @@ export default function ProcessOnline() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex items-center gap-3 mb-8">
-                    <Scan className="w-8 h-8 text-yellow-500" />
-                    <h1 className="text-3xl font-bold">Proses Tiket Online</h1>
-                </div>
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-gray-900">
+            <div className="container mx-auto px-6 py-12">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex items-center gap-4 mb-10">
+                        <div className="p-3 bg-amber-500/20 rounded-xl">
+                            <Scan className="w-8 h-8 text-amber-600" />
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Proses Tiket Online</h1>
+                            <p className="text-gray-600 mt-1">Konfirmasi dan validasi pesanan online</p>
+                        </div>
+                    </div>
 
-                <div className="bg-gray-800 rounded-lg p-6">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-amber-200/50 shadow-2xl">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-gray-700">
@@ -59,6 +65,7 @@ export default function ProcessOnline() {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 }

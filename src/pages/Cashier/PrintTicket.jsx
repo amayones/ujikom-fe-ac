@@ -8,24 +8,31 @@ export default function PrintTicket() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex items-center gap-3 mb-8">
-                    <Printer className="w-8 h-8 text-yellow-500" />
-                    <h1 className="text-3xl font-bold">Cetak Tiket</h1>
-                </div>
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-gray-900">
+            <div className="container mx-auto px-6 py-12">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex items-center gap-4 mb-10">
+                        <div className="p-3 bg-amber-500/20 rounded-xl">
+                            <Printer className="w-8 h-8 text-amber-600" />
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Cetak Tiket</h1>
+                            <p className="text-gray-600 mt-1">Kelola dan cetak tiket pelanggan</p>
+                        </div>
+                    </div>
 
-                <div className="bg-gray-800 rounded-lg p-6">
-                    <div className="flex gap-4 mb-6">
-                        <div className="flex-1">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-amber-200/50 shadow-2xl">
+                    <div className="flex gap-4 mb-8">
+                        <div className="flex-1 relative">
+                            <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
-                                placeholder="Cari tiket..."
-                                className="w-full bg-gray-700 text-white px-4 py-2 rounded"
+                                placeholder="Cari tiket berdasarkan ID atau nama..."
+                                className="w-full bg-gray-50 text-gray-900 pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all"
                             />
                         </div>
-                        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">
-                            <Search className="w-4 h-4" />
+                        <button className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105">
+                            <Search className="w-5 h-5" />
                             Cari
                         </button>
                     </div>
@@ -69,6 +76,7 @@ export default function PrintTicket() {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 }
