@@ -1,29 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Trash2, UserPlus } from 'lucide-react';
+import useCashierStore from '../../store/cashierStore';
+import CashierForm from '../admin/CashierForm';
 
 export default function ManageCashiers() {
-    const [cashiers] = useState([
-        { id: 1, name: 'Alice Johnson', email: 'alice@cinema.com', phone: '081234567893', shift: 'Morning', status: 'Active' },
-        { id: 2, name: 'Bob Smith', email: 'bob@cinema.com', phone: '081234567894', shift: 'Evening', status: 'Active' },
-        { id: 3, name: 'Carol Davis', email: 'carol@cinema.com', phone: '081234567895', shift: 'Night', status: 'Inactive' }
-    ]);
+    const { cashiers, loading, error, fetchCashiers, addCashier, updateCashier, deleteCashier, clearError } = useCashierStore();
     const [searchTerm, setSearchTerm] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [editingCashier, setEditingCashier] = useState(null);
+    const [notification, setNotification] = useState('');
+
+    useEffect(() => {
+        fetchCashiers();
+    }, []);
+
+    useEffect(() => {
+        if (error) {
+            setNotification(error);
+            setTimeout(() => {
+                setNotification('');
+                clearError();
+            }, 3000);
+        }
+    }, [error, clearError]);
 
     const filteredCashiers = cashiers.filter(cashier =>
-        cashier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cashier.email.toLowerCase().includes(searchTerm.toLowerCase())
+        (cashier.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (cashier.email || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleAdd = () => {
+        setEditingCashier(null);
+        setShowModal(true);
+    };
+
+    const handleEdit = (cashier) => {
+        setEditingCashier(cashier);
+        setShowModal(true);
+    };
+
+    const handleSave = async (formData) => {
+        try {
+            if (editingCashier) {
+                await updateCashier(editingCashier.id, formData);
+                setNotification('Cashier updated successfully');
+            } else {
+                await addCashier(formData);
+                setNotification('Cashier added successfully');
+            }
+            setShowModal(false);
+            setTimeout(() => setNotification(''), 3000);
+        } catch (error) {
+            // Error handled by store
+        }
+    };
+
+    const handleDelete = async (cashierId) => {
+        if (confirm('Are you sure you want to delete this cashier?')) {
+            try {
+                await deleteCashier(cashierId);
+                setNotification('Cashier deleted successfully');
+                setTimeout(() => setNotification(''), 3000);
+            } catch (error) {
+                // Error handled by store
+            }
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-900 text-white p-6">
             <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold">Manage Cashiers</h1>
-                    <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded">
+                    <button
+                        onClick={handleAdd}
+                        className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+                    >
                         <UserPlus className="w-4 h-4" />
                         Add Cashier
                     </button>
                 </div>
+
+                {/* Notification */}
+                {notification && (
+                    <div className="mb-4 p-3 bg-green-600 text-white rounded">
+                        {notification}
+                    </div>
+                )}
+
+                {/* Loading */}
+                {loading && (
+                    <div className="text-center py-8">
+                        <div className="text-gray-400">Loading cashiers...</div>
+                    </div>
+                )}
 
                 <div className="mb-6">
                     <div className="relative">
@@ -68,11 +138,17 @@ export default function ManageCashiers() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex gap-2">
-                                            <button className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
+                                            <button
+                                                onClick={() => handleEdit(cashier)}
+                                                className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm"
+                                            >
                                                 <Edit className="w-3 h-3" />
                                                 Edit
                                             </button>
-                                            <button className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm">
+                                            <button
+                                                onClick={() => handleDelete(cashier.id)}
+                                                className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
+                                            >
                                                 <Trash2 className="w-3 h-3" />
                                                 Delete
                                             </button>
@@ -83,6 +159,16 @@ export default function ManageCashiers() {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Modal */}
+                {showModal && (
+                    <CashierForm
+                        cashier={editingCashier}
+                        onSave={handleSave}
+                        onCancel={() => setShowModal(false)}
+                        loading={loading}
+                    />
+                )}
             </div>
         </div>
     );
