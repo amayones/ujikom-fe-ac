@@ -31,17 +31,30 @@ const useCustomerStore = create((set) => ({
   addCustomer: async (customerData) => {
     set({ loading: true, error: null });
     try {
+      const tempCustomer = {
+        ...customerData,
+        id: Date.now(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      set(state => ({ 
+        customers: [...state.customers, tempCustomer], 
+        loading: false 
+      }));
+      
       const response = await api.post('/admin/users', customerData);
       const newCustomer = response.data?.data;
-      if (newCustomer) {
-        set(state => ({ 
-          customers: [...state.customers, newCustomer], 
-          loading: false 
+      
+      if (newCustomer && newCustomer.id !== tempCustomer.id) {
+        set(state => ({
+          customers: state.customers.map(customer => 
+            customer.id === tempCustomer.id ? newCustomer : customer
+          )
         }));
-      } else {
-        set({ loading: false });
       }
-      return newCustomer;
+      
+      return newCustomer || tempCustomer;
     } catch (error) {
       set({ error: error.message || 'Failed to add customer', loading: false });
       throw error;
@@ -51,19 +64,31 @@ const useCustomerStore = create((set) => ({
   updateCustomer: async (id, customerData) => {
     set({ loading: true, error: null });
     try {
+      const updatedCustomer = {
+        ...customerData,
+        id,
+        updated_at: new Date().toISOString()
+      };
+      
+      set(state => ({
+        customers: state.customers.map(customer => 
+          customer.id === id ? { ...customer, ...updatedCustomer } : customer
+        ),
+        loading: false
+      }));
+      
       const response = await api.put(`/admin/users/${id}`, customerData);
-      const updatedCustomer = response.data?.data;
-      if (updatedCustomer) {
+      const serverCustomer = response.data?.data;
+      
+      if (serverCustomer) {
         set(state => ({
           customers: state.customers.map(customer => 
-            customer.id === id ? updatedCustomer : customer
-          ),
-          loading: false
+            customer.id === id ? serverCustomer : customer
+          )
         }));
-      } else {
-        set({ loading: false });
       }
-      return updatedCustomer;
+      
+      return serverCustomer || updatedCustomer;
     } catch (error) {
       set({ error: error.message || 'Failed to update customer', loading: false });
       throw error;

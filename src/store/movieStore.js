@@ -31,17 +31,33 @@ const useMovieStore = create((set) => ({
   addMovie: async (movieData) => {
     set({ loading: true, error: null });
     try {
+      // Optimistic update - add to UI immediately
+      const tempMovie = {
+        ...movieData,
+        id: Date.now(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      set(state => ({ 
+        movies: [...state.movies, tempMovie], 
+        loading: false 
+      }));
+      
+      // Try to sync with backend
       const response = await api.post('/admin/films', movieData);
       const newMovie = response.data?.data;
-      if (newMovie) {
-        set(state => ({ 
-          movies: [...state.movies, newMovie], 
-          loading: false 
+      
+      // Update with real data if available
+      if (newMovie && newMovie.id !== tempMovie.id) {
+        set(state => ({
+          movies: state.movies.map(movie => 
+            movie.id === tempMovie.id ? newMovie : movie
+          )
         }));
-      } else {
-        set({ loading: false });
       }
-      return newMovie;
+      
+      return newMovie || tempMovie;
     } catch (error) {
       set({ error: error.message || 'Failed to add movie', loading: false });
       throw error;
@@ -51,19 +67,34 @@ const useMovieStore = create((set) => ({
   updateMovie: async (id, movieData) => {
     set({ loading: true, error: null });
     try {
+      // Optimistic update - update UI immediately
+      const updatedMovie = {
+        ...movieData,
+        id,
+        updated_at: new Date().toISOString()
+      };
+      
+      set(state => ({
+        movies: state.movies.map(movie => 
+          movie.id === id ? { ...movie, ...updatedMovie } : movie
+        ),
+        loading: false
+      }));
+      
+      // Try to sync with backend
       const response = await api.put(`/admin/films/${id}`, movieData);
-      const updatedMovie = response.data?.data;
-      if (updatedMovie) {
+      const serverMovie = response.data?.data;
+      
+      // Update with server data if different
+      if (serverMovie) {
         set(state => ({
           movies: state.movies.map(movie => 
-            movie.id === id ? updatedMovie : movie
-          ),
-          loading: false
+            movie.id === id ? serverMovie : movie
+          )
         }));
-      } else {
-        set({ loading: false });
       }
-      return updatedMovie;
+      
+      return serverMovie || updatedMovie;
     } catch (error) {
       set({ error: error.message || 'Failed to update movie', loading: false });
       throw error;

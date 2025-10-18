@@ -19,17 +19,30 @@ const useCashierStore = create((set) => ({
   addCashier: async (cashierData) => {
     set({ loading: true, error: null });
     try {
+      const tempCashier = {
+        ...cashierData,
+        id: Date.now(),
+        status: cashierData.status || 'Active',
+        created_at: new Date().toISOString()
+      };
+      
+      set(state => ({ 
+        cashiers: [...state.cashiers, tempCashier], 
+        loading: false 
+      }));
+      
       const response = await api.post('/admin/cashiers', cashierData);
       const newCashier = response.data?.data;
-      if (newCashier) {
-        set(state => ({ 
-          cashiers: [...state.cashiers, newCashier], 
-          loading: false 
+      
+      if (newCashier && newCashier.id !== tempCashier.id) {
+        set(state => ({
+          cashiers: state.cashiers.map(cashier => 
+            cashier.id === tempCashier.id ? newCashier : cashier
+          )
         }));
-      } else {
-        set({ loading: false });
       }
-      return newCashier;
+      
+      return newCashier || tempCashier;
     } catch (error) {
       set({ error: error.message || 'Failed to add cashier', loading: false });
       throw error;
@@ -39,19 +52,31 @@ const useCashierStore = create((set) => ({
   updateCashier: async (id, cashierData) => {
     set({ loading: true, error: null });
     try {
+      const updatedCashier = {
+        ...cashierData,
+        id,
+        updated_at: new Date().toISOString()
+      };
+      
+      set(state => ({
+        cashiers: state.cashiers.map(cashier => 
+          cashier.id === id ? { ...cashier, ...updatedCashier } : cashier
+        ),
+        loading: false
+      }));
+      
       const response = await api.put(`/admin/cashiers/${id}`, cashierData);
-      const updatedCashier = response.data?.data;
-      if (updatedCashier) {
+      const serverCashier = response.data?.data;
+      
+      if (serverCashier) {
         set(state => ({
           cashiers: state.cashiers.map(cashier => 
-            cashier.id === id ? updatedCashier : cashier
-          ),
-          loading: false
+            cashier.id === id ? serverCashier : cashier
+          )
         }));
-      } else {
-        set({ loading: false });
       }
-      return updatedCashier;
+      
+      return serverCashier || updatedCashier;
     } catch (error) {
       set({ error: error.message || 'Failed to update cashier', loading: false });
       throw error;
