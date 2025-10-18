@@ -10,9 +10,9 @@ const useCustomerStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.get('/admin/users');
-      set({ customers: response.data.data, loading: false });
+      set({ customers: response.data?.data || [], loading: false });
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to fetch customers', loading: false });
+      set({ error: error.message || 'Failed to fetch customers', loading: false });
     }
   },
 
@@ -21,9 +21,9 @@ const useCustomerStore = create((set) => ({
     try {
       const response = await api.get(`/admin/users/${id}`);
       set({ loading: false });
-      return response.data.data;
+      return response.data?.data;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to fetch customer', loading: false });
+      set({ error: error.message || 'Failed to fetch customer', loading: false });
       throw error;
     }
   },
@@ -32,14 +32,18 @@ const useCustomerStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.post('/admin/users', customerData);
-      const newCustomer = response.data.data;
-      set(state => ({ 
-        customers: [...state.customers, newCustomer], 
-        loading: false 
-      }));
+      const newCustomer = response.data?.data;
+      if (newCustomer) {
+        set(state => ({ 
+          customers: [...state.customers, newCustomer], 
+          loading: false 
+        }));
+      } else {
+        set({ loading: false });
+      }
       return newCustomer;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to add customer', loading: false });
+      set({ error: error.message || 'Failed to add customer', loading: false });
       throw error;
     }
   },
@@ -48,16 +52,20 @@ const useCustomerStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.put(`/admin/users/${id}`, customerData);
-      const updatedCustomer = response.data.data;
-      set(state => ({
-        customers: state.customers.map(customer => 
-          customer.id === id ? updatedCustomer : customer
-        ),
-        loading: false
-      }));
+      const updatedCustomer = response.data?.data;
+      if (updatedCustomer) {
+        set(state => ({
+          customers: state.customers.map(customer => 
+            customer.id === id ? updatedCustomer : customer
+          ),
+          loading: false
+        }));
+      } else {
+        set({ loading: false });
+      }
       return updatedCustomer;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to update customer', loading: false });
+      set({ error: error.message || 'Failed to update customer', loading: false });
       throw error;
     }
   },
@@ -71,7 +79,7 @@ const useCustomerStore = create((set) => ({
         loading: false
       }));
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to delete customer', loading: false });
+      set({ error: error.message || 'Failed to delete customer', loading: false });
       throw error;
     }
   },

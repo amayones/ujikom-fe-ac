@@ -10,9 +10,9 @@ const useSeatStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.get(`/seats/studio/${studioId}`);
-      set({ seats: response.data.data, loading: false });
+      set({ seats: response.data?.data || [], loading: false });
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to fetch seats', loading: false });
+      set({ error: error.message || 'Failed to fetch seats', loading: false });
     }
   },
 
@@ -20,15 +20,25 @@ const useSeatStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.put(`/admin/seats/${seatId}`, seatData);
-      set(state => ({
-        seats: state.seats.map(seat => 
-          seat.id === seatId ? { ...seat, ...seatData } : seat
-        ),
-        loading: false
-      }));
-      return response.data.data;
+      const updatedSeat = response.data?.data;
+      if (updatedSeat) {
+        set(state => ({
+          seats: state.seats.map(seat => 
+            seat.id === seatId ? updatedSeat : seat
+          ),
+          loading: false
+        }));
+      } else {
+        set(state => ({
+          seats: state.seats.map(seat => 
+            seat.id === seatId ? { ...seat, ...seatData } : seat
+          ),
+          loading: false
+        }));
+      }
+      return updatedSeat || { ...seatData, id: seatId };
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to update seat', loading: false });
+      set({ error: error.message || 'Failed to update seat', loading: false });
       throw error;
     }
   },

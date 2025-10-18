@@ -10,9 +10,9 @@ const useMovieStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.get('/admin/films');
-      set({ movies: response.data.data, loading: false });
+      set({ movies: response.data?.data || [], loading: false });
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to fetch movies', loading: false });
+      set({ error: error.message || 'Failed to fetch movies', loading: false });
     }
   },
 
@@ -21,9 +21,9 @@ const useMovieStore = create((set) => ({
     try {
       const response = await api.get(`/admin/films/${id}`);
       set({ loading: false });
-      return response.data.data;
+      return response.data?.data;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to fetch movie', loading: false });
+      set({ error: error.message || 'Failed to fetch movie', loading: false });
       throw error;
     }
   },
@@ -32,14 +32,18 @@ const useMovieStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.post('/admin/films', movieData);
-      const newMovie = response.data.data;
-      set(state => ({ 
-        movies: [...state.movies, newMovie], 
-        loading: false 
-      }));
+      const newMovie = response.data?.data;
+      if (newMovie) {
+        set(state => ({ 
+          movies: [...state.movies, newMovie], 
+          loading: false 
+        }));
+      } else {
+        set({ loading: false });
+      }
       return newMovie;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to add movie', loading: false });
+      set({ error: error.message || 'Failed to add movie', loading: false });
       throw error;
     }
   },
@@ -48,16 +52,20 @@ const useMovieStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.put(`/admin/films/${id}`, movieData);
-      const updatedMovie = response.data.data;
-      set(state => ({
-        movies: state.movies.map(movie => 
-          movie.id === id ? updatedMovie : movie
-        ),
-        loading: false
-      }));
+      const updatedMovie = response.data?.data;
+      if (updatedMovie) {
+        set(state => ({
+          movies: state.movies.map(movie => 
+            movie.id === id ? updatedMovie : movie
+          ),
+          loading: false
+        }));
+      } else {
+        set({ loading: false });
+      }
       return updatedMovie;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to update movie', loading: false });
+      set({ error: error.message || 'Failed to update movie', loading: false });
       throw error;
     }
   },
@@ -71,7 +79,7 @@ const useMovieStore = create((set) => ({
         loading: false
       }));
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to delete movie', loading: false });
+      set({ error: error.message || 'Failed to delete movie', loading: false });
       throw error;
     }
   },

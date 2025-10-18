@@ -10,9 +10,9 @@ const useCashierStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.get('/admin/cashiers');
-      set({ cashiers: response.data.data, loading: false });
+      set({ cashiers: response.data?.data || [], loading: false });
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to fetch cashiers', loading: false });
+      set({ error: error.message || 'Failed to fetch cashiers', loading: false });
     }
   },
 
@@ -20,13 +20,18 @@ const useCashierStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.post('/admin/cashiers', cashierData);
-      set(state => ({ 
-        cashiers: [...state.cashiers, response.data.data || cashierData], 
-        loading: false 
-      }));
-      return response.data.data;
+      const newCashier = response.data?.data;
+      if (newCashier) {
+        set(state => ({ 
+          cashiers: [...state.cashiers, newCashier], 
+          loading: false 
+        }));
+      } else {
+        set({ loading: false });
+      }
+      return newCashier;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to add cashier', loading: false });
+      set({ error: error.message || 'Failed to add cashier', loading: false });
       throw error;
     }
   },
@@ -35,15 +40,20 @@ const useCashierStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.put(`/admin/cashiers/${id}`, cashierData);
-      set(state => ({
-        cashiers: state.cashiers.map(cashier => 
-          cashier.id === id ? { ...cashier, ...cashierData } : cashier
-        ),
-        loading: false
-      }));
-      return response.data.data;
+      const updatedCashier = response.data?.data;
+      if (updatedCashier) {
+        set(state => ({
+          cashiers: state.cashiers.map(cashier => 
+            cashier.id === id ? updatedCashier : cashier
+          ),
+          loading: false
+        }));
+      } else {
+        set({ loading: false });
+      }
+      return updatedCashier;
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to update cashier', loading: false });
+      set({ error: error.message || 'Failed to update cashier', loading: false });
       throw error;
     }
   },
@@ -57,7 +67,7 @@ const useCashierStore = create((set) => ({
         loading: false
       }));
     } catch (error) {
-      set({ error: error.response?.data?.message || 'Failed to delete cashier', loading: false });
+      set({ error: error.message || 'Failed to delete cashier', loading: false });
       throw error;
     }
   },
