@@ -15,7 +15,7 @@ export default function ManageCustomers() {
 
     useEffect(() => {
         fetchCustomers();
-    }, []);
+    }, [fetchCustomers]);
 
     useEffect(() => {
         if (error) {

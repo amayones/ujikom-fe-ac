@@ -12,7 +12,7 @@ export default function ManageMovies() {
 
     useEffect(() => {
         fetchMovies();
-    }, []);
+    }, [fetchMovies]);
 
     useEffect(() => {
         if (error) {

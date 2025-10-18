@@ -15,7 +15,7 @@ export default function ManageCashiers() {
 
     useEffect(() => {
         fetchCashiers();
-    }, []);
+    }, [fetchCashiers]);
 
     useEffect(() => {
         if (error) {

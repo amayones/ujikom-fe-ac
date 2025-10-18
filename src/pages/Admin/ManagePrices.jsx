@@ -10,7 +10,7 @@ export default function ManagePrices() {
 
     useEffect(() => {
         fetchPrices();
-    }, []);
+    }, [fetchPrices]);
 
     useEffect(() => {
         if (error) {

@@ -13,7 +13,7 @@ export default function ManageSchedules() {
         fetchSchedules();
         fetchFilms();
         fetchPrices();
-    }, []);
+    }, [fetchSchedules, fetchFilms, fetchPrices]);
 
     useEffect(() => {
         if (error) {

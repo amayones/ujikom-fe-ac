@@ -9,7 +9,7 @@ export default function ManageSeats() {
 
     useEffect(() => {
         fetchSeats(selectedStudio);
-    }, [selectedStudio]);
+    }, [selectedStudio, fetchSeats]);
 
     useEffect(() => {
         if (error) {
