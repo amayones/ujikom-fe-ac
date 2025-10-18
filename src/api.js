@@ -1,12 +1,13 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "/api",
+    baseURL: "https://be-ujikom.amayones.my.id/api",
     headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
     },
     timeout: 10000,
+    withCredentials: false,
 });
 
 // Add auth token to requests if available
@@ -15,6 +16,9 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+    // Add CORS headers
+    config.headers['Access-Control-Allow-Origin'] = '*';
+    config.headers['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE,PATCH,OPTIONS';
     return config;
 });
 
