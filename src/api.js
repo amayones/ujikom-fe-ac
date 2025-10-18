@@ -1,77 +1,38 @@
-import axios from "axios";
+// CORS Proxy using allorigins.win
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+const BASE_URL = 'https://be-ujikom.amayones.my.id/api';
 
-// Fallback fetch function for CORS issues
-const corsRequest = async (url, options = {}) => {
+// Custom fetch function that bypasses CORS
+const corsRequest = async (endpoint, options = {}) => {
+    const url = `${CORS_PROXY}${encodeURIComponent(BASE_URL + endpoint)}`;
+    
     try {
         const response = await fetch(url, {
-            ...options,
-            mode: 'cors',
-            credentials: 'omit'
+            method: options.method || 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
         });
-        return response;
-    } catch {
-        // Fallback to no-cors mode
-        const response = await fetch(url, {
-            ...options,
-            mode: 'no-cors',
-            credentials: 'omit'
-        });
-        return response;
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return { data, status: response.status, statusText: response.statusText };
+    } catch (error) {
+        console.error('CORS request failed:', error);
+        throw error;
     }
 };
 
-const api = axios.create({
-    baseURL: "https://be-ujikom.amayones.my.id/api",
-    headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-    },
-    timeout: 10000,
-    withCredentials: false,
-});
-
-// Add auth token to requests if available
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
-
-// Handle response errors with CORS fallback
-api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        if (error.code === 'ERR_NETWORK' || error.message.includes('CORS')) {
-            console.warn('CORS error detected, using fallback method');
-            
-            // Try fallback fetch for GET requests
-            if (error.config && error.config.method === 'get') {
-                try {
-                    const response = await corsRequest(error.config.url, {
-                        method: 'GET',
-                        headers: error.config.headers
-                    });
-                    
-                    if (response.ok || response.type === 'opaque') {
-                        // Return mock successful response for no-cors
-                        return {
-                            data: { success: true, data: [], message: 'Data loaded (CORS bypass)' },
-                            status: 200,
-                            statusText: 'OK'
-                        };
-                    }
-                } catch (fallbackError) {
-                    console.error('Fallback also failed:', fallbackError);
-                }
-            }
-            
-            return Promise.reject(new Error('Server connection failed. Backend CORS not configured properly.'));
-        }
-        return Promise.reject(error);
-    }
-);
+// Axios-like API wrapper
+const api = {
+    get: (endpoint) => corsRequest(endpoint, { method: 'GET' }),
+    post: (endpoint, data) => corsRequest(endpoint, { method: 'POST', body: JSON.stringify(data) }),
+    put: (endpoint, data) => corsRequest(endpoint, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (endpoint) => corsRequest(endpoint, { method: 'DELETE' })
+};
 
 export { corsRequest };
 export default api;
