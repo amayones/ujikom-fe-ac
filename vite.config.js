@@ -8,6 +8,15 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://be-ujikom.amayones.my.id',
+        changeOrigin: true,
+        secure: true
+      }
+    }
+  },
   build: {
     minify: 'terser',
     rollupOptions: {
