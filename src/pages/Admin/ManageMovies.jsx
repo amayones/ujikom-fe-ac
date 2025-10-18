@@ -61,7 +61,7 @@ export default function ManageMovies() {
                 await deleteMovie(movieId);
                 setNotification('Movie deleted successfully');
                 setTimeout(() => setNotification(''), 3000);
-            } catch (error) {
+            } catch {
                 // Error handled by store
             }
         }
