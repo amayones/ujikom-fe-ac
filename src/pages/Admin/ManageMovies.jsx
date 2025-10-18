@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import useMovieStore from '../../store/movieStore';
-import MovieForm from '../admin/MovieForm';
+import MovieForm from './MovieForm';
 
 export default function ManageMovies() {
     const { movies, loading, error, fetchMovies, addMovie, updateMovie, deleteMovie, clearError } = useMovieStore();

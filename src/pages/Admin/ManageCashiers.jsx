@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Edit, Trash2, UserPlus } from 'lucide-react';
 import useCashierStore from '../../store/cashierStore';
-import CashierForm from '../admin/CashierForm';
+import CashierForm from './CashierForm';
 import ConfirmModal from '../../components/ConfirmModal';
 import Toast from '../../components/Toast';
 

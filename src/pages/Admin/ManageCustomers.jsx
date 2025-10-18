@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Edit, Trash2, UserPlus } from 'lucide-react';
 import useCustomerStore from '../../store/customerStore';
-import CustomerForm from '../admin/CustomerForm';
+import CustomerForm from './CustomerForm';
 import ConfirmModal from '../../components/ConfirmModal';
 import Toast from '../../components/Toast';
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar } from 'lucide-react';
 import useScheduleStore from '../../store/scheduleStore';
-import ScheduleForm from '../admin/ScheduleForm';
+import ScheduleForm from './ScheduleForm';
 
 export default function ManageSchedules() {
     const { schedules, films, prices, loading, error, fetchSchedules, fetchFilms, fetchPrices, addSchedule, updateSchedule, deleteSchedule, clearError } = useScheduleStore();
