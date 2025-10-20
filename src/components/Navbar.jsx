@@ -28,8 +28,10 @@ export default function Navbar() {
         switch (currentRole) {
             case 'admin':
                 return {
-                    bgColor: 'bg-gradient-to-r from-slate-800 via-slate-900 to-gray-900',
+                    bgColor: 'bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800',
                     roleLabel: 'Admin Panel',
+                    accentColor: 'bg-blue-500',
+                    hoverColor: 'hover:bg-blue-500/20',
                     links: [
                         { to: '/admin', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
                         { to: '/admin/movies', label: 'Film', icon: <Film className="w-4 h-4" /> },
@@ -42,16 +44,20 @@ export default function Navbar() {
                 };
             case 'owner':
                 return {
-                    bgColor: 'bg-gradient-to-r from-indigo-800 via-purple-900 to-slate-900',
+                    bgColor: 'bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-800',
                     roleLabel: 'Owner Panel',
+                    accentColor: 'bg-purple-500',
+                    hoverColor: 'hover:bg-purple-500/20',
                     links: [
                         { to: '/owner', label: 'Laporan Keuangan', icon: <BarChart3 className="w-4 h-4" /> }
                     ]
                 };
             case 'cashier':
                 return {
-                    bgColor: 'bg-gradient-to-r from-orange-700 via-amber-800 to-yellow-900',
+                    bgColor: 'bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-800',
                     roleLabel: 'Kasir Panel',
+                    accentColor: 'bg-emerald-500',
+                    hoverColor: 'hover:bg-emerald-500/20',
                     links: [
                         { to: '/cashier', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
                         { to: '/cashier/offline-booking', label: 'Pesan Offline', icon: <Receipt className="w-4 h-4" /> },
@@ -61,8 +67,10 @@ export default function Navbar() {
                 };
             default:
                 return {
-                    bgColor: 'bg-gradient-to-r from-red-700 via-rose-800 to-pink-900',
+                    bgColor: 'bg-gradient-to-br from-red-900 via-rose-900 to-red-800',
                     roleLabel: 'Absolute Cinema',
+                    accentColor: 'bg-red-500',
+                    hoverColor: 'hover:bg-red-500/20',
                     links: [
                         { to: '/', label: 'Home', icon: <Home className="w-4 h-4" /> },
                         { to: '/now-playing', label: 'Sedang Tayang', icon: <Film className="w-4 h-4" /> },
@@ -77,28 +85,30 @@ export default function Navbar() {
     const navConfig = getNavConfig();
 
     return (
-        <nav className={`${navConfig.bgColor} shadow-xl border-b border-white/10 sticky top-0 z-50`}>
+        <nav className={`${navConfig.bgColor} shadow-2xl border-b-2 border-white/20 backdrop-blur-sm sticky top-0 z-50`}>
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link 
                         to={currentRole === 'customer' ? '/' : `/${currentRole}`} 
-                        className="flex items-center space-x-3 group hover:scale-105 transition-all duration-300"
+                        className="flex items-center space-x-3 group"
                     >
-                        <Film className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
-                        <span className="text-white text-xl font-bold tracking-wide">{navConfig.roleLabel}</span>
+                        <div className={`${navConfig.accentColor} p-2 rounded-lg group-hover:scale-110 transition-transform duration-300`}>
+                            <Film className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-white text-xl font-bold tracking-tight">{navConfig.roleLabel}</span>
                     </Link>
 
                     {/* Navigation Links - Centered */}
-                    <div className="hidden lg:flex items-center space-x-1 absolute left-1/2 transform -translate-x-1/2">
+                    <div className="hidden lg:flex items-center space-x-2 absolute left-1/2 transform -translate-x-1/2">
                         {navConfig.links.map((link) => (
                             <Link 
                                 key={link.to}
                                 to={link.to} 
-                                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                                     isActive(link.to) 
-                                        ? 'bg-white text-gray-900' 
-                                        : 'text-white/90 hover:text-white hover:bg-white/10'
+                                        ? `${navConfig.accentColor} text-white shadow-lg scale-105` 
+                                        : `text-white/80 ${navConfig.hoverColor} hover:text-white`
                                 }`}
                             >
                                 {link.icon}
@@ -112,14 +122,14 @@ export default function Navbar() {
                         {currentRole === 'customer' ? (
                             <Link 
                                 to="/login" 
-                                className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200"
+                                className={`${navConfig.accentColor} text-white hover:opacity-90 px-5 py-2.5 rounded-xl text-sm font-semibold shadow-lg transition-all duration-300 hover:scale-105`}
                             >
                                 Login
                             </Link>
                         ) : (
                             <button 
                                 onClick={() => window.location.href = '/'}
-                                className="flex items-center space-x-2 text-white/90 hover:text-white hover:bg-white/10 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+                                className={`flex items-center space-x-2 text-white/80 ${navConfig.hoverColor} px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:text-white`}
                             >
                                 <LogOut className="w-4 h-4" />
                                 <span>Logout</span>
@@ -128,8 +138,6 @@ export default function Navbar() {
                     </div>
                 </div>
             </div>
-            
-
         </nav>
     );
 }
