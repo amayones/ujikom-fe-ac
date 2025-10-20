@@ -1,6 +1,6 @@
 const BASE_URL = 'https://be-ujikom.amayones.my.id/api';
 
-const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
+const fetchWithTimeout = async (url, options = {}, timeout = 30000) => {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
     
