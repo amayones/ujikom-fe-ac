@@ -1,12 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Ticket } from "lucide-react";
+import api from "../../api";
 
 export default function NowPlaying() {
-    const films = [
-        { id: 1, title: "Spider-Man: No Way Home", genre: "Action, Adventure", duration: "148 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Spider-Man", price: 50000, status: "now_playing" },
-        { id: 2, title: "The Batman", genre: "Action, Crime", duration: "176 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Batman", price: 55000, status: "now_playing" }
-    ];
+    const [films, setFilms] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchFilms();
+    }, []);
+
+    const fetchFilms = async () => {
+        try {
+            const response = await api.get('/films');
+            const allFilms = response.data.data || [];
+            setFilms(allFilms.filter(f => f.status === 'Now Showing'));
+        } catch (error) {
+            console.error('Failed to fetch films:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+                <div className="text-white text-xl">Loading...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-gray-900 min-h-screen text-white">
@@ -24,8 +47,7 @@ export default function NowPlaying() {
                         <div className="flex-1 ml-4">
                             <h3 className="text-lg font-semibold">{movie.title}</h3>
                             <p className="text-sm text-gray-400 mb-1">Genre: {movie.genre}</p>
-                            <p className="text-sm text-gray-400 mb-2">Durasi: {movie.duration}</p>
-                            <p className="text-sm text-red-500 mb-3">Rp {movie.price.toLocaleString()}</p>
+                            <p className="text-sm text-gray-400 mb-2">Durasi: {movie.duration} min</p>
 
                             <div className="flex space-x-3">
                                 <Link

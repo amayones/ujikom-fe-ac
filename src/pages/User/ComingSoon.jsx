@@ -1,14 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Clock } from "lucide-react";
-
-const films = [
-    { id: 1, title: "Film Coming Soon 1", genre: "Fantasy, Adventure", release: "15 Oktober 2025" },
-    { id: 2, title: "Film Coming Soon 2", genre: "Sci-Fi, Action", release: "20 November 2025" },
-    { id: 3, title: "Film Coming Soon 3", genre: "Drama, Biography", release: "5 Desember 2025" },
-];
+import api from "../../api";
 
 export default function ComingSoon() {
+    const [films, setFilms] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchFilms();
+    }, []);
+
+    const fetchFilms = async () => {
+        try {
+            const response = await api.get('/films');
+            const allFilms = response.data.data || [];
+            setFilms(allFilms.filter(f => f.status === 'Coming Soon'));
+        } catch (error) {
+            console.error('Failed to fetch films:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+                <div className="text-white text-xl">Loading...</div>
+            </div>
+        );
+    }
     return (
         <div className="bg-gray-900 min-h-screen text-white">
             {/* Header */}
@@ -22,12 +43,17 @@ export default function ComingSoon() {
                 {films.map((film) => (
                     <div key={film.id} className="flex items-center bg-gray-800 rounded-xl shadow-md hover:shadow-lg border border-gray-700 hover:border-red-500 transition p-4">
                         <div className="w-24 h-32 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
-                            🎞️
+                            {film.poster ? (
+                                <img src={film.poster} alt={film.title} className="w-full h-full object-cover rounded-lg" />
+                            ) : (
+                                <span className="text-4xl">🎞️</span>
+                            )}
                         </div>
                         <div className="flex-1 ml-4">
                             <h3 className="text-lg font-semibold">{film.title}</h3>
                             <p className="text-sm text-gray-400 mb-1">Genre: {film.genre}</p>
-                            <p className="text-sm text-gray-400 mb-2">Rilis: {film.release}</p>
+                            <p className="text-sm text-gray-400 mb-1">Durasi: {film.duration} min</p>
+                            <p className="text-sm text-gray-400 mb-2">Rilis: {new Date(film.release_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
 
                             <div className="flex items-center space-x-2 text-sm mb-3">
                                 <span className="px-2 py-1 bg-yellow-600/20 text-yellow-400 rounded">🔥 Hype</span>

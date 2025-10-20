@@ -1,15 +1,37 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Film, Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import api from "../../api";
 
 export default function Home() {
-    const movies = [
-        { id: 1, title: "Spider-Man: No Way Home", genre: "Action, Adventure", duration: "148 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Spider-Man", status: "now_playing" },
-        { id: 2, title: "The Batman", genre: "Action, Crime", duration: "176 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Batman", status: "now_playing" },
-        { id: 3, title: "Doctor Strange 2", genre: "Action, Fantasy", duration: "126 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Dr+Strange", status: "coming_soon" }
-    ];
-    const nowPlayingFilms = movies.filter(movie => movie.status === 'now_playing');
-    const comingSoonFilms = movies.filter(movie => movie.status === 'coming_soon');
+    const [movies, setMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchMovies();
+    }, []);
+
+    const fetchMovies = async () => {
+        try {
+            const response = await api.get('/films');
+            setMovies(response.data.data || []);
+        } catch (error) {
+            console.error('Failed to fetch movies:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const nowPlayingFilms = movies.filter(movie => movie.status === 'Now Showing');
+    const comingSoonFilms = movies.filter(movie => movie.status === 'Coming Soon');
+
+    if (loading) {
+        return (
+            <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+                <div className="text-white text-xl">Loading...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative bg-gray-900 text-white overflow-hidden">
@@ -59,7 +81,7 @@ export default function Home() {
                                 <div className="p-4">
                                     <h3 className="text-xl font-semibold text-white mb-2">{movie.title}</h3>
                                     <p className="text-gray-400 mb-2">{movie.genre}</p>
-                                    <p className="text-gray-400 mb-4">{movie.duration}</p>
+                                    <p className="text-gray-400 mb-4">{movie.duration} min</p>
                                     <Link 
                                         to={`/movies/${movie.id}`}
                                         className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
