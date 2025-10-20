@@ -51,7 +51,7 @@ export default function ManageMovies() {
             setShowModal(false);
             setTimeout(() => setNotification(''), 3000);
         } catch {
-            // Error handled by store
+            // error handled by store
         }
     };
 

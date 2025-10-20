@@ -6,7 +6,7 @@ export default function Navbar() {
     const location = useLocation();
     const currentPath = location.pathname;
     
-    // Detect role from URL
+
     const getCurrentRole = () => {
         if (currentPath.startsWith('/admin')) return 'admin';
         if (currentPath.startsWith('/owner')) return 'owner';
@@ -16,11 +16,11 @@ export default function Navbar() {
 
     const currentRole = getCurrentRole();
     const isActive = (path) => {
-        // Exact match for home and dashboard routes
+
         if (path === '/' || path === '/admin' || path === '/owner' || path === '/cashier') {
             return currentPath === path;
         }
-        // For other routes, check if current path starts with the link path
+
         return currentPath === path || currentPath.startsWith(path + '/');
     };
 
@@ -59,7 +59,7 @@ export default function Navbar() {
                         { to: '/cashier/process-online', label: 'Proses Online', icon: <Scan className="w-4 h-4" /> }
                     ]
                 };
-            default: // customer
+            default:
                 return {
                     bgColor: 'bg-gradient-to-r from-red-700 via-rose-800 to-pink-900',
                     roleLabel: 'Absolute Cinema',
