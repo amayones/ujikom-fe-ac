@@ -22,12 +22,15 @@ import AdminDashboard from "./pages/Admin/Dashboard";
 import ManageMovies from "./pages/Admin/ManageMovies";
 import ManageCustomers from "./pages/Admin/ManageCustomers";
 import ManageSchedules from "./pages/Admin/ManageSchedules";
-import ManagePrices from "./pages/Admin/ManagePrices";
 import ManageCashiers from "./pages/Admin/ManageCashiers";
+import SimpleDashboard from "./pages/Admin/SimpleDashboard";
+import UpdatePrices from "./pages/Admin/UpdatePrices";
 import ManageSeats from "./pages/Admin/ManageSeats";
 
 // Owner Pages
 import OwnerDashboard from "./pages/Owner/Dashboard";
+import OwnerIncome from "./pages/Owner/Income";
+import OwnerExpense from "./pages/Owner/Expense";
 
 // Cashier Pages
 import CashierDashboard from "./pages/Cashier/Dashboard";
@@ -37,6 +40,8 @@ import ProcessOnline from "./pages/Cashier/ProcessOnline";
 
 // Other
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 export default function AppRoutes() {
     return (
@@ -53,28 +58,30 @@ export default function AppRoutes() {
             <Route path="/profile" element={<Profile />} />
             
             {/* Auth Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
             
             <Route path="/invoice/:id" element={<Invoice />} />
             
             {/* Admin Routes */}
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/movies" element={<ManageMovies />} />
-            <Route path="/admin/customers" element={<ManageCustomers />} />
-            <Route path="/admin/schedules" element={<ManageSchedules />} />
-            <Route path="/admin/prices" element={<ManagePrices />} />
-            <Route path="/admin/cashiers" element={<ManageCashiers />} />
-            <Route path="/admin/seats" element={<ManageSeats />} />
+            <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><SimpleDashboard /></ProtectedRoute>} />
+            <Route path="/admin/movies" element={<ProtectedRoute allowedRoles={['admin']}><ManageMovies /></ProtectedRoute>} />
+            <Route path="/admin/customers" element={<ProtectedRoute allowedRoles={['admin']}><ManageCustomers /></ProtectedRoute>} />
+            <Route path="/admin/schedules" element={<ProtectedRoute allowedRoles={['admin']}><ManageSchedules /></ProtectedRoute>} />
+            <Route path="/admin/prices" element={<ProtectedRoute allowedRoles={['admin']}><UpdatePrices /></ProtectedRoute>} />
+            <Route path="/admin/cashiers" element={<ProtectedRoute allowedRoles={['admin']}><ManageCashiers /></ProtectedRoute>} />
+            <Route path="/admin/seats" element={<ProtectedRoute allowedRoles={['admin']}><ManageSeats /></ProtectedRoute>} />
             
             {/* Owner Routes */}
-            <Route path="/owner" element={<OwnerDashboard />} />
+            <Route path="/owner" element={<ProtectedRoute allowedRoles={['owner']}><OwnerDashboard /></ProtectedRoute>} />
+            <Route path="/owner/income" element={<ProtectedRoute allowedRoles={['owner']}><OwnerIncome /></ProtectedRoute>} />
+            <Route path="/owner/expense" element={<ProtectedRoute allowedRoles={['owner']}><OwnerExpense /></ProtectedRoute>} />
             
             {/* Cashier Routes */}
-            <Route path="/cashier" element={<CashierDashboard />} />
-            <Route path="/cashier/offline-booking" element={<OfflineBooking />} />
-            <Route path="/cashier/print-ticket" element={<PrintTicket />} />
-            <Route path="/cashier/process-online" element={<ProcessOnline />} />
+            <Route path="/cashier" element={<ProtectedRoute allowedRoles={['cashier']}><CashierDashboard /></ProtectedRoute>} />
+            <Route path="/cashier/offline-booking" element={<ProtectedRoute allowedRoles={['cashier']}><OfflineBooking /></ProtectedRoute>} />
+            <Route path="/cashier/print-ticket" element={<ProtectedRoute allowedRoles={['cashier']}><PrintTicket /></ProtectedRoute>} />
+            <Route path="/cashier/process-online" element={<ProtectedRoute allowedRoles={['cashier']}><ProcessOnline /></ProtectedRoute>} />
             
             <Route path="*" element={<NotFound />} />
         </Routes>

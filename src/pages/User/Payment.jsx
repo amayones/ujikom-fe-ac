@@ -1,34 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { CreditCard, Smartphone, Banknote, Building } from 'lucide-react';
+import useOrderStore from '../../store/orderStore';
+import usePaymentStore from '../../store/paymentStore';
 
 export default function Payment() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { fetchOrderById, currentOrder, processPayment } = useOrderStore();
+    const { fetchPaymentMethods, paymentMethods } = usePaymentStore();
     const [selectedMethod, setSelectedMethod] = useState('');
-    
-    // Mock booking data
-    const bookingData = {
-        movie: 'Spider-Man: No Way Home',
-        date: '2024-01-15',
-        time: '19:00',
-        studio: 'Studio 1',
-        seats: ['A1', 'A2'],
-        price: 50000,
-        total: 100000
-    };
+    const [loading, setLoading] = useState(false);
 
-    const paymentMethods = [
-        { id: 'card', name: 'Credit/Debit Card', icon: CreditCard, description: 'Visa, Mastercard, etc.' },
+    const orderId = location.state?.orderId;
+
+    useEffect(() => {
+        if (orderId) {
+            fetchOrderById(orderId);
+        }
+        fetchPaymentMethods();
+    }, [orderId, fetchOrderById, fetchPaymentMethods]);
+
+    if (!currentOrder) {
+        return (
+            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+                <div className="text-xl">Loading order details...</div>
+            </div>
+        );
+    }
+
+    const defaultPaymentMethods = [
+        { id: 'credit_card', name: 'Credit/Debit Card', icon: CreditCard, description: 'Visa, Mastercard, etc.' },
         { id: 'qris', name: 'QRIS', icon: Smartphone, description: 'Scan QR code to pay' },
-        { id: 'transfer', name: 'Bank Transfer', icon: Building, description: 'Transfer to our account' },
+        { id: 'bank_transfer', name: 'Bank Transfer', icon: Building, description: 'Transfer to our account' },
         { id: 'cash', name: 'Cash (At Counter)', icon: Banknote, description: 'Pay at cinema counter' }
     ];
 
-    const handlePayment = () => {
+    const availableMethods = paymentMethods.length > 0 ? paymentMethods : defaultPaymentMethods;
+
+    const handlePayment = async () => {
         if (!selectedMethod) {
             alert('Please select a payment method');
             return;
         }
-        
-        alert(`Payment processed with ${selectedMethod}! Redirecting to ticket...`);
+
+        setLoading(true);
+        const paymentData = {
+            order_id: currentOrder.id,
+            payment_method: selectedMethod,
+            amount: currentOrder.total_amount
+        };
+
+        const result = await processPayment(paymentData);
+        setLoading(false);
+
+        if (result.success) {
+            navigate(`/invoice/${currentOrder.id}`);
+        } else {
+            alert(result.message || 'Payment failed');
+        }
     };
 
     return (
@@ -44,34 +74,34 @@ export default function Payment() {
                         <div className="space-y-3">
                             <div className="flex justify-between">
                                 <span className="text-gray-400">Movie:</span>
-                                <span>{bookingData.movie}</span>
+                                <span>{currentOrder.movie_title}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-400">Date & Time:</span>
-                                <span>{bookingData.date} at {bookingData.time}</span>
+                                <span>{currentOrder.schedule_date} at {currentOrder.schedule_time}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-400">Studio:</span>
-                                <span>{bookingData.studio}</span>
+                                <span>{currentOrder.studio}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-400">Seats:</span>
-                                <span>{bookingData.seats.join(', ')}</span>
+                                <span>{Array.isArray(currentOrder.seats) ? currentOrder.seats.join(', ') : currentOrder.seats}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-400">Price per ticket:</span>
-                                <span>Rp {bookingData.price.toLocaleString()}</span>
+                                <span>Rp 50,000</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-400">Quantity:</span>
-                                <span>{bookingData.seats.length} tickets</span>
+                                <span>{Array.isArray(currentOrder.seats) ? currentOrder.seats.length : 1} tickets</span>
                             </div>
                             
                             <hr className="border-gray-600" />
                             
                             <div className="flex justify-between text-xl font-bold">
                                 <span>Total:</span>
-                                <span className="text-red-500">Rp {bookingData.total.toLocaleString()}</span>
+                                <span className="text-red-500">Rp {currentOrder.total_amount?.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
@@ -81,7 +111,7 @@ export default function Payment() {
                         <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
                         
                         <div className="space-y-4">
-                            {paymentMethods.map((method) => (
+                            {availableMethods.map((method) => (
                                 <div
                                     key={method.id}
                                     onClick={() => setSelectedMethod(method.id)}
@@ -156,10 +186,10 @@ export default function Payment() {
 
                         <button
                             onClick={handlePayment}
-                            disabled={!selectedMethod}
+                            disabled={!selectedMethod || loading}
                             className="w-full mt-6 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold"
                         >
-                            {selectedMethod === 'cash' ? 'Confirm Booking' : 'Process Payment'}
+                            {loading ? 'Processing...' : (selectedMethod === 'cash' ? 'Confirm Booking' : 'Process Payment')}
                         </button>
                     </div>
                 </div>

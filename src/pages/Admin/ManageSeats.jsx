@@ -1,141 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import { Monitor, Armchair } from 'lucide-react';
-import useSeatStore from '../../store/seatStore';
+import React, { useState } from 'react';
+import { Armchair, Save } from 'lucide-react';
 
 export default function ManageSeats() {
-    const { seats, loading, error, fetchSeats, updateSeat, clearError } = useSeatStore();
-    const [selectedStudio, setSelectedStudio] = useState(1);
-    const [notification, setNotification] = useState('');
+    const [selectedStudio, setSelectedStudio] = useState('1');
+    const [seats, setSeats] = useState([
+        { id: 1, code: 'A1', status: 'available' },
+        { id: 2, code: 'A2', status: 'maintenance' },
+        { id: 3, code: 'A3', status: 'available' },
+        { id: 4, code: 'B1', status: 'available' },
+        { id: 5, code: 'B2', status: 'available' },
+        { id: 6, code: 'B3', status: 'broken' }
+    ]);
 
-    useEffect(() => {
-        fetchSeats(selectedStudio);
-    }, [selectedStudio, fetchSeats]);
+    const studios = [
+        { id: '1', name: 'Studio 1' },
+        { id: '2', name: 'Studio 2' },
+        { id: '3', name: 'Studio 3' }
+    ];
 
-    useEffect(() => {
-        if (error) {
-            setNotification(error);
-            setTimeout(() => {
-                setNotification('');
-                clearError();
-            }, 3000);
-        }
-    }, [error, clearError]);
+    const statusOptions = [
+        { value: 'available', label: 'Available', color: 'bg-green-500' },
+        { value: 'maintenance', label: 'Maintenance', color: 'bg-yellow-500' },
+        { value: 'broken', label: 'Broken', color: 'bg-red-500' }
+    ];
 
-    const toggleSeatStatus = async (seat) => {
-        const newStatus = seat.status === 'available' 
-            ? 'occupied' 
-            : seat.status === 'occupied' 
-                ? 'maintenance' 
-                : 'available';
-        
-        try {
-            await updateSeat(seat.id, { status: newStatus });
-            setNotification(`Seat ${seat.id} status updated`);
-            setTimeout(() => setNotification(''), 2000);
-        } catch {
-            // Error handled by store
-        }
+    const handleStatusChange = (seatId, newStatus) => {
+        setSeats(seats.map(seat => 
+            seat.id === seatId ? { ...seat, status: newStatus } : seat
+        ));
     };
-
-    const getSeatColor = (seat) => {
-        if (seat.status === 'available') {
-            return seat.type === 'vip' ? 'bg-yellow-600 hover:bg-yellow-500' : 'bg-green-600 hover:bg-green-500';
-        } else if (seat.status === 'occupied') {
-            return 'bg-red-600 hover:bg-red-500';
-        } else {
-            return 'bg-orange-600 hover:bg-orange-500';
-        }
-    };
-
-    const groupedSeats = seats.reduce((acc, seat) => {
-        if (!acc[seat.row]) acc[seat.row] = [];
-        acc[seat.row].push(seat);
-        return acc;
-    }, {});
 
     return (
         <div className="min-h-screen bg-gray-900 text-white p-6">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8">Manage Seats</h1>
-
-                {/* Notification */}
-                {notification && (
-                    <div className="mb-4 p-3 bg-green-600 text-white rounded">
-                        {notification}
-                    </div>
-                )}
-
+                <h1 className="text-3xl font-bold mb-8">Kelola Status Kursi</h1>
+                
                 <div className="mb-6">
-                    <select
+                    <label className="block text-sm font-medium mb-2">Pilih Studio</label>
+                    <select 
                         value={selectedStudio}
-                        onChange={(e) => setSelectedStudio(parseInt(e.target.value))}
-                        className="bg-gray-800 text-white px-4 py-2 rounded border border-gray-600"
+                        onChange={(e) => setSelectedStudio(e.target.value)}
+                        className="bg-gray-700 border border-gray-600 rounded px-3 py-2"
                     >
-                        <option value={1}>Studio 1</option>
-                        <option value={2}>Studio 2</option>
-                        <option value={3}>Studio 3</option>
+                        {studios.map(studio => (
+                            <option key={studio.id} value={studio.id}>{studio.name}</option>
+                        ))}
                     </select>
                 </div>
 
-                {/* Loading */}
-                {loading && (
-                    <div className="text-center py-8">
-                        <div className="text-gray-400">Loading seats...</div>
-                    </div>
-                )}
-
-                {!loading && (
-                    <div className="bg-gray-800 rounded-lg p-6">
-                        {/* Screen */}
-                        <div className="flex justify-center mb-8">
-                            <div className="flex items-center gap-2 bg-gray-700 px-6 py-3 rounded">
-                                <Monitor className="w-5 h-5" />
-                                <span>SCREEN</span>
+                <div className="bg-gray-800 rounded-lg p-6">
+                    <div className="grid grid-cols-6 md:grid-cols-10 gap-4 mb-6">
+                        {seats.map((seat) => (
+                            <div key={seat.id} className="text-center">
+                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-2 ${
+                                    seat.status === 'available' ? 'bg-green-500' :
+                                    seat.status === 'maintenance' ? 'bg-yellow-500' : 'bg-red-500'
+                                }`}>
+                                    <Armchair className="w-6 h-6 text-white" />
+                                </div>
+                                <p className="text-xs">{seat.code}</p>
+                                <select
+                                    value={seat.status}
+                                    onChange={(e) => handleStatusChange(seat.id, e.target.value)}
+                                    className="mt-1 text-xs bg-gray-700 border border-gray-600 rounded px-1 py-1"
+                                >
+                                    {statusOptions.map(option => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
-                        </div>
+                        ))}
+                    </div>
 
-                        {/* Seat Layout */}
-                        <div className="space-y-4">
-                            {Object.entries(groupedSeats).map(([row, rowSeats]) => (
-                                <div key={row} className="flex items-center gap-2">
-                                    <div className="w-8 text-center font-bold">{row}</div>
-                                    <div className="flex gap-1">
-                                        {rowSeats.map(seat => (
-                                            <button
-                                                key={seat.id}
-                                                onClick={() => toggleSeatStatus(seat)}
-                                                className={`w-8 h-8 rounded text-xs font-semibold transition-colors ${getSeatColor(seat)}`}
-                                                title={`${seat.id} - ${seat.status} (${seat.type})`}
-                                            >
-                                                {seat.number}
-                                            </button>
-                                        ))}
-                                    </div>
+                    <div className="flex justify-between items-center">
+                        <div className="flex gap-4">
+                            {statusOptions.map(option => (
+                                <div key={option.value} className="flex items-center gap-2">
+                                    <div className={`w-4 h-4 rounded ${option.color}`}></div>
+                                    <span className="text-sm">{option.label}</span>
                                 </div>
                             ))}
                         </div>
-
-                        {/* Legend */}
-                        <div className="mt-8 flex justify-center gap-6">
-                            <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 bg-green-600 rounded"></div>
-                                <span className="text-sm">Available Regular</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 bg-yellow-600 rounded"></div>
-                                <span className="text-sm">Available VIP</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 bg-red-600 rounded"></div>
-                                <span className="text-sm">Occupied</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 bg-orange-600 rounded"></div>
-                                <span className="text-sm">Maintenance</span>
-                            </div>
-                        </div>
+                        
+                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded flex items-center gap-2">
+                            <Save className="w-4 h-4" />
+                            Simpan Perubahan
+                        </button>
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );

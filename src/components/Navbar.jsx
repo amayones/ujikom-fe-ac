@@ -1,10 +1,13 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Film, Calendar, User, BarChart3, CreditCard, Users, Clock, Armchair, Receipt, Printer, Scan, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Home, Film, Calendar, User, BarChart3, CreditCard, Users, Clock, Armchair, Receipt, Printer, Scan, LogOut, TrendingUp, TrendingDown } from 'lucide-react';
+import useAuthStore from '../store/authStore';
 
 export default function Navbar() {
     const location = useLocation();
+    const navigate = useNavigate();
     const currentPath = location.pathname;
+    const { logout } = useAuthStore();
     
 
     const getCurrentRole = () => {
@@ -49,7 +52,9 @@ export default function Navbar() {
                     accentColor: 'bg-purple-500',
                     hoverColor: 'hover:bg-purple-500/20',
                     links: [
-                        { to: '/owner', label: 'Laporan Keuangan', icon: <BarChart3 className="w-4 h-4" /> }
+                        { to: '/owner', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
+                        { to: '/owner/income', label: 'Pemasukan', icon: <TrendingUp className="w-4 h-4" /> },
+                        { to: '/owner/expense', label: 'Pengeluaran', icon: <TrendingDown className="w-4 h-4" /> }
                     ]
                 };
             case 'cashier':
@@ -128,7 +133,10 @@ export default function Navbar() {
                             </Link>
                         ) : (
                             <button 
-                                onClick={() => window.location.href = '/'}
+                                onClick={async () => {
+                                    await logout();
+                                    navigate('/login');
+                                }}
                                 className={`flex items-center space-x-2 text-white/80 ${navConfig.hoverColor} px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:text-white`}
                             >
                                 <LogOut className="w-4 h-4" />

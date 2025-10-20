@@ -1,5 +1,34 @@
 const BASE_URL = 'https://be-ujikom.amayones.my.id/api';
 
+// Get token from localStorage
+const getToken = () => {
+    try {
+        const authStorage = localStorage.getItem('auth-storage');
+        if (authStorage) {
+            const parsed = JSON.parse(authStorage);
+            return parsed.state?.token;
+        }
+    } catch (error) {
+        console.error('Error getting token:', error);
+    }
+    return null;
+};
+
+// Get headers with auth token
+const getHeaders = () => {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    };
+    
+    const token = getToken();
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return headers;
+};
+
 const fetchWithTimeout = async (url, options = {}, timeout = 30000) => {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
@@ -22,14 +51,12 @@ const api = {
         try {
             const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
+                headers: getHeaders()
             });
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || `HTTP ${response.status}`);
             }
             
             const data = await response.json();
@@ -44,15 +71,13 @@ const api = {
         try {
             const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: getHeaders(),
                 body: JSON.stringify(data)
             });
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || `HTTP ${response.status}`);
             }
             
             const result = await response.json();
@@ -67,15 +92,13 @@ const api = {
         try {
             const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: getHeaders(),
                 body: JSON.stringify(data)
             });
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || `HTTP ${response.status}`);
             }
             
             const result = await response.json();
@@ -90,14 +113,12 @@ const api = {
         try {
             const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
+                headers: getHeaders()
             });
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || `HTTP ${response.status}`);
             }
             
             const result = await response.json();

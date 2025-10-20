@@ -1,99 +1,90 @@
 import { create } from 'zustand';
-import api from '../api.js';
+import api from '../api';
 
-const useScheduleStore = create((set) => ({
-  schedules: [],
-  films: [],
-  studios: [],
-  prices: [],
-  loading: false,
-  error: null,
+const useScheduleStore = create((set, get) => ({
+    schedules: [],
+    currentSchedule: null,
+    loading: false,
+    error: null,
 
-  fetchSchedules: async () => {
-    set({ loading: true, error: null });
-    try {
-      const response = await api.get('/admin/schedules');
-      set({ schedules: response.data?.data || [], loading: false });
-    } catch (error) {
-      set({ error: error.message || 'Failed to fetch schedules', loading: false });
-    }
-  },
+    fetchSchedules: async () => {
+        set({ loading: true, error: null });
+        try {
+            const response = await api.get('/schedules');
+            set({ schedules: response.data.data, loading: false });
+        } catch (error) {
+            set({ error: error.message || 'Failed to fetch schedules', loading: false });
+        }
+    },
 
-  fetchFilms: async () => {
-    try {
-      const response = await api.get('/admin/films');
-      set({ films: response.data?.data || [] });
-    } catch (error) {
-      console.error('Failed to fetch films:', error);
-    }
-  },
+    fetchScheduleById: async (id) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await api.get(`/schedules/${id}`);
+            set({ currentSchedule: response.data.data, loading: false });
+        } catch (error) {
+            set({ error: error.message || 'Failed to fetch schedule', loading: false });
+        }
+    },
 
-  fetchPrices: async () => {
-    try {
-      const response = await api.get('/admin/prices');
-      set({ prices: response.data?.data || [] });
-    } catch (error) {
-      console.error('Failed to fetch prices:', error);
-    }
-  },
+    createSchedule: async (scheduleData) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await api.post('/admin/schedules', scheduleData);
+            const newSchedule = response.data.data;
+            set(state => ({ 
+                schedules: [...state.schedules, newSchedule], 
+                loading: false 
+            }));
+            return { success: true, data: newSchedule };
+        } catch (error) {
+            const message = error.message || 'Failed to create schedule';
+            set({ error: message, loading: false });
+            return { success: false, message };
+        }
+    },
 
-  addSchedule: async (scheduleData) => {
-    set({ loading: true, error: null });
-    try {
-      const response = await api.post('/admin/schedules', scheduleData);
-      const newSchedule = response.data?.data;
-      if (newSchedule) {
-        set(state => ({ 
-          schedules: [...state.schedules, newSchedule], 
-          loading: false 
-        }));
-      } else {
-        set({ loading: false });
-      }
-      return newSchedule;
-    } catch (error) {
-      set({ error: error.message || 'Failed to add schedule', loading: false });
-      throw error;
-    }
-  },
+    updateSchedule: async (id, scheduleData) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await api.put(`/admin/schedules/${id}`, scheduleData);
+            const updatedSchedule = response.data.data;
+            set(state => ({
+                schedules: state.schedules.map(schedule => 
+                    schedule.id === id ? updatedSchedule : schedule
+                ),
+                loading: false
+            }));
+            return { success: true, data: updatedSchedule };
+        } catch (error) {
+            const message = error.message || 'Failed to update schedule';
+            set({ error: message, loading: false });
+            return { success: false, message };
+        }
+    },
 
-  updateSchedule: async (id, scheduleData) => {
-    set({ loading: true, error: null });
-    try {
-      const response = await api.put(`/admin/schedules/${id}`, scheduleData);
-      const updatedSchedule = response.data?.data;
-      if (updatedSchedule) {
-        set(state => ({
-          schedules: state.schedules.map(schedule => 
-            schedule.id === id ? updatedSchedule : schedule
-          ),
-          loading: false
-        }));
-      } else {
-        set({ loading: false });
-      }
-      return updatedSchedule;
-    } catch (error) {
-      set({ error: error.message || 'Failed to update schedule', loading: false });
-      throw error;
-    }
-  },
+    deleteSchedule: async (id) => {
+        set({ loading: true, error: null });
+        try {
+            await api.delete(`/admin/schedules/${id}`);
+            set(state => ({
+                schedules: state.schedules.filter(schedule => schedule.id !== id),
+                loading: false
+            }));
+            return { success: true };
+        } catch (error) {
+            const message = error.message || 'Failed to delete schedule';
+            set({ error: message, loading: false });
+            return { success: false, message };
+        }
+    },
 
-  deleteSchedule: async (id) => {
-    set({ loading: true, error: null });
-    try {
-      await api.delete(`/admin/schedules/${id}`);
-      set(state => ({
-        schedules: state.schedules.filter(schedule => schedule.id !== id),
-        loading: false
-      }));
-    } catch (error) {
-      set({ error: error.message || 'Failed to delete schedule', loading: false });
-      throw error;
-    }
-  },
+    getSchedulesByFilm: (filmId) => {
+        const { schedules } = get();
+        return schedules.filter(schedule => schedule.film_id === filmId);
+    },
 
-  clearError: () => set({ error: null })
+    clearError: () => set({ error: null })
 }));
 
 export default useScheduleStore;

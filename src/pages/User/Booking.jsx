@@ -1,41 +1,35 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import useFilmStore from '../../store/filmStore';
+import useScheduleStore from '../../store/scheduleStore';
+import useSeatStore from '../../store/seatStore';
+import useOrderStore from '../../store/orderStore';
 
 export default function Booking() {
     const { id } = useParams();
-    const movies = [
-        { id: 1, title: "Spider-Man: No Way Home", genre: "Action, Adventure", duration: "148 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Spider-Man", price: 50000 },
-        { id: 2, title: "The Batman", genre: "Action, Crime", duration: "176 min", poster: "https://via.placeholder.com/300x450/1f2937/ffffff?text=Batman", price: 55000 }
-    ];
-    const allSchedules = [
-        { id: 1, movieId: 1, time: "10:00", studio: "Studio 1", availableSeats: 45 },
-        { id: 2, movieId: 1, time: "13:00", studio: "Studio 2", availableSeats: 32 },
-        { id: 3, movieId: 2, time: "16:00", studio: "Studio 1", availableSeats: 28 }
-    ];
-    const movie = movies.find(m => m.id === parseInt(id));
-    const schedules = allSchedules.filter(s => s.movieId === parseInt(id));
+    const navigate = useNavigate();
+    const { fetchFilmById, currentFilm: movie, loading: filmLoading } = useFilmStore();
+    const { fetchSchedules, schedules, loading: scheduleLoading } = useScheduleStore();
+    const { fetchSeats, seats, loading: seatLoading } = useSeatStore();
+    const { createOrder } = useOrderStore();
+    
     const [selectedSchedule, setSelectedSchedule] = useState(null);
     const [selectedSeats, setSelectedSeats] = useState([]);
 
-    const generateSeats = () => {
-        const rows = ['A', 'B', 'C', 'D', 'E'];
-        const seatsPerRow = 10;
-        const seats = [];
-        
-        rows.forEach(row => {
-            for (let i = 1; i <= seatsPerRow; i++) {
-                seats.push({
-                    id: `${row}${i}`,
-                    row,
-                    number: i,
-                    isAvailable: Math.random() > 0.3 // 70% available
-                });
-            }
-        });
-        return seats;
-    };
+    useEffect(() => {
+        fetchFilmById(id);
+        fetchSchedules();
+    }, [id, fetchFilmById, fetchSchedules]);
 
-    const seats = generateSeats();
+    useEffect(() => {
+        if (selectedSchedule) {
+            fetchSeats(selectedSchedule.studio_id);
+        }
+    }, [selectedSchedule, fetchSeats]);
+
+    const filmSchedules = schedules.filter(schedule => schedule.film_id === parseInt(id));
+
+
 
     const handleSeatClick = (seatId) => {
         if (selectedSeats.includes(seatId)) {
@@ -45,7 +39,35 @@ export default function Booking() {
         }
     };
 
-    const totalPrice = selectedSeats.length * (movie?.price || 0);
+    const handleProceedToPayment = async () => {
+        if (!selectedSchedule || selectedSeats.length === 0) {
+            alert('Please select schedule and seats');
+            return;
+        }
+
+        const orderData = {
+            schedule_id: selectedSchedule.id,
+            seats: selectedSeats,
+            total_amount: selectedSeats.length * 50000 // Base price
+        };
+
+        const result = await createOrder(orderData);
+        if (result.success) {
+            navigate('/payment', { state: { orderId: result.data.id } });
+        } else {
+            alert(result.message || 'Failed to create order');
+        }
+    };
+
+    const totalPrice = selectedSeats.length * 50000;
+
+    if (filmLoading || scheduleLoading) {
+        return (
+            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+                <div className="text-xl">Loading...</div>
+            </div>
+        );
+    }
 
     if (!movie) {
         return (
@@ -63,12 +85,12 @@ export default function Booking() {
                 {/* Movie Info */}
                 <div className="bg-gray-800 rounded-lg p-6 mb-6">
                     <div className="flex gap-4">
-                        <img src={movie.poster} alt={movie.title} className="w-24 h-36 object-cover rounded" />
+                        <img src={movie.poster || 'https://via.placeholder.com/300x450/1f2937/ffffff?text=No+Image'} alt={movie.title} className="w-24 h-36 object-cover rounded" />
                         <div>
                             <h2 className="text-xl font-semibold mb-2">{movie.title}</h2>
                             <p className="text-gray-400 mb-1">Genre: {movie.genre}</p>
-                            <p className="text-gray-400 mb-1">Duration: {movie.duration}</p>
-                            <p className="text-red-500 font-semibold">Price: Rp {movie.price.toLocaleString()}</p>
+                            <p className="text-gray-400 mb-1">Duration: {movie.duration} min</p>
+                            <p className="text-red-500 font-semibold">Price: Rp 50,000</p>
                         </div>
                     </div>
                 </div>
@@ -77,7 +99,7 @@ export default function Booking() {
                 <div className="bg-gray-800 rounded-lg p-6 mb-6">
                     <h3 className="text-xl font-semibold mb-4">Select Schedule</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {schedules.map(schedule => (
+                        {filmSchedules.map(schedule => (
                             <div 
                                 key={schedule.id}
                                 onClick={() => setSelectedSchedule(schedule)}
@@ -88,8 +110,8 @@ export default function Booking() {
                                 }`}
                             >
                                 <p className="font-semibold">{schedule.time}</p>
-                                <p className="text-gray-400">{schedule.studio}</p>
-                                <p className="text-green-400">{schedule.availableSeats} seats available</p>
+                                <p className="text-gray-400">{schedule.studio?.name || 'Studio'}</p>
+                                <p className="text-green-400">Available</p>
                             </div>
                         ))}
                     </div>
@@ -110,17 +132,17 @@ export default function Booking() {
                             {seats.map(seat => (
                                 <button
                                     key={seat.id}
-                                    onClick={() => seat.isAvailable && handleSeatClick(seat.id)}
-                                    disabled={!seat.isAvailable}
+                                    onClick={() => seat.status === 'available' && handleSeatClick(seat.id)}
+                                    disabled={seat.status !== 'available'}
                                     className={`w-8 h-8 text-xs rounded ${
-                                        !seat.isAvailable 
+                                        seat.status !== 'available' 
                                             ? 'bg-red-600 cursor-not-allowed' 
                                             : selectedSeats.includes(seat.id)
                                                 ? 'bg-green-600'
                                                 : 'bg-gray-600 hover:bg-gray-500'
                                     }`}
                                 >
-                                    {seat.id}
+                                    {seat.seat_code}
                                 </button>
                             ))}
                         </div>
@@ -155,7 +177,10 @@ export default function Booking() {
                                 Total: Rp {totalPrice.toLocaleString()}
                             </p>
                         </div>
-                        <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold">
+                        <button 
+                            onClick={handleProceedToPayment}
+                            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold"
+                        >
                             Proceed to Payment
                         </button>
                     </div>

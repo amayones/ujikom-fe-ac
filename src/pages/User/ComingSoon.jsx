@@ -1,27 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Clock } from "lucide-react";
-import api from "../../api";
+import useFilmStore from "../../store/filmStore";
 
 export default function ComingSoon() {
-    const [films, setFilms] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { fetchComingSoonFilms, films, loading } = useFilmStore();
 
     useEffect(() => {
-        fetchFilms();
-    }, []);
-
-    const fetchFilms = async () => {
-        try {
-            const response = await api.get('/films');
-            const allFilms = response.data.data || [];
-            setFilms(allFilms.filter(f => f.status === 'Coming Soon'));
-        } catch (error) {
-            console.error('Failed to fetch films:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+        fetchComingSoonFilms();
+    }, [fetchComingSoonFilms]);
 
     if (loading) {
         return (

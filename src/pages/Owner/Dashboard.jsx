@@ -1,5 +1,6 @@
 import React from 'react';
-import { DollarSign, TrendingUp, Users, Film } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, Users, Film, BarChart3, Calendar, Settings, FileText } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function OwnerDashboard() {
     const stats = [
@@ -53,30 +54,26 @@ export default function OwnerDashboard() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-gray-800 rounded-lg p-6">
-                        <h3 className="text-xl font-semibold mb-4">Financial Reports</h3>
-                        <p className="text-gray-400 mb-4">View detailed financial analytics</p>
-                        <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
-                            View Reports
-                        </button>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <Link to="/owner/income" className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 hover:from-green-700 hover:to-green-800 transition-all duration-300 group">
+                        <div className="flex items-center gap-4">
+                            <TrendingUp className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
+                            <div>
+                                <h3 className="text-lg font-semibold text-white">Pemasukan</h3>
+                                <p className="text-green-100 text-sm">Laporan pemasukan</p>
+                            </div>
+                        </div>
+                    </Link>
                     
-                    <div className="bg-gray-800 rounded-lg p-6">
-                        <h3 className="text-xl font-semibold mb-4">Performance</h3>
-                        <p className="text-gray-400 mb-4">Monitor cinema performance</p>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                            View Analytics
-                        </button>
-                    </div>
-                    
-                    <div className="bg-gray-800 rounded-lg p-6">
-                        <h3 className="text-xl font-semibold mb-4">Settings</h3>
-                        <p className="text-gray-400 mb-4">Manage cinema settings</p>
-                        <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
-                            Settings
-                        </button>
-                    </div>
+                    <Link to="/owner/expense" className="bg-gradient-to-r from-red-600 to-red-700 rounded-xl p-6 hover:from-red-700 hover:to-red-800 transition-all duration-300 group">
+                        <div className="flex items-center gap-4">
+                            <TrendingDown className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
+                            <div>
+                                <h3 className="text-lg font-semibold text-white">Pengeluaran</h3>
+                                <p className="text-red-100 text-sm">Laporan pengeluaran</p>
+                            </div>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </div>

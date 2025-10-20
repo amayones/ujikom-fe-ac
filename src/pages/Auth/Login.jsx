@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useAuthStore from '../../store/authStore';
 
 export default function Login() {
     const [formData, setFormData] = useState({
@@ -7,49 +8,36 @@ export default function Login() {
         password: ''
     });
     const [showPassword, setShowPassword] = useState(false);
-    const [fieldErrors, setFieldErrors] = useState({});
-    const [loading, setLoading] = useState(false);
-
-    const validateForm = () => {
-        const errors = {};
-
-        if (!formData.email.trim()) {
-            errors.email = 'Email harus diisi';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            errors.email = 'Format email tidak valid';
-        }
-
-        if (!formData.password) {
-            errors.password = 'Password harus diisi';
-        } else if (formData.password.length < 3) {
-            errors.password = 'Password minimal 3 karakter';
-        }
-
-        setFieldErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
+    const { login, loading, error } = useAuthStore();
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-
-        // Clear field error when user starts typing
-        if (fieldErrors[name]) {
-            setFieldErrors(prev => ({ ...prev, [name]: '' }));
-        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
-        
-        setLoading(true);
-        
-        // Simulate login process
-        setTimeout(() => {
-            setLoading(false);
-            alert('Login berhasil! (Demo mode)');
-        }, 1000);
+        const result = await login(formData.email, formData.password);
+        if (result.success) {
+            // Redirect based on user role
+            const user = result.user;
+            switch (user.role) {
+                case 'admin':
+                    navigate('/admin');
+                    break;
+                case 'owner':
+                    navigate('/owner');
+                    break;
+                case 'cashier':
+                    navigate('/cashier');
+                    break;
+                case 'customer':
+                default:
+                    navigate('/');
+                    break;
+            }
+        }
     };
 
     return (
@@ -65,6 +53,12 @@ export default function Login() {
                     </p>
                 </div>
 
+                {error && (
+                    <div className="mb-4 p-3 bg-red-600 text-white rounded-lg text-sm">
+                        {error}
+                    </div>
+                )}
+
 
 
 
@@ -79,12 +73,9 @@ export default function Login() {
                             placeholder="masukkan email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${fieldErrors.email ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
-                                }`}
+                            className="w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
                         />
-                        {fieldErrors.email && (
-                            <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
-                        )}
+
                     </div>
 
                     {/* Password */}
@@ -97,8 +88,7 @@ export default function Login() {
                                 placeholder="masukkan password"
                                 value={formData.password}
                                 onChange={handleInputChange}
-                                className={`w-full px-4 py-2 pr-10 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${fieldErrors.password ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
-                                    }`}
+                                className="w-full px-4 py-2 pr-10 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
                             />
                             <button
                                 type="button"
@@ -117,9 +107,7 @@ export default function Login() {
                                 )}
                             </button>
                         </div>
-                        {fieldErrors.password && (
-                            <p className="text-red-400 text-xs mt-1">{fieldErrors.password}</p>
-                        )}
+
                     </div>
 
                     {/* Forgot */}

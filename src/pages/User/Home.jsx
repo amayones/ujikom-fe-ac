@@ -1,29 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Film, Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import api from "../../api";
+import useFilmStore from "../../store/filmStore";
 
 export default function Home() {
-    const [movies, setMovies] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { fetchFilms, films, loading } = useFilmStore();
 
     useEffect(() => {
-        fetchMovies();
-    }, []);
+        fetchFilms();
+    }, [fetchFilms]);
 
-    const fetchMovies = async () => {
-        try {
-            const response = await api.get('/films');
-            setMovies(response.data.data || []);
-        } catch (error) {
-            console.error('Failed to fetch movies:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const nowPlayingFilms = movies.filter(movie => movie.status === 'Now Showing');
-    const comingSoonFilms = movies.filter(movie => movie.status === 'Coming Soon');
+    const nowPlayingFilms = films.filter(movie => movie.status === 'now_playing');
+    const comingSoonFilms = films.filter(movie => movie.status === 'coming_soon');
 
     if (loading) {
         return (

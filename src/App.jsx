@@ -1,7 +1,9 @@
 import { BrowserRouter, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import AppRoutes from "./Routes";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import useAuthStore from "./store/authStore";
 
 function Layout() {
   const location = useLocation();
@@ -20,6 +22,12 @@ function Layout() {
 }
 
 export default function App() {
+  const { initAuth } = useAuthStore();
+
+  useEffect(() => {
+    initAuth();
+  }, [initAuth]);
+
   return (
     <BrowserRouter>
       <Layout />

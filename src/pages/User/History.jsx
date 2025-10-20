@@ -1,40 +1,21 @@
-// src/pages/user/History.jsx
-import React from "react";
+import React, { useEffect } from "react";
 import { Ticket, Calendar, MapPin, Eye, Clock } from "lucide-react";
+import useOrderStore from "../../store/orderStore";
 
 export default function History() {
-    const historyData = [
-        {
-            id: 1,
-            movie: "Avengers: Endgame",
-            date: "2025-09-15",
-            time: "19:30",
-            studio: "Studio 1",
-            seat: "C12, C13",
-            location: "Absolute Cinema - Jakarta",
-            status: "Used",
-        },
-        {
-            id: 2,
-            movie: "Oppenheimer",
-            date: "2025-08-30",
-            time: "21:00",
-            studio: "Studio 2",
-            seat: "D5",
-            location: "Absolute Cinema - Bandung",
-            status: "Expired",
-        },
-        {
-            id: 3,
-            movie: "Inside Out 2",
-            date: "2025-07-12",
-            time: "17:00",
-            studio: "Studio 3",
-            seat: "B7, B8",
-            location: "Absolute Cinema - Surabaya",
-            status: "Used",
-        },
-    ];
+    const { fetchOrders, orders, loading } = useOrderStore();
+
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
+
+    if (loading) {
+        return (
+            <div className="bg-gray-900 min-h-screen text-white flex items-center justify-center">
+                <div className="text-xl">Loading...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-gray-900 min-h-screen text-white">
@@ -46,8 +27,8 @@ export default function History() {
 
             {/* History List */}
             <div className="p-5 space-y-6">
-                {historyData.length > 0 ? (
-                    historyData.map((item) => (
+                {orders.length > 0 ? (
+                    orders.map((item) => (
                         <div
                             key={item.id}
                             className="bg-gray-800 rounded-xl p-5 shadow-md border border-gray-700 hover:border-red-500 transition-all flex flex-col md:flex-row justify-between items-start gap-4"
@@ -59,16 +40,16 @@ export default function History() {
 
                             {/* Info */}
                             <div className="flex-1">
-                                <h2 className="text-lg font-semibold text-white">{item.movie}</h2>
+                                <h2 className="text-lg font-semibold text-white">{item.movie_title}</h2>
                                 <div className="text-sm text-gray-300 mt-1 space-y-1">
                                     <p className="flex items-center gap-2">
-                                        <Calendar size={14} /> {item.date} at {item.time}
+                                        <Calendar size={14} /> {item.schedule_date} at {item.schedule_time}
                                     </p>
                                     <p className="flex items-center gap-2">
-                                        <MapPin size={14} /> {item.location}
+                                        <MapPin size={14} /> Absolute Cinema
                                     </p>
-                                    <p>Studio: {item.studio}</p>
-                                    <p>Seat: {item.seat}</p>
+                                    <p>Seats: {Array.isArray(item.seats) ? item.seats.join(', ') : item.seats}</p>
+                                    <p>Total: Rp {item.total_amount?.toLocaleString()}</p>
                                 </div>
                             </div>
 
