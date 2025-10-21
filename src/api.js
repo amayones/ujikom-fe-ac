@@ -1,4 +1,10 @@
-const BASE_URL = 'https://be-ujikom.amayones.my.id/api';
+// Environment-based API URL configuration
+const BASE_URL = process.env.NODE_ENV === 'production' 
+    ? 'https://be-ujikom.amayones.my.id/api'
+    : 'http://localhost:8000/api';
+
+// For development, you can override this by setting VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL || BASE_URL;
 
 // Get token from localStorage
 const getToken = () => {
@@ -49,7 +55,7 @@ const fetchWithTimeout = async (url, options = {}, timeout = 30000) => {
 const api = {
     get: async (endpoint) => {
         try {
-            const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`, {
+            const response = await fetchWithTimeout(`${API_URL}${endpoint}`, {
                 method: 'GET',
                 headers: getHeaders()
             });
@@ -69,7 +75,7 @@ const api = {
     
     post: async (endpoint, data) => {
         try {
-            const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`, {
+            const response = await fetchWithTimeout(`${API_URL}${endpoint}`, {
                 method: 'POST',
                 headers: getHeaders(),
                 body: JSON.stringify(data)
@@ -90,7 +96,7 @@ const api = {
     
     put: async (endpoint, data) => {
         try {
-            const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`, {
+            const response = await fetchWithTimeout(`${API_URL}${endpoint}`, {
                 method: 'PUT',
                 headers: getHeaders(),
                 body: JSON.stringify(data)
@@ -111,7 +117,7 @@ const api = {
     
     delete: async (endpoint) => {
         try {
-            const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`, {
+            const response = await fetchWithTimeout(`${API_URL}${endpoint}`, {
                 method: 'DELETE',
                 headers: getHeaders()
             });
