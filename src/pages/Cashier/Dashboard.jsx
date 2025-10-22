@@ -1,5 +1,6 @@
 import React from 'react';
 import { Ticket, CreditCard, Users, Clock } from 'lucide-react';
+import Layout from '../../components/Layout';
 
 export default function CashierDashboard() {
     const todayStats = [
@@ -16,8 +17,8 @@ export default function CashierDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-7xl mx-auto">
+        <Layout>
+            <div className="text-white">
                 <h1 className="text-3xl font-bold mb-8">Cashier Dashboard</h1>
                 
                 {/* Today's Stats */}
@@ -93,6 +94,6 @@ export default function CashierDashboard() {
                     </div>
                 </div>
             </div>
-        </div>
+        </Layout>
     );
 }

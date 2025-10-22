@@ -1,6 +1,7 @@
 import React from 'react';
 import { DollarSign, TrendingUp, TrendingDown, Users, Film, BarChart3, Calendar, Settings, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Layout from '../../components/Layout';
 
 export default function OwnerDashboard() {
     const stats = [
@@ -11,8 +12,8 @@ export default function OwnerDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-7xl mx-auto">
+        <Layout>
+            <div className="text-white">
                 <h1 className="text-3xl font-bold mb-8">Owner Dashboard</h1>
                 
                 {/* Stats Grid */}
@@ -76,6 +77,6 @@ export default function OwnerDashboard() {
                     </Link>
                 </div>
             </div>
-        </div>
+        </Layout>
     );
 }

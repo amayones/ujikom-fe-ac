@@ -13,7 +13,7 @@ const useUserStore = create((set, get) => ({
             const response = await api.get('/admin/users');
             set({ users: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch users', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch users', loading: false });
         }
     },
 
@@ -23,7 +23,7 @@ const useUserStore = create((set, get) => ({
             const response = await api.get(`/admin/users/${id}`);
             set({ currentUser: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch user', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch user', loading: false });
         }
     },
 
@@ -38,7 +38,7 @@ const useUserStore = create((set, get) => ({
             }));
             return { success: true, data: newUser };
         } catch (error) {
-            const message = error.message || 'Failed to create user';
+            const message = error.response?.data?.message || 'Failed to create user';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -57,7 +57,7 @@ const useUserStore = create((set, get) => ({
             }));
             return { success: true, data: updatedUser };
         } catch (error) {
-            const message = error.message || 'Failed to update user';
+            const message = error.response?.data?.message || 'Failed to update user';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -73,7 +73,7 @@ const useUserStore = create((set, get) => ({
             }));
             return { success: true };
         } catch (error) {
-            const message = error.message || 'Failed to delete user';
+            const message = error.response?.data?.message || 'Failed to delete user';
             set({ error: message, loading: false });
             return { success: false, message };
         }

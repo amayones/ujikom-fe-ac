@@ -12,28 +12,19 @@ const usePriceStore = create((set) => ({
       const response = await api.get('/admin/prices');
       set({ prices: response.data?.data || [], loading: false });
     } catch (error) {
-      set({ error: error.message || 'Failed to fetch prices', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to fetch prices', loading: false });
     }
   },
 
-  updatePrice: async (id, priceData) => {
+  updatePrice: async (type, priceData) => {
     set({ loading: true, error: null });
     try {
-      const response = await api.put(`/admin/prices/${id}`, priceData);
-      const updatedPrice = response.data?.data;
-      if (updatedPrice) {
-        set(state => ({
-          prices: state.prices.map(price => 
-            price.id === id ? updatedPrice : price
-          ),
-          loading: false
-        }));
-      } else {
-        set({ loading: false });
-      }
-      return updatedPrice;
+      await api.put(`/admin/prices/${type}`, priceData);
+      const pricesResponse = await api.get('/admin/prices');
+      set({ prices: pricesResponse.data?.data || [], loading: false });
+      return { success: true };
     } catch (error) {
-      set({ error: error.message || 'Failed to update price', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to update price', loading: false });
       throw error;
     }
   },

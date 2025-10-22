@@ -1,5 +1,6 @@
 import React from 'react';
 import { Scan, CheckCircle } from 'lucide-react';
+import Layout from '../../components/Layout';
 
 export default function ProcessOnline() {
     const onlineOrders = [
@@ -8,8 +9,8 @@ export default function ProcessOnline() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-gray-900">
-            <div className="container mx-auto px-6 py-12">
+        <Layout>
+            <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-gray-900 min-h-screen -m-4 md:-m-6 p-4 md:p-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center gap-4 mb-10">
                         <div className="p-3 bg-amber-500/20 rounded-xl">
@@ -24,25 +25,25 @@ export default function ProcessOnline() {
                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-amber-200/50 shadow-2xl">
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gray-700">
+                            <thead className="bg-amber-100">
                                 <tr>
-                                    <th className="px-4 py-3 text-left">ID Pesanan</th>
-                                    <th className="px-4 py-3 text-left">Pelanggan</th>
-                                    <th className="px-4 py-3 text-left">Film</th>
-                                    <th className="px-4 py-3 text-left">Kursi</th>
-                                    <th className="px-4 py-3 text-left">Status</th>
-                                    <th className="px-4 py-3 text-left">Aksi</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">ID Pesanan</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Pelanggan</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Film</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Kursi</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Status</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {onlineOrders.map(order => (
-                                    <tr key={order.id} className="border-b border-gray-700">
+                                    <tr key={order.id} className="border-b border-gray-200 hover:bg-amber-50">
                                         <td className="px-4 py-3">{order.id}</td>
                                         <td className="px-4 py-3">{order.customer}</td>
                                         <td className="px-4 py-3">{order.movie}</td>
                                         <td className="px-4 py-3">{order.seats.join(', ')}</td>
                                         <td className="px-4 py-3">
-                                            <span className={`px-2 py-1 rounded text-xs ${
+                                            <span className={`px-2 py-1 rounded text-xs text-white ${
                                                 order.status === 'confirmed' ? 'bg-green-600' : 'bg-yellow-600'
                                             }`}>
                                                 {order.status}
@@ -63,9 +64,9 @@ export default function ProcessOnline() {
                             </tbody>
                         </table>
                     </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
+        </Layout>
     );
 }

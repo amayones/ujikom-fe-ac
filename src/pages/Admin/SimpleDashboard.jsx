@@ -1,6 +1,7 @@
 import React from 'react';
 import { Film, Users, Calendar, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Layout from '../../components/Layout';
 
 export default function SimpleDashboard() {
     const quickActions = [
@@ -35,8 +36,8 @@ export default function SimpleDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-4xl mx-auto">
+        <Layout>
+            <div className="text-white max-w-4xl mx-auto">
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent mb-4">
                         Admin Panel
@@ -86,6 +87,6 @@ export default function SimpleDashboard() {
                     </div>
                 </div>
             </div>
-        </div>
+        </Layout>
     );
 }

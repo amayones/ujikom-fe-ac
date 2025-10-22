@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Toast from '../../components/Toast';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
 
 
 
@@ -74,7 +76,7 @@ export default function Register() {
         // Simulate register process
         setTimeout(() => {
             setLoading(false);
-            alert('Registrasi berhasil! (Demo mode)');
+            setToast({ show: true, type: 'success', message: 'Registrasi berhasil! (Demo mode)' });
         }, 1000);
     };
 
@@ -239,6 +241,14 @@ export default function Register() {
                     </Link>
                 </p>
             </div>
+            
+            {/* Toast */}
+            <Toast
+                type={toast.type}
+                message={toast.message}
+                isVisible={toast.show}
+                onClose={() => setToast({ ...toast, show: false })}
+            />
         </div>
     );
 }

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import api from '../api';
 
-const usePaymentStore = create((set, get) => ({
+const usePaymentStore = create((set) => ({
     paymentMethods: [],
     selectedMethod: null,
     loading: false,
@@ -16,7 +16,7 @@ const usePaymentStore = create((set, get) => ({
             );
             set({ paymentMethods: methods, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch payment methods', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch payment methods', loading: false });
         }
     },
 

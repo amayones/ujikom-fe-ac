@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar } from 'lucide-react';
 import useScheduleStore from '../../store/scheduleStore';
 import ScheduleForm from './ScheduleForm';
+import Layout from '../../components/Layout';
+import ConfirmModal from '../../components/ConfirmModal';
 
 export default function ManageSchedules() {
     const { schedules, films, prices, loading, error, fetchSchedules, fetchFilms, fetchPrices, addSchedule, updateSchedule, deleteSchedule, clearError } = useScheduleStore();
     const [showModal, setShowModal] = useState(false);
     const [editingSchedule, setEditingSchedule] = useState(null);
     const [notification, setNotification] = useState('');
+    const [confirmModal, setConfirmModal] = useState({ show: false, scheduleId: null });
 
     useEffect(() => {
         fetchSchedules();
@@ -51,21 +54,24 @@ export default function ManageSchedules() {
         }
     };
 
-    const handleDelete = async (scheduleId) => {
-        if (confirm('Are you sure you want to delete this schedule?')) {
-            try {
-                await deleteSchedule(scheduleId);
-                setNotification('Schedule deleted successfully');
-                setTimeout(() => setNotification(''), 3000);
-            } catch {
-                // Error handled by store
-            }
+    const handleDeleteClick = (scheduleId) => {
+        setConfirmModal({ show: true, scheduleId });
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await deleteSchedule(confirmModal.scheduleId);
+            setNotification('Schedule deleted successfully');
+            setTimeout(() => setNotification(''), 3000);
+            setConfirmModal({ show: false, scheduleId: null });
+        } catch {
+            // Error handled by store
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-7xl mx-auto">
+        <Layout>
+            <div className="text-white">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold">Manage Schedules</h1>
                     <button
@@ -121,7 +127,7 @@ export default function ManageSchedules() {
                                                         Edit
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDelete(schedule.id)}
+                                                        onClick={() => handleDeleteClick(schedule.id)}
                                                         className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
                                                     >
                                                         <Trash2 className="w-3 h-3" />
@@ -158,7 +164,16 @@ export default function ManageSchedules() {
                         loading={loading}
                     />
                 )}
+
+                {/* Confirm Modal */}
+                <ConfirmModal
+                    isOpen={confirmModal.show}
+                    title="Delete Schedule"
+                    message="Are you sure you want to delete this schedule? This action cannot be undone."
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setConfirmModal({ show: false, scheduleId: null })}
+                />
             </div>
-        </div>
+        </Layout>
     );
 }

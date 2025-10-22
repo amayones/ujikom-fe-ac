@@ -1,5 +1,6 @@
 import React from 'react';
 import { Printer, Search } from 'lucide-react';
+import Layout from '../../components/Layout';
 
 export default function PrintTicket() {
     const tickets = [
@@ -8,8 +9,8 @@ export default function PrintTicket() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-gray-900">
-            <div className="container mx-auto px-6 py-12">
+        <Layout>
+            <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-gray-900 min-h-screen -m-4 md:-m-6 p-4 md:p-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center gap-4 mb-10">
                         <div className="p-3 bg-amber-500/20 rounded-xl">
@@ -39,32 +40,32 @@ export default function PrintTicket() {
 
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gray-700">
+                            <thead className="bg-amber-100">
                                 <tr>
-                                    <th className="px-4 py-3 text-left">ID Tiket</th>
-                                    <th className="px-4 py-3 text-left">Pelanggan</th>
-                                    <th className="px-4 py-3 text-left">Film</th>
-                                    <th className="px-4 py-3 text-left">Kursi</th>
-                                    <th className="px-4 py-3 text-left">Status</th>
-                                    <th className="px-4 py-3 text-left">Aksi</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">ID Tiket</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Pelanggan</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Film</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Kursi</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Status</th>
+                                    <th className="px-4 py-3 text-left text-gray-800 font-semibold">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {tickets.map(ticket => (
-                                    <tr key={ticket.id} className="border-b border-gray-700">
+                                    <tr key={ticket.id} className="border-b border-gray-200 hover:bg-amber-50">
                                         <td className="px-4 py-3">{ticket.id}</td>
                                         <td className="px-4 py-3">{ticket.customer}</td>
                                         <td className="px-4 py-3">{ticket.movie}</td>
                                         <td className="px-4 py-3">{ticket.seat}</td>
                                         <td className="px-4 py-3">
-                                            <span className={`px-2 py-1 rounded text-xs ${
+                                            <span className={`px-2 py-1 rounded text-xs text-white ${
                                                 ticket.status === 'paid' ? 'bg-green-600' : 'bg-yellow-600'
                                             }`}>
                                                 {ticket.status}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <button className="flex items-center gap-1 bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-sm">
+                                            <button className="flex items-center gap-1 bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm">
                                                 <Printer className="w-3 h-3" />
                                                 Cetak
                                             </button>
@@ -74,9 +75,9 @@ export default function PrintTicket() {
                             </tbody>
                         </table>
                     </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
+        </Layout>
     );
 }

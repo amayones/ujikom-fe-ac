@@ -17,7 +17,6 @@ const useDashboardStore = create((set) => ({
   fetchDashboardData: async () => {
     set({ loading: true, error: null });
     try {
-      // Fetch all data in parallel
       const [moviesRes, customersRes, schedulesRes] = await Promise.all([
         api.get('/admin/films'),
         api.get('/admin/users'),
@@ -28,15 +27,13 @@ const useDashboardStore = create((set) => ({
       const customers = customersRes.data.data || [];
       const schedules = schedulesRes.data.data || [];
 
-      // Calculate stats
       const stats = {
         totalMovies: movies.length,
         totalCustomers: customers.filter(u => u.role === 'customer').length,
         totalSchedules: schedules.length,
-        totalRevenue: Math.floor(Math.random() * 50000000) // Mock revenue
+        totalRevenue: Math.floor(Math.random() * 50000000)
       };
 
-      // Get recent data
       const recentMovies = movies.slice(0, 5);
       const recentCustomers = customers.filter(u => u.role === 'customer').slice(0, 5);
       const upcomingSchedules = schedules.slice(0, 5);

@@ -33,27 +33,27 @@ export default function Ticket() {
     }
 
     return (
-        <div className="bg-gray-900 min-h-screen text-white p-6">
+        <div className="min-h-screen bg-gradient-to-br from-rose-900 via-pink-900 to-red-900 text-white p-6">
             <div className="max-w-2xl mx-auto">
                 {/* Success Message */}
-                <div className="bg-green-600 rounded-lg p-6 mb-6 text-center">
+                <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-6 mb-6 text-center shadow-lg">
                     <div className="text-4xl mb-2">🎉</div>
                     <h1 className="text-2xl font-bold mb-2">Pembayaran Berhasil!</h1>
-                    <p className="text-green-100">Tiket Anda telah berhasil dipesan</p>
+                    <p className="text-green-50">Tiket Anda telah berhasil dipesan</p>
                 </div>
 
                 {/* Ticket */}
-                <div className="bg-white text-black rounded-lg overflow-hidden shadow-2xl">
+                <div className="bg-white text-black rounded-2xl overflow-hidden shadow-2xl border border-rose-200">
                     {/* Header */}
-                    <div className="bg-red-600 text-white p-6 text-center">
+                    <div className="bg-gradient-to-r from-rose-600 to-pink-600 text-white p-6 text-center">
                         <h2 className="text-2xl font-bold">ABSOLUTE CINEMA</h2>
-                        <p className="text-red-100">E-TICKET</p>
+                        <p className="text-rose-100">E-TICKET</p>
                     </div>
 
                     {/* Movie Info */}
-                    <div className="p-6 border-b-2 border-dashed border-gray-300">
+                    <div className="p-6 border-b-2 border-dashed border-rose-200">
                         <div className="flex items-center gap-4 mb-4">
-                            <div className="w-20 h-28 bg-gray-200 rounded flex items-center justify-center">
+                            <div className="w-20 h-28 bg-rose-100 rounded flex items-center justify-center">
                                 {film?.poster ? (
                                     <img src={film.poster} alt={film.judul} className="w-full h-full object-cover rounded" />
                                 ) : (
@@ -70,30 +70,30 @@ export default function Ticket() {
                         {/* Details Grid */}
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4 text-red-600" />
+                                <Calendar className="w-4 h-4 text-rose-600" />
                                 <div>
-                                    <p className="text-gray-500">Tanggal</p>
+                                    <p className="text-rose-500">Tanggal</p>
                                     <p className="font-semibold">{schedule?.tanggal || new Date().toLocaleDateString()}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Clock className="w-4 h-4 text-red-600" />
+                                <Clock className="w-4 h-4 text-rose-600" />
                                 <div>
-                                    <p className="text-gray-500">Waktu</p>
+                                    <p className="text-rose-500">Waktu</p>
                                     <p className="font-semibold">{schedule?.jam || '19:00'}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-red-600" />
+                                <MapPin className="w-4 h-4 text-rose-600" />
                                 <div>
-                                    <p className="text-gray-500">Studio</p>
+                                    <p className="text-rose-500">Studio</p>
                                     <p className="font-semibold">{schedule?.studio?.nama || 'Studio 1'}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Users className="w-4 h-4 text-red-600" />
+                                <Users className="w-4 h-4 text-rose-600" />
                                 <div>
-                                    <p className="text-gray-500">Kursi</p>
+                                    <p className="text-rose-500">Kursi</p>
                                     <p className="font-semibold">{seats?.map(s => s.nomor_kursi).join(', ') || '1, 2'}</p>
                                 </div>
                             </div>
@@ -102,23 +102,23 @@ export default function Ticket() {
 
                     {/* QR Code */}
                     <div className="p-6 text-center">
-                        <div className="bg-gray-100 p-4 rounded-lg inline-block mb-4">
-                            <QrCode className="w-32 h-32 text-gray-800 mx-auto" />
-                            <p className="text-xs text-gray-500 mt-2">Scan QR Code di bioskop</p>
+                        <div className="bg-rose-50 p-4 rounded-lg inline-block mb-4 border border-rose-200">
+                            <QrCode className="w-32 h-32 text-rose-800 mx-auto" />
+                            <p className="text-xs text-rose-600 mt-2">Scan QR Code di bioskop</p>
                         </div>
                         
                         <div className="text-center">
                             <p className="text-lg font-bold text-gray-800 mb-2">
                                 Total: Rp {(totalPrice || 100000).toLocaleString()}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-rose-600">
                                 Tunjukkan tiket ini kepada petugas bioskop
                             </p>
                         </div>
                     </div>
 
                     {/* Footer */}
-                    <div className="bg-gray-100 p-4 text-center text-xs text-gray-500">
+                    <div className="bg-rose-50 p-4 text-center text-xs text-rose-600 border-t border-rose-200">
                         <p>Tiket ini berlaku untuk 1 kali penayangan</p>
                         <p>Harap datang 15 menit sebelum film dimulai</p>
                     </div>
@@ -127,9 +127,9 @@ export default function Ticket() {
 
 
                 {/* Important Notes */}
-                <div className="bg-yellow-600 rounded-lg p-4 mt-6">
+                <div className="bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl p-4 mt-6 shadow-lg">
                     <h4 className="font-bold mb-2">Penting:</h4>
-                    <ul className="text-sm space-y-1">
+                    <ul className="text-sm space-y-1 text-amber-50">
                         <li>• Tunjukkan QR code ini kepada petugas</li>
                         <li>• Datang 15 menit sebelum film dimulai</li>
                         <li>• Tiket tidak dapat dikembalikan</li>

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import api from '../api';
 
-const useOrderStore = create((set, get) => ({
+const useOrderStore = create((set) => ({
     orders: [],
     currentOrder: null,
     loading: false,
@@ -13,7 +13,7 @@ const useOrderStore = create((set, get) => ({
             const response = await api.get('/orders');
             set({ orders: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch orders', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch orders', loading: false });
         }
     },
 
@@ -23,7 +23,7 @@ const useOrderStore = create((set, get) => ({
             const response = await api.get(`/orders/${id}`);
             set({ currentOrder: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch order', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch order', loading: false });
         }
     },
 
@@ -39,7 +39,7 @@ const useOrderStore = create((set, get) => ({
             }));
             return { success: true, data: newOrder };
         } catch (error) {
-            const message = error.message || 'Failed to create order';
+            const message = error.response?.data?.message || 'Failed to create order';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -51,7 +51,7 @@ const useOrderStore = create((set, get) => ({
             const response = await api.post('/payment/process', paymentData);
             return { success: true, data: response.data.data };
         } catch (error) {
-            const message = error.message || 'Payment failed';
+            const message = error.response?.data?.message || 'Payment failed';
             set({ error: message, loading: false });
             return { success: false, message };
         }

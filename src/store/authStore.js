@@ -24,8 +24,6 @@ const useAuthStore = create(
                         loading: false 
                     });
                     
-                    // Token will be automatically included in future requests
-                    
                     return { success: true, user };
                 } catch (error) {
                     const message = error.response?.data?.message || 'Login failed';
@@ -59,13 +57,10 @@ const useAuthStore = create(
                     token: null, 
                     isAuthenticated: false 
                 });
-                
-                // Token will be automatically removed from future requests
             },
 
             clearError: () => set({ error: null }),
 
-            // Initialize auth state from storage
             initAuth: () => {
                 const { token } = get();
                 if (token) {

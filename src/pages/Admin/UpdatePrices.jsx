@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DollarSign, Save } from 'lucide-react';
+import Layout from '../../components/Layout';
 
 export default function UpdatePrices() {
     const [prices, setPrices] = useState([
@@ -15,8 +16,8 @@ export default function UpdatePrices() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-4xl mx-auto">
+        <Layout>
+            <div className="text-white max-w-4xl mx-auto">
                 <h1 className="text-3xl font-bold mb-8">Update Harga Tiket</h1>
                 
                 <div className="bg-gray-800 rounded-lg p-6">
@@ -60,6 +61,6 @@ export default function UpdatePrices() {
                     </div>
                 </div>
             </div>
-        </div>
+        </Layout>
     );
 }

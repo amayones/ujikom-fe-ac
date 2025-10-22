@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import api from '../api';
 
-const useCashierStore = create((set, get) => ({
+const useCashierStore = create((set) => ({
     cashiers: [],
     stats: {},
     currentBooking: null,
@@ -9,21 +9,21 @@ const useCashierStore = create((set, get) => ({
     loading: false,
     error: null,
 
-    // Admin functions for managing cashiers
     fetchCashiers: async () => {
         set({ loading: true, error: null });
         try {
-            const response = await api.get('/admin/cashiers');
-            set({ cashiers: response.data.data, loading: false });
+            const response = await api.get('/admin/users');
+            const cashiers = response.data.data.filter(user => user.role === 'cashier');
+            set({ cashiers, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch cashiers', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch cashiers', loading: false });
         }
     },
 
     addCashier: async (cashierData) => {
         set({ loading: true, error: null });
         try {
-            const response = await api.post('/admin/cashiers', { ...cashierData, role: 'cashier' });
+            const response = await api.post('/admin/users', { ...cashierData, role: 'cashier' });
             const newCashier = response.data.data;
             set(state => ({ 
                 cashiers: [...state.cashiers, newCashier], 
@@ -31,7 +31,7 @@ const useCashierStore = create((set, get) => ({
             }));
             return { success: true, data: newCashier };
         } catch (error) {
-            const message = error.message || 'Failed to add cashier';
+            const message = error.response?.data?.message || 'Failed to add cashier';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -40,7 +40,7 @@ const useCashierStore = create((set, get) => ({
     updateCashier: async (id, cashierData) => {
         set({ loading: true, error: null });
         try {
-            const response = await api.put(`/admin/cashiers/${id}`, cashierData);
+            const response = await api.put(`/admin/users/${id}`, cashierData);
             const updatedCashier = response.data.data;
             set(state => ({
                 cashiers: state.cashiers.map(cashier => 
@@ -50,7 +50,7 @@ const useCashierStore = create((set, get) => ({
             }));
             return { success: true, data: updatedCashier };
         } catch (error) {
-            const message = error.message || 'Failed to update cashier';
+            const message = error.response?.data?.message || 'Failed to update cashier';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -59,27 +59,26 @@ const useCashierStore = create((set, get) => ({
     deleteCashier: async (id) => {
         set({ loading: true, error: null });
         try {
-            await api.delete(`/admin/cashiers/${id}`);
+            await api.delete(`/admin/users/${id}`);
             set(state => ({
                 cashiers: state.cashiers.filter(cashier => cashier.id !== id),
                 loading: false
             }));
             return { success: true };
         } catch (error) {
-            const message = error.message || 'Failed to delete cashier';
+            const message = error.response?.data?.message || 'Failed to delete cashier';
             set({ error: message, loading: false });
             return { success: false, message };
         }
     },
 
-    // Cashier dashboard functions
     fetchDashboard: async () => {
         set({ loading: true, error: null });
         try {
             const response = await api.get('/cashier/dashboard');
             set({ stats: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch dashboard', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch dashboard', loading: false });
         }
     },
 
@@ -91,7 +90,7 @@ const useCashierStore = create((set, get) => ({
             set({ currentBooking: booking, loading: false });
             return { success: true, data: booking };
         } catch (error) {
-            const message = error.message || 'Failed to create booking';
+            const message = error.response?.data?.message || 'Failed to create booking';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -105,7 +104,7 @@ const useCashierStore = create((set, get) => ({
             set({ loading: false });
             return { success: true, data: ticket };
         } catch (error) {
-            const message = error.message || 'Failed to get ticket data';
+            const message = error.response?.data?.message || 'Failed to get ticket data';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -119,7 +118,20 @@ const useCashierStore = create((set, get) => ({
             set({ validatedTicket: ticket, loading: false });
             return { success: true, data: ticket };
         } catch (error) {
-            const message = error.message || 'Failed to validate ticket';
+            const message = error.response?.data?.message || 'Failed to validate ticket';
+            set({ error: message, loading: false });
+            return { success: false, message };
+        }
+    },
+
+    fetchTransactions: async () => {
+        set({ loading: true, error: null });
+        try {
+            const response = await api.get('/cashier/transactions');
+            set({ loading: false });
+            return { success: true, data: response.data.data };
+        } catch (error) {
+            const message = error.response?.data?.message || 'Failed to fetch transactions';
             set({ error: message, loading: false });
             return { success: false, message };
         }

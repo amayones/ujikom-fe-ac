@@ -13,7 +13,7 @@ const useScheduleStore = create((set, get) => ({
             const response = await api.get('/schedules');
             set({ schedules: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch schedules', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch schedules', loading: false });
         }
     },
 
@@ -23,7 +23,7 @@ const useScheduleStore = create((set, get) => ({
             const response = await api.get(`/schedules/${id}`);
             set({ currentSchedule: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch schedule', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch schedule', loading: false });
         }
     },
 
@@ -38,7 +38,7 @@ const useScheduleStore = create((set, get) => ({
             }));
             return { success: true, data: newSchedule };
         } catch (error) {
-            const message = error.message || 'Failed to create schedule';
+            const message = error.response?.data?.message || 'Failed to create schedule';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -57,7 +57,7 @@ const useScheduleStore = create((set, get) => ({
             }));
             return { success: true, data: updatedSchedule };
         } catch (error) {
-            const message = error.message || 'Failed to update schedule';
+            const message = error.response?.data?.message || 'Failed to update schedule';
             set({ error: message, loading: false });
             return { success: false, message };
         }
@@ -73,7 +73,7 @@ const useScheduleStore = create((set, get) => ({
             }));
             return { success: true };
         } catch (error) {
-            const message = error.message || 'Failed to delete schedule';
+            const message = error.response?.data?.message || 'Failed to delete schedule';
             set({ error: message, loading: false });
             return { success: false, message };
         }

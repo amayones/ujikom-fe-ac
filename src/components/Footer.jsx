@@ -1,9 +1,25 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import useSidebarStore from '../store/sidebarStore';
 
 export default function Footer() {
+    const location = useLocation();
+    const currentPath = location.pathname;
+    const { collapsed } = useSidebarStore();
+    
+    const getCurrentRole = () => {
+        if (currentPath.startsWith('/admin')) return 'admin';
+        if (currentPath.startsWith('/owner')) return 'owner';
+        if (currentPath.startsWith('/cashier')) return 'cashier';
+        return 'customer';
+    };
+    
+    const currentRole = getCurrentRole();
+    const isRoleBasedPage = currentRole !== 'customer';
+    
     return (
-        <footer className="bg-black text-gray-300">
+        <footer className={`bg-black text-gray-300 transition-all duration-300 ${isRoleBasedPage ? (collapsed ? 'ml-0 md:ml-20' : 'ml-0 md:ml-64') : ''}`}>
             <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
 
                 {/* Brand & About */}

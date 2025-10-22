@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children, allowedRoles = [] }) {
     }
 
     if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
-        // Redirect to appropriate dashboard based on user role
+        // redirect to user's dashboard
         switch (user?.role) {
             case 'admin':
                 return <Navigate to="/admin" replace />;

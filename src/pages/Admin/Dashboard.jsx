@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Film, Users, Calendar, TrendingUp, Clock, Star, Activity, BarChart3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useDashboardStore from '../../store/dashboardStore';
+import Layout from '../../components/Layout';
 
 export default function AdminDashboard() {
     const { stats, recentMovies, recentCustomers, upcomingSchedules, loading, error, fetchDashboardData } = useDashboardStore();
@@ -47,19 +48,17 @@ export default function AdminDashboard() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-900 text-white p-6">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center justify-center h-64">
-                        <div className="text-gray-400">Loading dashboard...</div>
-                    </div>
+            <Layout>
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-gray-400">Loading dashboard...</div>
                 </div>
-            </div>
+            </Layout>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-7xl mx-auto">
+        <Layout>
+            <div className="text-white">
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent mb-2">
@@ -227,6 +226,6 @@ export default function AdminDashboard() {
                     </Link>
                 </div>
             </div>
-        </div>
+        </Layout>
     );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Receipt, Plus, User, Film, Clock } from 'lucide-react';
+import Layout from '../../components/Layout';
 
 export default function OfflineBooking() {
     const [booking, setBooking] = useState({
@@ -16,8 +17,8 @@ export default function OfflineBooking() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-gray-900">
-            <div className="container mx-auto px-6 py-12">
+        <Layout>
+            <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-gray-900 min-h-screen -m-4 md:-m-6 p-4 md:p-6">
                 <div className="max-w-5xl mx-auto">
                     <div className="flex items-center gap-4 mb-10">
                         <div className="p-3 bg-amber-500/20 rounded-xl">
@@ -95,9 +96,9 @@ export default function OfflineBooking() {
                         <Plus className="w-5 h-5" />
                         Buat Pesanan
                     </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
+        </Layout>
     );
 }

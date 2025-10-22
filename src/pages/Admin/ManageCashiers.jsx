@@ -4,6 +4,7 @@ import useCashierStore from '../../store/cashierStore';
 import CashierForm from './CashierForm';
 import ConfirmModal from '../../components/ConfirmModal';
 import Toast from '../../components/Toast';
+import Layout from '../../components/Layout';
 
 export default function ManageCashiers() {
     const { cashiers, loading, error, fetchCashiers, addCashier, updateCashier, deleteCashier, clearError } = useCashierStore();
@@ -69,8 +70,8 @@ export default function ManageCashiers() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-7xl mx-auto">
+        <Layout>
+            <div className="text-white">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold">Manage Cashiers</h1>
                     <button
@@ -183,6 +184,6 @@ export default function ManageCashiers() {
                     onClose={() => setToast({ ...toast, show: false })}
                 />
             </div>
-        </div>
+        </Layout>
     );
 }

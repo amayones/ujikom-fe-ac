@@ -12,7 +12,7 @@ const useCustomerStore = create((set) => ({
       const response = await api.get('/admin/users');
       set({ customers: response.data?.data || [], loading: false });
     } catch (error) {
-      set({ error: error.message || 'Failed to fetch customers', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to fetch customers', loading: false });
     }
   },
 
@@ -23,7 +23,7 @@ const useCustomerStore = create((set) => ({
       set({ loading: false });
       return response.data?.data;
     } catch (error) {
-      set({ error: error.message || 'Failed to fetch customer', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to fetch customer', loading: false });
       throw error;
     }
   },
@@ -56,7 +56,7 @@ const useCustomerStore = create((set) => ({
       
       return newCustomer || tempCustomer;
     } catch (error) {
-      set({ error: error.message || 'Failed to add customer', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to add customer', loading: false });
       throw error;
     }
   },
@@ -90,7 +90,7 @@ const useCustomerStore = create((set) => ({
       
       return serverCustomer || updatedCustomer;
     } catch (error) {
-      set({ error: error.message || 'Failed to update customer', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to update customer', loading: false });
       throw error;
     }
   },
@@ -104,7 +104,7 @@ const useCustomerStore = create((set) => ({
         loading: false
       }));
     } catch (error) {
-      set({ error: error.message || 'Failed to delete customer', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to delete customer', loading: false });
       throw error;
     }
   },

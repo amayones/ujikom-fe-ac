@@ -1,166 +1,312 @@
-import React, { useEffect } from "react";
-import { Film, Calendar, ArrowRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Film, Calendar, ArrowRight, Play, Pause, Volume2, VolumeX, Star, Clock, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import useFilmStore from "../../store/filmStore";
 
 export default function Home() {
     const { fetchFilms, films, loading } = useFilmStore();
+    const [featuredMovie, setFeaturedMovie] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [isMuted, setIsMuted] = useState(true);
 
     useEffect(() => {
         fetchFilms();
     }, [fetchFilms]);
 
+    useEffect(() => {
+        if (films.length > 0) {
+            const featured = films.find(movie => movie.status === 'now_playing') || films[0];
+            setFeaturedMovie(featured);
+        }
+    }, [films]);
+
     const nowPlayingFilms = films.filter(movie => movie.status === 'now_playing');
     const comingSoonFilms = films.filter(movie => movie.status === 'coming_soon');
+    const trendingFilms = films.slice(0, 6);
 
     if (loading) {
         return (
-            <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+            <div className="bg-black min-h-screen flex items-center justify-center">
                 <div className="text-white text-xl">Loading...</div>
             </div>
         );
     }
 
     return (
-        <div className="relative bg-gray-900 text-white overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-black to-gray-900"></div>
-            
-            {/* Hero Section */}
-            <section className="relative w-full h-screen flex items-center justify-center z-10">
-                <div className="text-center z-10 px-6">
-                    <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-red-500 to-yellow-500 bg-clip-text text-transparent">
-                        Absolute Cinema
-                    </h1>
-                    <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                        Rasakan pengalaman menonton yang tak terlupakan dengan teknologi terdepan dan kenyamanan maksimal
-                    </p>
-                    <Link
-                        to="/now-playing"
-                        className="inline-flex items-center gap-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 transform hover:scale-105"
-                    >
-                        Jelajahi Film <ArrowRight className="w-5 h-5" />
-                    </Link>
-                </div>
-            </section>
-
-
-
-            {/* Now Showing - Enhanced */}
-            <section className="relative w-full py-20 px-6 bg-gray-900 z-10">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-                            <Film className="w-10 h-10 text-red-500" /> 
-                            <span className="bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
-                                Sedang Tayang
-                            </span>
-                        </h2>
-                        <p className="text-gray-400 text-lg">Film-film terbaru yang wajib kamu tonton</p>
+        <div className="relative bg-gradient-to-br from-red-900 via-rose-900 to-red-800 text-white overflow-hidden">
+            {/* Featured Movie Trailer Section */}
+            {featuredMovie && (
+                <section className="relative w-full h-screen overflow-hidden">
+                    {/* Background Video/Image */}
+                    <div className="absolute inset-0">
+                        <img 
+                            src={featuredMovie.poster} 
+                            alt={featuredMovie.title}
+                            className="w-full h-full object-cover scale-110 blur-sm"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-900/90 via-red-900/70 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-red-900/90 via-transparent to-red-900/50" />
                     </div>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                        {nowPlayingFilms.map((movie) => (
-                            <div key={movie.id} className="bg-gray-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-transform">
-                                <img 
-                                    src={movie.poster} 
-                                    alt={movie.title}
-                                    className="w-full h-64 object-cover"
-                                />
-                                <div className="p-4">
-                                    <h3 className="text-xl font-semibold text-white mb-2">{movie.title}</h3>
-                                    <p className="text-gray-400 mb-2">{movie.genre}</p>
-                                    <p className="text-gray-400 mb-4">{movie.duration} min</p>
-                                    <Link 
-                                        to={`/movies/${movie.id}`}
-                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                    {/* Content */}
+                    <div className="relative z-10 h-full flex items-center">
+                        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+                            {/* Movie Info */}
+                            <div className="space-y-6">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/20 backdrop-blur-sm rounded-full border border-red-500/30">
+                                    <Film className="w-4 h-4 text-red-400" />
+                                    <span className="text-sm text-red-300 font-medium">Featured Movie</span>
+                                </div>
+                                
+                                <h1 className="text-6xl lg:text-7xl font-black leading-tight text-white">
+                                    {featuredMovie.title}
+                                </h1>
+                                
+                                <div className="flex items-center gap-6 text-white/80">
+                                    <div className="flex items-center gap-2">
+                                        <Star className="w-5 h-5 text-yellow-400" />
+                                        <span>8.5</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="w-5 h-5" />
+                                        <span>{featuredMovie.duration} min</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Users className="w-5 h-5" />
+                                        <span>{featuredMovie.genre}</span>
+                                    </div>
+                                </div>
+                                
+                                <p className="text-lg text-white/80 leading-relaxed max-w-xl">
+                                    {featuredMovie.description || "Experience the ultimate cinematic adventure with stunning visuals, compelling storytelling, and unforgettable performances that will keep you on the edge of your seat."}
+                                </p>
+                                
+                                <div className="flex items-center gap-4">
+                                    <button 
+                                        onClick={() => setIsPlaying(!isPlaying)}
+                                        className="flex items-center justify-center gap-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-red-500/25"
                                     >
-                                        Lihat Detail
+                                        {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+                                        {isPlaying ? 'Pause Trailer' : 'Watch Trailer'}
+                                    </button>
+                                    
+                                    <Link
+                                        to={`/booking/${featuredMovie.id}`}
+                                        className="flex items-center justify-center gap-3 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 border border-white/30 shadow-lg"
+                                    >
+                                        <Calendar className="w-6 h-6" />
+                                        Book Tickets
                                     </Link>
                                 </div>
                             </div>
-                        ))}
+                            
+                            {/* Trailer Player */}
+                            <div className="relative">
+                                <div className="aspect-video bg-black rounded-2xl overflow-hidden border-4 border-white/20 shadow-2xl">
+                                    {isPlaying ? (
+                                        <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+                                            <div className="text-center">
+                                                <Play className="w-16 h-16 text-white mb-4 mx-auto" />
+                                                <p className="text-white">Trailer Playing...</p>
+                                                <p className="text-gray-400 text-sm mt-2">Demo Mode</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="relative w-full h-full">
+                                            <img 
+                                                src={featuredMovie.poster} 
+                                                alt={featuredMovie.title}
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                                <button 
+                                                    onClick={() => setIsPlaying(true)}
+                                                    className="w-20 h-20 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110"
+                                                >
+                                                    <Play className="w-8 h-8 text-white ml-1" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                {/* Audio Control */}
+                                <button 
+                                    onClick={() => setIsMuted(!isMuted)}
+                                    className="absolute bottom-4 right-4 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all duration-300"
+                                >
+                                    {isMuted ? <VolumeX className="w-5 h-5 text-white" /> : <Volume2 className="w-5 h-5 text-white" />}
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div className="text-center">
+                </section>
+            )}
+
+            {/* Trending Movies Carousel */}
+            <section className="relative w-full py-20 px-6 bg-gradient-to-b from-rose-200 to-rose-300">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex items-center justify-between mb-12">
+                        <div>
+                            <h2 className="text-4xl font-black text-gray-800 mb-2">Trending This Week</h2>
+                            <p className="text-gray-600 text-lg">Most popular movies in theaters</p>
+                        </div>
                         <Link
                             to="/now-playing"
-                            className="inline-flex items-center gap-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 transform hover:scale-105"
+                            className="group flex items-center gap-2 text-rose-600 hover:text-rose-700 font-semibold transition-colors"
                         >
-                            Lihat Semua Film <ArrowRight className="w-5 h-5" />
+                            View All
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
-                </div>
-            </section>
-
-            {/* Coming Soon - Enhanced */}
-            <section className="relative w-full py-20 px-6 bg-gradient-to-b from-gray-800 to-gray-900 z-10">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-                            <Calendar className="w-10 h-10 text-yellow-400" /> 
-                            <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                                Segera Tayang
-                            </span>
-                        </h2>
-                        <p className="text-gray-400 text-lg">Siap-siap untuk petualangan sinema yang mendebarkan</p>
-                    </div>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                        {comingSoonFilms.map((movie) => (
-                            <div key={movie.id} className="bg-gray-800 rounded-lg overflow-hidden">
-                                <img 
-                                    src={movie.poster} 
-                                    alt={movie.title}
-                                    className="w-full h-64 object-cover"
-                                />
-                                <div className="p-4">
-                                    <h3 className="text-xl font-semibold text-white mb-2">{movie.title}</h3>
-                                    <p className="text-gray-400 mb-2">{movie.genre}</p>
-                                    <p className="text-gray-400">{movie.duration}</p>
-                                    <span className="inline-block mt-2 px-3 py-1 bg-yellow-600 text-white text-sm rounded">
-                                        Coming Soon
-                                    </span>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                        {trendingFilms.map((movie, index) => (
+                            <Link 
+                                key={movie.id}
+                                to={`/movies/${movie.id}`}
+                                className="group relative block"
+                            >
+                                <div className="relative overflow-hidden rounded-2xl bg-white/50 backdrop-blur-sm shadow-lg">
+                                    <img 
+                                        src={movie.poster} 
+                                        alt={movie.title}
+                                        className="w-full aspect-[3/4] object-cover group-hover:scale-110 transition-transform duration-500"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    
+                                    {/* Rank Badge */}
+                                    <div className="absolute top-3 left-3 w-8 h-8 bg-rose-600 rounded-full flex items-center justify-center">
+                                        <span className="text-white text-sm font-bold">{index + 1}</span>
+                                    </div>
+                                    
+                                    {/* Play Button */}
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div className="w-12 h-12 bg-rose-600 rounded-full flex items-center justify-center">
+                                            <Play className="w-6 h-6 text-white ml-0.5" />
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Movie Info */}
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                        <h3 className="text-white font-bold text-sm mb-1 line-clamp-2">{movie.title}</h3>
+                                        <div className="flex items-center gap-2 text-xs text-white/80">
+                                            <Clock className="w-3 h-3" />
+                                            <span>{movie.duration}m</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
-                    
-                    <div className="text-center">
-                        <Link
-                            to="/coming-soon"
-                            className="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black px-8 py-4 rounded-full font-bold text-lg shadow-2xl transition-all duration-300 transform hover:scale-105"
-                        >
-                            Lihat Semua <ArrowRight className="w-5 h-5" />
-                        </Link>
-                    </div>
                 </div>
             </section>
-
-            {/* Enhanced Call To Action */}
-            <section className="relative w-full py-24 px-6 bg-gradient-to-br from-red-900 via-red-700 to-red-500 text-center overflow-hidden z-10">
-                <div className="absolute inset-0 opacity-20">
-                    <div className="w-full h-full bg-repeat" style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E")`
-                    }} />
-                </div>
-                
-                <div className="relative z-10 max-w-4xl mx-auto animate-slide-up">
-                    <h2 className="text-5xl font-bold mb-6 text-white">
-                        Siap untuk Pengalaman 
-                        <span className="block text-yellow-300">Sinema Terbaik?</span>
-                    </h2>
-                    <p className="text-xl text-red-100 mb-10 max-w-2xl mx-auto leading-relaxed">
-                        Bergabunglah dengan jutaan penonton yang telah merasakan keajaiban Absolute Cinema. 
-                        Pesan tiketmu sekarang dan rasakan perbedaannya!
-                    </p>
-                    
-                    <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                        <button className="bg-white text-red-700 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-2xl">
-                            Mulai Booking Sekarang
-                        </button>
-                        <button className="border-2 border-white text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-red-700 transition-all duration-300 transform hover:scale-105">
-                            Pelajari Lebih Lanjut
-                        </button>
+            
+            {/* Movie Categories */}
+            <section className="relative w-full py-20 px-6 bg-rose-300">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid md:grid-cols-2 gap-12">
+                        {/* In Theaters */}
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 bg-rose-600 rounded-2xl flex items-center justify-center">
+                                    <Film className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-2xl font-bold text-gray-800">In Theaters</h3>
+                                    <p className="text-gray-600">Available for booking now</p>
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-4">
+                                {nowPlayingFilms.slice(0, 4).map((movie) => (
+                                    <Link 
+                                        key={movie.id}
+                                        to={`/movies/${movie.id}`}
+                                        className="group flex items-center gap-4 p-4 bg-white/50 hover:bg-white/70 rounded-2xl transition-colors backdrop-blur-sm shadow-lg"
+                                    >
+                                        <img 
+                                            src={movie.poster} 
+                                            alt={movie.title}
+                                            className="w-16 h-20 object-cover rounded-lg"
+                                        />
+                                        <div className="flex-1">
+                                            <h4 className="text-gray-800 font-semibold group-hover:text-rose-600 transition-colors">{movie.title}</h4>
+                                            <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                                                <span className="flex items-center gap-1">
+                                                    <Users className="w-3 h-3" />
+                                                    {movie.genre}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Clock className="w-3 h-3" />
+                                                    {movie.duration}m
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <ArrowRight className="w-5 h-5 text-gray-600 group-hover:text-rose-600 transition-colors" />
+                                    </Link>
+                                ))}
+                            </div>
+                            
+                            <Link
+                                to="/now-playing"
+                                className="inline-flex items-center gap-2 text-rose-600 hover:text-rose-700 font-semibold transition-colors"
+                            >
+                                View All Movies
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                        
+                        {/* Coming Soon */}
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 bg-pink-600 rounded-2xl flex items-center justify-center">
+                                    <Calendar className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-2xl font-bold text-gray-800">Coming Soon</h3>
+                                    <p className="text-gray-600">Get ready for these releases</p>
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-4">
+                                {comingSoonFilms.slice(0, 4).map((movie) => (
+                                    <Link 
+                                        key={movie.id}
+                                        to={`/movies/${movie.id}`}
+                                        className="group flex items-center gap-4 p-4 bg-white/50 hover:bg-white/70 rounded-2xl transition-colors backdrop-blur-sm shadow-lg"
+                                    >
+                                        <img 
+                                            src={movie.poster} 
+                                            alt={movie.title}
+                                            className="w-16 h-20 object-cover rounded-lg"
+                                        />
+                                        <div className="flex-1">
+                                            <h4 className="text-gray-800 font-semibold group-hover:text-pink-600 transition-colors">{movie.title}</h4>
+                                            <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                                                <span className="flex items-center gap-1">
+                                                    <Users className="w-3 h-3" />
+                                                    {movie.genre}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Clock className="w-3 h-3" />
+                                                    {movie.duration}m
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <ArrowRight className="w-5 h-5 text-gray-600 group-hover:text-pink-600 transition-colors" />
+                                    </Link>
+                                ))}
+                            </div>
+                            
+                            <Link
+                                to="/coming-soon"
+                                className="inline-flex items-center gap-2 text-pink-600 hover:text-pink-700 font-semibold transition-colors"
+                            >
+                                View All Upcoming
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -14,7 +14,7 @@ const useFilmStore = create((set, get) => ({
             const response = await api.get(endpoint);
             set({ films: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch films', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
         }
     },
 
@@ -24,7 +24,7 @@ const useFilmStore = create((set, get) => ({
             const response = await api.get('/films?status=now_playing');
             set({ films: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch films', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
         }
     },
 
@@ -34,7 +34,7 @@ const useFilmStore = create((set, get) => ({
             const response = await api.get('/films?status=coming_soon');
             set({ films: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch films', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
         }
     },
 
@@ -44,7 +44,7 @@ const useFilmStore = create((set, get) => ({
             const response = await api.get('/films?status=ended');
             set({ films: response.data.data, loading: false });
         } catch (error) {
-            set({ error: error.message || 'Failed to fetch films', loading: false });
+            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
         }
     },
 
@@ -117,6 +117,16 @@ const useFilmStore = create((set, get) => ({
             const message = error.response?.data?.message || 'Failed to delete film';
             set({ error: message, loading: false });
             return { success: false, message };
+        }
+    },
+
+    fetchAdminFilms: async () => {
+        set({ loading: true, error: null });
+        try {
+            const response = await api.get('/admin/films');
+            set({ films: response.data?.data || [], loading: false });
+        } catch (error) {
+            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
         }
     },
 

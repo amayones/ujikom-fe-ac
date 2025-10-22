@@ -7,7 +7,6 @@ import useAuthStore from "./store/authStore";
 
 function Layout() {
   const location = useLocation();
-
   const hideNavbar = location.pathname === '/login' || location.pathname === '/register';
 
   return (

@@ -12,7 +12,7 @@ const useSeatStore = create((set) => ({
       const response = await api.get(`/seats/studio/${studioId}`);
       set({ seats: response.data?.data || [], loading: false });
     } catch (error) {
-      set({ error: error.message || 'Failed to fetch seats', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to fetch seats', loading: false });
     }
   },
 
@@ -38,7 +38,7 @@ const useSeatStore = create((set) => ({
       }
       return updatedSeat || { ...seatData, id: seatId };
     } catch (error) {
-      set({ error: error.message || 'Failed to update seat', loading: false });
+      set({ error: error.response?.data?.message || 'Failed to update seat', loading: false });
       throw error;
     }
   },

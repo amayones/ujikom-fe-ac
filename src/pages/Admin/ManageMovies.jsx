@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
-import useMovieStore from '../../store/movieStore';
+import useFilmStore from '../../store/filmStore';
 import MovieForm from './MovieForm';
+import Layout from '../../components/Layout';
+import ConfirmModal from '../../components/ConfirmModal';
 
 export default function ManageMovies() {
-    const { movies, loading, error, fetchMovies, addMovie, updateMovie, deleteMovie, clearError } = useMovieStore();
+    const { films: movies, loading, error, fetchAdminFilms, createFilm, updateFilm, deleteFilm, clearError } = useFilmStore();
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [editingMovie, setEditingMovie] = useState(null);
     const [notification, setNotification] = useState('');
+    const [confirmModal, setConfirmModal] = useState({ show: false, movieId: null });
 
     useEffect(() => {
-        fetchMovies();
-    }, [fetchMovies]);
+        fetchAdminFilms();
+    }, [fetchAdminFilms]);
 
     useEffect(() => {
         if (error) {
@@ -42,10 +45,10 @@ export default function ManageMovies() {
     const handleSave = async (formData) => {
         try {
             if (editingMovie) {
-                await updateMovie(editingMovie.id, formData);
+                await updateFilm(editingMovie.id, formData);
                 setNotification('Movie updated successfully');
             } else {
-                await addMovie(formData);
+                await createFilm(formData);
                 setNotification('Movie added successfully');
             }
             setShowModal(false);
@@ -55,21 +58,24 @@ export default function ManageMovies() {
         }
     };
 
-    const handleDelete = async (movieId) => {
-        if (confirm('Are you sure you want to delete this movie?')) {
-            try {
-                await deleteMovie(movieId);
-                setNotification('Movie deleted successfully');
-                setTimeout(() => setNotification(''), 3000);
-            } catch {
-                // Error handled by store
-            }
+    const handleDeleteClick = (movieId) => {
+        setConfirmModal({ show: true, movieId });
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await deleteFilm(confirmModal.movieId);
+            setNotification('Movie deleted successfully');
+            setTimeout(() => setNotification(''), 3000);
+            setConfirmModal({ show: false, movieId: null });
+        } catch {
+            // Error handled by store
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-7xl mx-auto">
+        <Layout>
+            <div className="text-white">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold">Manage Movies</h1>
                     <button
@@ -144,7 +150,7 @@ export default function ManageMovies() {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(movie.id)}
+                                            onClick={() => handleDeleteClick(movie.id)}
                                             className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
                                         >
                                             <Trash2 className="w-3 h-3" />
@@ -177,7 +183,16 @@ export default function ManageMovies() {
                         loading={loading}
                     />
                 )}
+
+                {/* Confirm Modal */}
+                <ConfirmModal
+                    isOpen={confirmModal.show}
+                    title="Delete Movie"
+                    message="Are you sure you want to delete this movie? This action cannot be undone."
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setConfirmModal({ show: false, movieId: null })}
+                />
             </div>
-        </div>
+        </Layout>
     );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Armchair, Save } from 'lucide-react';
+import Layout from '../../components/Layout';
 
 export default function ManageSeats() {
     const [selectedStudio, setSelectedStudio] = useState('1');
@@ -31,8 +32,8 @@ export default function ManageSeats() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
-            <div className="max-w-6xl mx-auto">
+        <Layout>
+            <div className="text-white max-w-6xl mx-auto">
                 <h1 className="text-3xl font-bold mb-8">Kelola Status Kursi</h1>
                 
                 <div className="mb-6">
@@ -91,6 +92,6 @@ export default function ManageSeats() {
                     </div>
                 </div>
             </div>
-        </div>
+        </Layout>
     );
 }

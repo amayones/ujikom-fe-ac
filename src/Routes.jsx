@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import React from 'react'
 
-// User Pages
+// user pages
 import Home from './pages/User/Home'
 import NowPlaying from "./pages/User/NowPlaying";
 import ComingSoon from "./pages/User/ComingSoon";
@@ -13,12 +13,11 @@ import Ticket from "./pages/User/Ticket";
 import History from "./pages/User/History";
 import Profile from "./pages/User/Profile";
 
-// Auth Pages
+// auth pages
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 
-// Admin Pages
-import AdminDashboard from "./pages/Admin/Dashboard";
+// admin pages
 import ManageMovies from "./pages/Admin/ManageMovies";
 import ManageCustomers from "./pages/Admin/ManageCustomers";
 import ManageSchedules from "./pages/Admin/ManageSchedules";
@@ -27,18 +26,18 @@ import SimpleDashboard from "./pages/Admin/SimpleDashboard";
 import UpdatePrices from "./pages/Admin/UpdatePrices";
 import ManageSeats from "./pages/Admin/ManageSeats";
 
-// Owner Pages
+// owner pages
 import OwnerDashboard from "./pages/Owner/Dashboard";
 import OwnerIncome from "./pages/Owner/Income";
 import OwnerExpense from "./pages/Owner/Expense";
 
-// Cashier Pages
+// cashier pages
 import CashierDashboard from "./pages/Cashier/Dashboard";
 import OfflineBooking from "./pages/Cashier/OfflineBooking";
 import PrintTicket from "./pages/Cashier/PrintTicket";
 import ProcessOnline from "./pages/Cashier/ProcessOnline";
 
-// Other
+// components
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -46,7 +45,7 @@ import PublicRoute from "./components/PublicRoute";
 export default function AppRoutes() {
     return (
         <Routes>
-            {/* User Routes */}
+            {/* public routes */}
             <Route path="/" element={<Home />} />
             <Route path="/now-playing" element={<NowPlaying />} />
             <Route path="/coming-soon" element={<ComingSoon />} />
@@ -56,14 +55,13 @@ export default function AppRoutes() {
             <Route path="/ticket/:id" element={<Ticket />} />
             <Route path="/history" element={<History />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/invoice/:id" element={<Invoice />} />
             
-            {/* Auth Routes */}
+            {/* auth routes */}
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
             
-            <Route path="/invoice/:id" element={<Invoice />} />
-            
-            {/* Admin Routes */}
+            {/* admin routes */}
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><SimpleDashboard /></ProtectedRoute>} />
             <Route path="/admin/movies" element={<ProtectedRoute allowedRoles={['admin']}><ManageMovies /></ProtectedRoute>} />
             <Route path="/admin/customers" element={<ProtectedRoute allowedRoles={['admin']}><ManageCustomers /></ProtectedRoute>} />
@@ -72,12 +70,12 @@ export default function AppRoutes() {
             <Route path="/admin/cashiers" element={<ProtectedRoute allowedRoles={['admin']}><ManageCashiers /></ProtectedRoute>} />
             <Route path="/admin/seats" element={<ProtectedRoute allowedRoles={['admin']}><ManageSeats /></ProtectedRoute>} />
             
-            {/* Owner Routes */}
+            {/* owner routes */}
             <Route path="/owner" element={<ProtectedRoute allowedRoles={['owner']}><OwnerDashboard /></ProtectedRoute>} />
             <Route path="/owner/income" element={<ProtectedRoute allowedRoles={['owner']}><OwnerIncome /></ProtectedRoute>} />
             <Route path="/owner/expense" element={<ProtectedRoute allowedRoles={['owner']}><OwnerExpense /></ProtectedRoute>} />
             
-            {/* Cashier Routes */}
+            {/* cashier routes */}
             <Route path="/cashier" element={<ProtectedRoute allowedRoles={['cashier']}><CashierDashboard /></ProtectedRoute>} />
             <Route path="/cashier/offline-booking" element={<ProtectedRoute allowedRoles={['cashier']}><OfflineBooking /></ProtectedRoute>} />
             <Route path="/cashier/print-ticket" element={<ProtectedRoute allowedRoles={['cashier']}><PrintTicket /></ProtectedRoute>} />
