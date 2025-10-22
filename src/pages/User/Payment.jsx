@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CreditCard, Smartphone, Banknote, Building } from 'lucide-react';
 import useOrderStore from '../../store/orderStore';
 import usePaymentStore from '../../store/paymentStore';
+import useBookingStore from '../../store/bookingStore';
+import useUIStore from '../../store/uiStore';
 
 export default function Payment() {
     const location = useLocation();
     const navigate = useNavigate();
     const { fetchOrderById, currentOrder, processPayment } = useOrderStore();
     const { fetchPaymentMethods, paymentMethods } = usePaymentStore();
-    const [selectedMethod, setSelectedMethod] = useState('');
-    const [loading, setLoading] = useState(false);
+    const { selectedMethod, setSelectedMethod } = useBookingStore();
+    const { loading, setLoading } = useUIStore();
 
     const orderId = location.state?.orderId;
 
@@ -60,19 +62,19 @@ export default function Payment() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 text-gray-800">
+        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white">
             {/* Header */}
             <div className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(244,114,182,0.3),transparent_70%)]" />
                 <div className="relative z-10 text-center py-16 px-6">
-                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-rose-500/20 backdrop-blur-sm rounded-full border border-rose-400/30 mb-6">
-                        <CreditCard className="text-rose-600" size={24} />
-                        <span className="text-rose-700 font-semibold">SECURE PAYMENT</span>
+                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-rose-700/30 backdrop-blur-sm rounded-full border border-rose-600/50 mb-6">
+                        <CreditCard className="text-rose-400" size={24} />
+                        <span className="text-rose-300 font-semibold">SECURE PAYMENT</span>
                     </div>
-                    <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+                    <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-rose-400 to-rose-300 bg-clip-text text-transparent">
                         💳 Complete Your Purchase
                     </h1>
-                    <p className="text-xl text-rose-700 max-w-2xl mx-auto">
+                    <p className="text-xl text-rose-200 max-w-2xl mx-auto">
                         Choose your preferred payment method and secure your cinema experience
                     </p>
                 </div>
@@ -88,19 +90,19 @@ export default function Payment() {
                         </div>
                         
                         <div className="space-y-4">
-                            <div className="flex justify-between items-center p-3 bg-rose-50 rounded-xl">
-                                <span className="text-gray-600 flex items-center gap-2">
+                            <div className="flex justify-between items-center p-3 bg-gray-800/60 rounded-xl">
+                                <span className="text-gray-300 flex items-center gap-2">
                                     <span className="w-2 h-2 bg-rose-400 rounded-full" />
                                     Movie:
                                 </span>
-                                <span className="font-semibold text-gray-800">{currentOrder.movie_title}</span>
+                                <span className="font-semibold text-white">{currentOrder.movie_title}</span>
                             </div>
-                            <div className="flex justify-between items-center p-3 bg-rose-50 rounded-xl">
-                                <span className="text-gray-600 flex items-center gap-2">
+                            <div className="flex justify-between items-center p-3 bg-gray-800/60 rounded-xl">
+                                <span className="text-gray-300 flex items-center gap-2">
                                     <span className="w-2 h-2 bg-pink-400 rounded-full" />
                                     Date & Time:
                                 </span>
-                                <span className="font-semibold text-gray-800">{currentOrder.schedule_date} at {currentOrder.schedule_time}</span>
+                                <span className="font-semibold text-white">{currentOrder.schedule_date} at {currentOrder.schedule_time}</span>
                             </div>
                             <div className="flex justify-between items-center p-3 bg-rose-50 rounded-xl">
                                 <span className="text-gray-600 flex items-center gap-2">
@@ -141,10 +143,10 @@ export default function Payment() {
                     </div>
 
                     {/* Payment Methods */}
-                    <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-rose-300/30">
+                    <div className="bg-gray-900/80 backdrop-blur-sm rounded-3xl p-8 border border-gray-700 shadow-lg">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-8 h-8 bg-gradient-to-r from-rose-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold">💳</div>
-                            <h2 className="text-2xl font-bold text-rose-300">Payment Method</h2>
+                            <div className="w-8 h-8 bg-gradient-to-r from-rose-600 to-rose-700 rounded-full flex items-center justify-center text-white font-bold">💳</div>
+                            <h2 className="text-2xl font-bold text-rose-400">Payment Method</h2>
                         </div>
                         
                         <div className="space-y-4">

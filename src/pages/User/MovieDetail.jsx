@@ -33,7 +33,7 @@ export default function MovieDetail() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-900 via-pink-900 to-red-900 text-white">
+        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white">
             {/* Hero Section with Backdrop */}
             <div className="relative overflow-hidden">
                 <div className="absolute inset-0">

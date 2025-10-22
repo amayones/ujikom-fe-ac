@@ -1,53 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, MapPin, Edit2, Save, X, LogOut, Star, Film, Ticket, CheckCircle } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
+import useBookingStore from '../../store/bookingStore';
 
 export default function Profile() {
     const navigate = useNavigate();
     const { user, logout } = useAuthStore();
-    const [isEditing, setIsEditing] = useState(false);
-    const [profile, setProfile] = useState({
-        name: user?.name || 'John Doe',
-        email: user?.email || 'john@example.com',
-        phone: user?.phone || '+62 812-3456-7890',
-        address: user?.address || 'Jl. Sudirman No. 123, Jakarta'
-    });
-
-    const [editData, setEditData] = useState({ ...profile });
+    const { isEditing, profile, editData, setIsEditing, setProfile, setEditData, saveProfile, cancelEdit } = useBookingStore();
+    
+    useEffect(() => {
+        setProfile({
+            name: user?.name || 'John Doe',
+            email: user?.email || 'john@example.com',
+            phone: user?.phone || '+62 812-3456-7890',
+            address: user?.address || 'Jl. Sudirman No. 123, Jakarta'
+        });
+    }, [user, setProfile]);
 
     const handleSave = () => {
-        setProfile({ ...editData });
-        setIsEditing(false);
+        saveProfile();
         // Using modern notification instead of alert
     };
 
     const handleCancel = () => {
-        setEditData({ ...profile });
-        setIsEditing(false);
+        cancelEdit();
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 text-gray-800">
+        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white">
             {/* Header */}
             <div className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,rgba(244,114,182,0.3),transparent_70%)]" />
                 <div className="relative z-10 text-center py-16 px-6">
-                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-rose-500/20 backdrop-blur-sm rounded-full border border-rose-400/30 mb-6">
-                        <User className="text-rose-600" size={24} />
-                        <span className="text-rose-700 font-semibold">USER PROFILE</span>
+                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-rose-700/30 backdrop-blur-sm rounded-full border border-rose-600/50 mb-6">
+                        <User className="text-rose-400" size={24} />
+                        <span className="text-rose-300 font-semibold">USER PROFILE</span>
                     </div>
-                    <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+                    <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
                         My Profile
                     </h1>
-                    <p className="text-xl text-rose-700 max-w-2xl mx-auto">
+                    <p className="text-xl text-rose-300 max-w-2xl mx-auto">
                         Manage your personal information and account settings
                     </p>
                 </div>
             </div>
             
             <div className="max-w-4xl mx-auto px-6 pb-20">
-                <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 border border-rose-200 shadow-lg">
+                <div className="bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 border border-gray-700 shadow-lg">
                     {/* Profile Header */}
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8">
                         <div className="flex flex-col lg:flex-row items-center gap-6">

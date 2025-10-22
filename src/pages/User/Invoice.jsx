@@ -1,19 +1,56 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Receipt, Download, Share, Calendar, MapPin, CreditCard } from 'lucide-react';
+import useOrderStore from '../../store/orderStore';
 
 export default function Invoice() {
-    const invoice = {
-        id: 'INV-2024-001',
-        date: '2024-01-15',
-        movie: 'Spider-Man: No Way Home',
-        schedule: '2024-01-15 19:30',
-        seats: ['A1', 'A2'],
-        price: 110000,
-        total: 110000
-    };
+    const { id } = useParams();
+    const { fetchOrderById, currentOrder, loading } = useOrderStore();
+    const [invoice, setInvoice] = useState(null);
+
+    useEffect(() => {
+        if (id) {
+            fetchOrderById(id);
+        }
+    }, [id, fetchOrderById]);
+
+    useEffect(() => {
+        if (currentOrder) {
+            setInvoice({
+                id: `INV-${currentOrder.id}`,
+                date: currentOrder.created_at || new Date().toISOString().split('T')[0],
+                movie: currentOrder.movie_title || 'Movie Title',
+                schedule: `${currentOrder.schedule_date} ${currentOrder.schedule_time}`,
+                seats: Array.isArray(currentOrder.seats) ? currentOrder.seats : [currentOrder.seats],
+                price: currentOrder.total_amount || 0,
+                total: currentOrder.total_amount || 0
+            });
+        }
+    }, [currentOrder]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white flex items-center justify-center">
+                <div className="text-xl">Loading invoice...</div>
+            </div>
+        );
+    }
+
+    if (!invoice) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-rose-400 mb-4">Invoice not found</p>
+                    <button onClick={() => window.history.back()} className="bg-rose-600 hover:bg-rose-700 px-4 py-2 rounded">
+                        Back
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-900 via-pink-900 to-red-900 text-white">
+        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white">
             <div className="container mx-auto px-6 py-12">
                 <div className="max-w-3xl mx-auto">
                     <div className="flex items-center gap-4 mb-10">

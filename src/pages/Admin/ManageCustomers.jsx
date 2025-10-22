@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Search, Edit, Trash2, UserPlus } from 'lucide-react';
 import useCustomerStore from '../../store/customerStore';
+import useUIStore from '../../store/uiStore';
 import CustomerForm from './CustomerForm';
 import ConfirmModal from '../../components/ConfirmModal';
 import Toast from '../../components/Toast';
@@ -8,11 +9,7 @@ import Layout from '../../components/Layout';
 
 export default function ManageCustomers() {
     const { customers, loading, error, fetchCustomers, addCustomer, updateCustomer, deleteCustomer, clearError } = useCustomerStore();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [showModal, setShowModal] = useState(false);
-    const [editingCustomer, setEditingCustomer] = useState(null);
-    const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
-    const [confirmModal, setConfirmModal] = useState({ show: false, customerId: null });
+    const { searchTerm, setSearchTerm, showModal, setModal, editingItem: editingCustomer, setEditing, toast, setToast, confirmModal, setConfirmModal, hideConfirmModal } = useUIStore();
 
     useEffect(() => {
         fetchCustomers();
@@ -23,7 +20,7 @@ export default function ManageCustomers() {
             setToast({ show: true, type: 'error', message: error });
             clearError();
         }
-    }, [error, clearError]);
+    }, [error, clearError, setToast]);
 
     const filteredCustomers = customers.filter(customer =>
         (customer.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -31,13 +28,13 @@ export default function ManageCustomers() {
     );
 
     const handleAdd = () => {
-        setEditingCustomer(null);
-        setShowModal(true);
+        setEditing(false, null);
+        setModal(true);
     };
 
     const handleEdit = (customer) => {
-        setEditingCustomer(customer);
-        setShowModal(true);
+        setEditing(true, customer);
+        setModal(true);
     };
 
     const handleSave = async (formData) => {
@@ -49,21 +46,26 @@ export default function ManageCustomers() {
                 await addCustomer(formData);
                 setToast({ show: true, type: 'success', message: 'Customer added successfully' });
             }
-            setShowModal(false);
+            setModal(false);
         } catch {
             // Error handled by store
         }
     };
 
     const handleDeleteClick = (customerId) => {
-        setConfirmModal({ show: true, customerId });
+        setConfirmModal({ 
+            show: true, 
+            title: 'Delete Customer',
+            message: 'Are you sure you want to delete this customer? This action cannot be undone.',
+            onConfirm: () => handleDeleteConfirm(customerId)
+        });
     };
 
-    const handleDeleteConfirm = async () => {
+    const handleDeleteConfirm = async (customerId) => {
         try {
-            await deleteCustomer(confirmModal.customerId);
+            await deleteCustomer(customerId);
             setToast({ show: true, type: 'success', message: 'Customer deleted successfully' });
-            setConfirmModal({ show: false, customerId: null });
+            hideConfirmModal();
         } catch {
             // Error handled by store
         }
@@ -175,7 +177,7 @@ export default function ManageCustomers() {
                     <CustomerForm
                         customer={editingCustomer}
                         onSave={handleSave}
-                        onCancel={() => setShowModal(false)}
+                        onCancel={() => setModal(false)}
                         loading={loading}
                     />
                 )}
@@ -183,10 +185,10 @@ export default function ManageCustomers() {
                 {/* Confirm Modal */}
                 <ConfirmModal
                     isOpen={confirmModal.show}
-                    title="Delete Customer"
-                    message="Are you sure you want to delete this customer? This action cannot be undone."
-                    onConfirm={handleDeleteConfirm}
-                    onCancel={() => setConfirmModal({ show: false, customerId: null })}
+                    title={confirmModal.title}
+                    message={confirmModal.message}
+                    onConfirm={confirmModal.onConfirm}
+                    onCancel={hideConfirmModal}
                 />
 
                 {/* Toast */}

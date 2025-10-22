@@ -1,29 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { QrCode, Calendar, Clock, MapPin, Users } from 'lucide-react';
+import useOrderStore from '../../store/orderStore';
 
 export default function Ticket() {
     const { id } = useParams();
     const location = useLocation();
     const { order, film, schedule, seats, totalPrice } = location.state || {};
+    const { fetchOrderById, currentOrder, loading } = useOrderStore();
     const [ticketData, setTicketData] = useState(null);
 
     useEffect(() => {
-        if (order && film && schedule && seats) {
+        if (id && !order) {
+            fetchOrderById(id);
+        } else if (order && film && schedule && seats) {
             setTicketData({ order, film, schedule, seats, totalPrice });
         }
-    }, [id, order, film, schedule, seats, totalPrice]);
+    }, [id, order, film, schedule, seats, totalPrice, fetchOrderById]);
+
+    useEffect(() => {
+        if (currentOrder && !ticketData) {
+            setTicketData({
+                order: currentOrder,
+                film: { 
+                    judul: currentOrder.movie_title,
+                    genre: 'Action',
+                    durasi: 120,
+                    poster: null
+                },
+                schedule: {
+                    tanggal: currentOrder.schedule_date,
+                    jam: currentOrder.schedule_time,
+                    studio: { nama: currentOrder.studio || 'Studio 1' }
+                },
+                seats: Array.isArray(currentOrder.seats) ? currentOrder.seats.map(s => ({ nomor_kursi: s })) : [{ nomor_kursi: currentOrder.seats }],
+                totalPrice: currentOrder.total_amount
+            });
+        }
+    }, [currentOrder, ticketData]);
 
 
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white flex items-center justify-center">
+                <div className="text-xl">Loading ticket...</div>
+            </div>
+        );
+    }
 
     if (!ticketData && !id) {
         return (
-            <div className="bg-gray-900 min-h-screen text-white flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white flex items-center justify-center">
                 <div className="text-center">
-                    <p className="text-red-500 mb-4">Tiket tidak ditemukan</p>
+                    <p className="text-rose-400 mb-4">Tiket tidak ditemukan</p>
                     <button 
                         onClick={() => window.history.back()}
-                        className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+                        className="bg-rose-600 hover:bg-rose-700 px-4 py-2 rounded"
                     >
                         Kembali
                     </button>
@@ -33,7 +66,7 @@ export default function Ticket() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-900 via-pink-900 to-red-900 text-white p-6">
+        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-rose-900 text-white p-6">
             <div className="max-w-2xl mx-auto">
                 {/* Success Message */}
                 <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-6 mb-6 text-center shadow-lg">
