@@ -1,218 +1,215 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import {
-    Home, Film, Calendar, User, BarChart3, CreditCard, Users, Clock,
-    Armchair, Receipt, Printer, Scan, LogOut, TrendingUp, TrendingDown, Menu, X
-} from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { LogOut, User, Film, History, Menu, X, Ticket, Star } from 'lucide-react';
 import useAuthStore from '../store/authStore';
-import useSidebarStore from '../store/sidebarStore';
+import { ROLES } from '../utils/roles';
 
-export default function Navbar() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const currentPath = location.pathname;
-    const { logout, isAuthenticated, user } = useAuthStore();
-    const [mobileCollapsed, setMobileCollapsed] = useState(true);
-    const { collapsed, setCollapsed } = useSidebarStore();
+const Navbar = () => {
+  const { user, isAuth, logout } = useAuthStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const getCurrentRole = () => {
-        if (currentPath.startsWith('/admin')) return 'admin';
-        if (currentPath.startsWith('/owner')) return 'owner';
-        if (currentPath.startsWith('/cashier')) return 'cashier';
-        return 'customer';
-    };
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+    setIsMobileMenuOpen(false);
+  };
 
-    const currentRole = getCurrentRole();
+  const isActive = (path) => location.pathname === path;
 
-    const isActive = (path) => {
-        if (['/', '/admin', '/owner', '/cashier'].includes(path)) return currentPath === path;
-        return currentPath === path || currentPath.startsWith(path + '/');
-    };
-
-    const getNavConfig = () => {
-        switch (currentRole) {
-            case 'admin':
-                return {
-                    color: 'bg-blue-700',
-                    text: 'Admin Panel',
-                    links: [
-                        { to: '/admin', label: 'Dashboard', icon: <BarChart3 /> },
-                        { to: '/admin/movies', label: 'Film', icon: <Film /> },
-                        { to: '/admin/customers', label: 'Pelanggan', icon: <Users /> },
-                        { to: '/admin/schedules', label: 'Jadwal', icon: <Clock /> },
-                        { to: '/admin/prices', label: 'Harga', icon: <CreditCard /> },
-                        { to: '/admin/cashiers', label: 'Kasir', icon: <User /> },
-                        { to: '/admin/seats', label: 'Kursi', icon: <Armchair /> },
-                    ]
-                };
-            case 'owner':
-                return {
-                    color: 'bg-purple-700',
-                    text: 'Owner Panel',
-                    links: [
-                        { to: '/owner', label: 'Dashboard', icon: <BarChart3 /> },
-                        { to: '/owner/income', label: 'Pemasukan', icon: <TrendingUp /> },
-                        { to: '/owner/expense', label: 'Pengeluaran', icon: <TrendingDown /> },
-                    ]
-                };
-            case 'cashier':
-                return {
-                    color: 'bg-emerald-700',
-                    text: 'Kasir Panel',
-                    links: [
-                        { to: '/cashier', label: 'Dashboard', icon: <BarChart3 /> },
-                        { to: '/cashier/offline-booking', label: 'Pesan Offline', icon: <Receipt /> },
-                        { to: '/cashier/print-ticket', label: 'Cetak Tiket', icon: <Printer /> },
-                        { to: '/cashier/process-online', label: 'Proses Online', icon: <Scan /> },
-                    ]
-                };
-            default:
-                return {
-                    color: 'bg-rose-700',
-                    text: 'Absolute Cinema',
-                    links: [
-                        { to: '/', label: 'Home', icon: <Home /> },
-                        { to: '/now-playing', label: 'Sedang Tayang', icon: <Film /> },
-                        { to: '/coming-soon', label: 'Segera Tayang', icon: <Calendar /> },
-                        ...(isAuthenticated ? [{ to: '/history', label: 'Riwayat', icon: <Receipt /> }] : []),
-                    ]
-                };
-        }
-    };
-
-    const nav = getNavConfig();
-
-    if (currentRole === 'customer') {
-        return (
-            <nav className={`sticky top-0 z-50 ${nav.color}`}>
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex items-center justify-between h-16 relative">
-                        <Link to="/" className="flex items-center gap-2 group">
-                            <div className="p-2 rounded-xl bg-white/10">
-                                <Film className="w-5 h-5 text-white" />
-                            </div>
-                            <span className="text-white font-semibold text-lg">{nav.text}</span>
-                        </Link>
-
-                        <div className="hidden md:flex items-center gap-3 absolute left-1/2 -translate-x-1/2">
-                            {nav.links.map(link => (
-                                <Link
-                                    key={link.to}
-                                    to={link.to}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition ${isActive(link.to)
-                                        ? 'bg-white/20 text-white'
-                                        : 'text-white/70 hover:bg-white/10 hover:text-white'
-                                        }`}
-                                >
-                                    <span className="w-4 h-4">{link.icon}</span>
-                                    {link.label}
-                                </Link>
-                            ))}
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            {!isAuthenticated ? (
-                                <Link to="/login" className="bg-white/20 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/30">
-                                    Login
-                                </Link>
-                            ) : (
-                                <Link to="/profile" className="flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/30">
-                                    <User className="w-4 h-4" />
-                                    {user?.name || 'Profile'}
-                                </Link>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        );
-    }
+  // Only show enhanced navbar for customers
+  if (user?.role === ROLES.CUSTOMER) {
+    const navItems = [
+      { path: '/movies', label: 'Now Playing', icon: Film },
+      { path: '/history', label: 'My Bookings', icon: Ticket },
+    ];
 
     return (
-        <>
-            <button
-                onClick={() => setMobileCollapsed(!mobileCollapsed)}
-                className="fixed top-4 left-4 z-50 p-2 rounded-lg bg-white/10 text-white transition md:hidden"
-            >
-                {mobileCollapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
-            </button>
+      <nav className="bg-white shadow-lg sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link to="/movies" className="flex items-center space-x-3 group">
+                <Film className="h-8 w-8 text-blue-600 group-hover:text-blue-500 transition-colors duration-300" />
+                <span className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
+                  Absolute Cinema
+                </span>
+              </Link>
+            </div>
 
-            {!mobileCollapsed && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
-                    onClick={() => setMobileCollapsed(true)}
-                />
-            )}
+            {/* Desktop Navigation - Centered */}
+            <div className="hidden md:flex items-center justify-center flex-1">
+              <div className="flex items-center space-x-8">
+                {navItems.map(({ path, label, icon: Icon }) => (
+                  <Link
+                    key={path}
+                    to={path}
+                    className={`flex items-center space-x-2 px-6 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                      isActive(path)
+                        ? 'text-white bg-blue-600 shadow-lg'
+                        : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
 
-            <aside
-                className={`fixed top-0 left-0 h-full ${nav.color} text-white z-50
-        ${mobileCollapsed ? '-translate-x-full md:translate-x-0' : 'translate-x-0'} 
-        ${collapsed ? 'md:w-20' : 'md:w-64'} w-64 transition-all duration-300`}
-            >
-                <div className={`relative flex items-center ${collapsed ? 'justify-center px-3' : 'justify-between px-5'} py-5`}>
-                    <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
-                        <div className="p-2 bg-white/20 rounded-xl">
-                            <Film className="w-5 h-5" />
-                        </div>
-                        {!collapsed && <span className="font-semibold text-lg truncate">{nav.text}</span>}
-                    </div>
-
-                    {!collapsed ? (
-                        <button
-                            onClick={() => setCollapsed(!collapsed)}
-                            className="hidden md:block p-2 hover:bg-white/10 rounded-lg flex-shrink-0"
-                        >
-                            <X className="w-4 h-4" />
-                        </button>
-                    ) : (
-                        <button
-                            onClick={() => setCollapsed(!collapsed)}
-                            className={`hidden md:block absolute top-1/2 right-[-14px] -translate-y-1/2 p-2 rounded-full ${nav.color} text-white`}
-                        >
-                            <Menu className="w-4 h-4" />
-                        </button>
-                    )}
+            {/* User Menu - Right Side */}
+            <div className="hidden md:flex items-center">
+              <div className="relative group">
+                <button className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300">
+                  <div className="relative">
+                    <User className="h-5 w-5" />
+                  </div>
+                  <span className="text-sm font-medium">{user?.name}</span>
+                </button>
+                
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-200">
+                  <div className="px-4 py-2 border-b border-gray-200">
+                    <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                  </div>
+                  <Link
+                    to="/profile"
+                    className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    <User className="h-4 w-4" />
+                    <span>My Profile</span>
+                  </Link>
+                  <hr className="my-1 border-gray-200" />
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Sign Out</span>
+                  </button>
                 </div>
+              </div>
+            </div>
 
-                <div className="flex flex-col justify-between h-[calc(100%-70px)] px-3 py-5">
-                    <div className="space-y-1">
-                        {nav.links.map(link => (
-                            <Link
-                                key={link.to}
-                                to={link.to}
-                                className={`flex items-center ${collapsed ? 'justify-center px-3' : 'gap-3 px-4'} py-3 rounded-lg text-sm font-medium ${isActive(link.to)
-                                    ? 'bg-white/20 text-white'
-                                    : 'text-white/80 hover:bg-white/10 hover:text-white'
-                                    }`}
-                            >
-                                <span className="w-5 h-5 flex-shrink-0">{link.icon}</span>
-                                {!collapsed && <span className="truncate">{link.label}</span>}
-                            </Link>
-                        ))}
-                    </div>
+            {/* Mobile menu button */}
+            <div className="md:hidden flex items-center">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-gray-300 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
 
-                    <div>
-                        <Link
-                            to="/profile"
-                            className={`flex items-center ${collapsed ? 'justify-center px-3' : 'gap-2 px-4'} py-3 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white`}
-                        >
-                            <User className="w-4 h-4 flex-shrink-0" />
-                            {!collapsed && <span>Profil</span>}
-                        </Link>
-
-                        <button
-                            onClick={async () => {
-                                await logout();
-                                navigate('/login');
-                            }}
-                            className={`w-full flex items-center ${collapsed ? 'justify-center px-3' : 'gap-2 px-4'} py-3 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white`}
-                        >
-                            <LogOut className="w-4 h-4 flex-shrink-0" />
-                            {!collapsed && <span>Logout</span>}
-                        </button>
-                    </div>
-                </div>
-            </aside>
-        </>
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-gray-800 border-t border-gray-700">
+            <div className="px-4 py-3 space-y-2">
+              {navItems.map(({ path, label, icon: Icon }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive(path)
+                      ? 'text-red-400 bg-red-500/20'
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{label}</span>
+                </Link>
+              ))}
+              
+              <hr className="my-3 border-gray-700" />
+              
+              <Link
+                to="/profile"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <User className="h-4 w-4" />
+                <span>My Profile</span>
+              </Link>
+              
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </nav>
     );
-}
+  }
+
+  // Original navbar for other roles
+  return (
+    <nav className="bg-primary text-white shadow-lg">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center py-4">
+          <Link to="/" className="text-2xl font-bold text-accent">
+            Absolute Cinema
+          </Link>
+
+          <div className="flex items-center space-x-6">
+            {isAuth ? (
+              <>
+                <Link to="/movies" className="hover:text-accent transition-colors">
+                  Movies
+                </Link>
+                
+                {user?.role === ROLES.ADMIN && (
+                  <div className="flex space-x-4">
+                    <Link to="/admin/films" className="hover:text-accent transition-colors flex items-center">
+                      <Film size={20} className="mr-1" />
+                      Films
+                    </Link>
+                    <Link to="/admin/schedules" className="hover:text-accent transition-colors">
+                      Schedules
+                    </Link>
+                  </div>
+                )}
+
+                {user?.role === ROLES.OWNER && (
+                  <Link to="/owner/reports" className="hover:text-accent transition-colors flex items-center">
+                    <BarChart3 size={20} className="mr-1" />
+                    Reports
+                  </Link>
+                )}
+
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm">Hi, {user?.name}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="hover:text-accent transition-colors"
+                  >
+                    <LogOut size={20} />
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="space-x-4">
+                <Link to="/login" className="hover:text-accent transition-colors">
+                  Login
+                </Link>
+                <Link to="/register" className="bg-accent text-primary px-4 py-2 rounded hover:bg-yellow-600 transition-colors">
+                  Register
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

@@ -1,136 +1,86 @@
 import { create } from 'zustand';
-import api from '../api';
+import axiosClient from '../api/axiosClient';
 
 const useFilmStore = create((set, get) => ({
-    films: [],
-    currentFilm: null,
-    loading: false,
-    error: null,
+  movies: [],
+  currentMovie: null,
+  schedules: [],
+  currentSchedule: null,
+  seats: [],
+  loading: false,
 
-    fetchFilms: async (status = null) => {
-        set({ loading: true, error: null });
-        try {
-            const endpoint = status ? `/films?status=${status}` : '/films';
-            const response = await api.get(endpoint);
-            set({ films: response.data.data, loading: false });
-        } catch (error) {
-            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
-        }
-    },
+  getMovies: async (filter = 'now_playing') => {
+    try {
+      set({ loading: true });
+      const response = await axiosClient.get(`/films?status=${filter}`);
+      
+      if (response.data.status === 'success') {
+        set({ movies: response.data.data.data || response.data.data });
+      }
+    } catch (error) {
+      console.error('Failed to fetch movies:', error);
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-    fetchNowPlayingFilms: async () => {
-        set({ loading: true, error: null });
-        try {
-            const response = await api.get('/films?status=now_playing');
-            set({ films: response.data.data, loading: false });
-        } catch (error) {
-            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
-        }
-    },
+  getMovie: async (id) => {
+    try {
+      set({ loading: true });
+      const response = await axiosClient.get(`/films/${id}`);
+      
+      if (response.data.status === 'success') {
+        set({ currentMovie: response.data.data });
+      }
+    } catch (error) {
+      console.error('Failed to fetch movie:', error);
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-    fetchComingSoonFilms: async () => {
-        set({ loading: true, error: null });
-        try {
-            const response = await api.get('/films?status=coming_soon');
-            set({ films: response.data.data, loading: false });
-        } catch (error) {
-            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
-        }
-    },
+  getSchedules: async (filmId, date = null) => {
+    try {
+      set({ loading: true });
+      let url = `/schedules?film_id=${filmId}`;
+      if (date) url += `&date=${date}`;
+      
+      const response = await axiosClient.get(url);
+      
+      if (response.data.status === 'success') {
+        const schedules = response.data.data.slice(0, 3);
+        set({ schedules });
+      }
+    } catch (error) {
+      console.error('Failed to fetch schedules:', error);
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-    fetchEndedFilms: async () => {
-        set({ loading: true, error: null });
-        try {
-            const response = await api.get('/films?status=ended');
-            set({ films: response.data.data, loading: false });
-        } catch (error) {
-            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
-        }
-    },
+  getScheduleSeats: async (scheduleId) => {
+    try {
+      set({ loading: true });
+      const response = await axiosClient.get(`/schedules/${scheduleId}`);
+      
+      if (response.data.status === 'success') {
+        const schedule = response.data.data;
+        set({ 
+          currentSchedule: schedule,
+          seats: schedule.seats || []
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch schedule seats:', error);
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-    fetchFilmById: async (id) => {
-        set({ loading: true, error: null });
-        try {
-            const response = await api.get(`/films/${id}`);
-            set({ currentFilm: response.data.data, loading: false });
-        } catch (error) {
-            set({ error: error.response?.data?.message || 'Failed to fetch film', loading: false });
-        }
-    },
-
-    getNowPlayingFilms: () => {
-        const { films } = get();
-        return films.filter(film => film.status === 'now_playing');
-    },
-
-    getComingSoonFilms: () => {
-        const { films } = get();
-        return films.filter(film => film.status === 'coming_soon');
-    },
-
-    createFilm: async (filmData) => {
-        set({ loading: true, error: null });
-        try {
-            const response = await api.post('/admin/films', filmData);
-            const newFilm = response.data.data;
-            set(state => ({ 
-                films: [...state.films, newFilm], 
-                loading: false 
-            }));
-            return { success: true, data: newFilm };
-        } catch (error) {
-            const message = error.response?.data?.message || 'Failed to create film';
-            set({ error: message, loading: false });
-            return { success: false, message };
-        }
-    },
-
-    updateFilm: async (id, filmData) => {
-        set({ loading: true, error: null });
-        try {
-            const response = await api.put(`/admin/films/${id}`, filmData);
-            const updatedFilm = response.data.data;
-            set(state => ({
-                films: state.films.map(film => 
-                    film.id === id ? updatedFilm : film
-                ),
-                loading: false
-            }));
-            return { success: true, data: updatedFilm };
-        } catch (error) {
-            const message = error.response?.data?.message || 'Failed to update film';
-            set({ error: message, loading: false });
-            return { success: false, message };
-        }
-    },
-
-    deleteFilm: async (id) => {
-        set({ loading: true, error: null });
-        try {
-            await api.delete(`/admin/films/${id}`);
-            set(state => ({
-                films: state.films.filter(film => film.id !== id),
-                loading: false
-            }));
-            return { success: true };
-        } catch (error) {
-            const message = error.response?.data?.message || 'Failed to delete film';
-            set({ error: message, loading: false });
-            return { success: false, message };
-        }
-    },
-
-    fetchAdminFilms: async () => {
-        set({ loading: true, error: null });
-        try {
-            const response = await api.get('/admin/films');
-            set({ films: response.data?.data || [], loading: false });
-        } catch (error) {
-            set({ error: error.response?.data?.message || 'Failed to fetch films', loading: false });
-        }
-    },
-
-    clearError: () => set({ error: null })
+  setCurrentMovie: (movie) => set({ currentMovie: movie }),
+  setCurrentSchedule: (schedule) => set({ currentSchedule: schedule }),
+  
+  clearCurrentMovie: () => set({ currentMovie: null, schedules: [], currentSchedule: null, seats: [] }),
 }));
 
 export default useFilmStore;

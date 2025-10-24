@@ -1,231 +1,103 @@
-import React, { useEffect } from 'react';
-import { Film, Users, Calendar, TrendingUp, Clock, Star, Activity, BarChart3 } from 'lucide-react';
+import { Film, Calendar, Users, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import useDashboardStore from '../../store/dashboardStore';
-import Layout from '../../components/Layout';
 
-export default function AdminDashboard() {
-    const { stats, recentMovies, recentCustomers, upcomingSchedules, loading, error, fetchDashboardData } = useDashboardStore();
-
-    useEffect(() => {
-        fetchDashboardData();
-    }, [fetchDashboardData]);
-
-    const statsCards = [
-        { 
-            title: 'Total Movies', 
-            value: stats.totalMovies, 
-            icon: Film, 
-            color: 'from-blue-500 to-blue-600',
-            change: '+12%',
-            changeColor: 'text-green-400'
-        },
-        { 
-            title: 'Customers', 
-            value: stats.totalCustomers, 
-            icon: Users, 
-            color: 'from-green-500 to-green-600',
-            change: '+8%',
-            changeColor: 'text-green-400'
-        },
-        { 
-            title: 'Schedules', 
-            value: stats.totalSchedules, 
-            icon: Calendar, 
-            color: 'from-purple-500 to-purple-600',
-            change: '+15%',
-            changeColor: 'text-green-400'
-        },
-        { 
-            title: 'Revenue', 
-            value: `Rp ${(stats.totalRevenue / 1000000).toFixed(1)}M`, 
-            icon: TrendingUp, 
-            color: 'from-red-500 to-red-600',
-            change: '+23%',
-            changeColor: 'text-green-400'
-        }
-    ];
-
-    if (loading) {
-        return (
-            <Layout>
-                <div className="flex items-center justify-center h-64">
-                    <div className="text-gray-400">Loading dashboard...</div>
-                </div>
-            </Layout>
-        );
-    }
-
-    return (
-        <Layout>
-            <div className="text-white">
-                {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent mb-2">
-                        Admin Dashboard
-                    </h1>
-                    <p className="text-gray-400">Welcome back! Here's what's happening at your cinema.</p>
-                </div>
-
-                {/* Error */}
-                {error && (
-                    <div className="mb-6 p-4 bg-red-600 text-white rounded-lg">
-                        {error}
-                    </div>
-                )}
-                
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    {statsCards.map((stat, index) => (
-                        <div key={index} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-all duration-300">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className={`bg-gradient-to-r ${stat.color} p-3 rounded-lg shadow-lg`}>
-                                    <stat.icon className="w-6 h-6 text-white" />
-                                </div>
-                                <div className={`text-sm font-medium ${stat.changeColor}`}>
-                                    {stat.change}
-                                </div>
-                            </div>
-                            <div>
-                                <p className="text-gray-400 text-sm mb-1">{stat.title}</p>
-                                <p className="text-3xl font-bold">{stat.value}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    {/* Recent Movies */}
-                    <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-                        <div className="flex items-center gap-3 mb-6">
-                            <Film className="w-5 h-5 text-blue-400" />
-                            <h3 className="text-xl font-semibold">Recent Movies</h3>
-                        </div>
-                        <div className="space-y-4">
-                            {recentMovies.slice(0, 4).map((movie) => (
-                                <div key={movie.id} className="flex items-center gap-3 p-3 bg-gray-700 rounded-lg">
-                                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                                        <Film className="w-6 h-6 text-white" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="font-medium text-sm">{movie.title}</p>
-                                        <p className="text-gray-400 text-xs">{movie.genre}</p>
-                                    </div>
-                                    <div className={`px-2 py-1 rounded text-xs ${
-                                        movie.status === 'now_playing' ? 'bg-green-600' : 'bg-yellow-600'
-                                    }`}>
-                                        {movie.status === 'now_playing' ? 'Playing' : 'Coming'}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <Link to="/admin/movies" className="block mt-4 text-center text-blue-400 hover:text-blue-300 text-sm">
-                            View All Movies →
-                        </Link>
-                    </div>
-
-                    {/* Recent Customers */}
-                    <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-                        <div className="flex items-center gap-3 mb-6">
-                            <Users className="w-5 h-5 text-green-400" />
-                            <h3 className="text-xl font-semibold">New Customers</h3>
-                        </div>
-                        <div className="space-y-4">
-                            {recentCustomers.slice(0, 4).map((customer) => (
-                                <div key={customer.id} className="flex items-center gap-3 p-3 bg-gray-700 rounded-lg">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center">
-                                        <span className="text-white font-semibold text-sm">
-                                            {customer.name?.charAt(0) || 'U'}
-                                        </span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="font-medium text-sm">{customer.name}</p>
-                                        <p className="text-gray-400 text-xs">{customer.email}</p>
-                                    </div>
-                                    <div className="text-xs text-gray-400">
-                                        {new Date(customer.created_at).toLocaleDateString()}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <Link to="/admin/customers" className="block mt-4 text-center text-green-400 hover:text-green-300 text-sm">
-                            View All Customers →
-                        </Link>
-                    </div>
-
-                    {/* Upcoming Schedules */}
-                    <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-                        <div className="flex items-center gap-3 mb-6">
-                            <Calendar className="w-5 h-5 text-purple-400" />
-                            <h3 className="text-xl font-semibold">Today's Schedules</h3>
-                        </div>
-                        <div className="space-y-4">
-                            {upcomingSchedules.slice(0, 4).map((schedule) => (
-                                <div key={schedule.id} className="flex items-center gap-3 p-3 bg-gray-700 rounded-lg">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                                        <Clock className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="font-medium text-sm">{schedule.film?.title || 'Movie'}</p>
-                                        <p className="text-gray-400 text-xs">Studio {schedule.studio_id}</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-sm font-medium">{schedule.time}</p>
-                                        <p className="text-xs text-gray-400">{schedule.date}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <Link to="/admin/schedules" className="block mt-4 text-center text-purple-400 hover:text-purple-300 text-sm">
-                            View All Schedules →
-                        </Link>
-                    </div>
-                </div>
-
-                {/* Quick Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <Link to="/admin/movies" className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 group">
-                        <div className="flex items-center gap-4">
-                            <Film className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
-                            <div>
-                                <h3 className="text-lg font-semibold text-white">Movies</h3>
-                                <p className="text-blue-100 text-sm">Manage films</p>
-                            </div>
-                        </div>
-                    </Link>
-                    
-                    <Link to="/admin/customers" className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 hover:from-green-700 hover:to-green-800 transition-all duration-300 group">
-                        <div className="flex items-center gap-4">
-                            <Users className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
-                            <div>
-                                <h3 className="text-lg font-semibold text-white">Customers</h3>
-                                <p className="text-green-100 text-sm">Manage users</p>
-                            </div>
-                        </div>
-                    </Link>
-                    
-                    <Link to="/admin/schedules" className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl p-6 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 group">
-                        <div className="flex items-center gap-4">
-                            <Calendar className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
-                            <div>
-                                <h3 className="text-lg font-semibold text-white">Schedules</h3>
-                                <p className="text-purple-100 text-sm">Manage showtimes</p>
-                            </div>
-                        </div>
-                    </Link>
-                    
-                    <Link to="/admin/prices" className="bg-gradient-to-r from-red-600 to-red-700 rounded-xl p-6 hover:from-red-700 hover:to-red-800 transition-all duration-300 group">
-                        <div className="flex items-center gap-4">
-                            <TrendingUp className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
-                            <div>
-                                <h3 className="text-lg font-semibold text-white">Pricing</h3>
-                                <p className="text-red-100 text-sm">Manage prices</p>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
+// Admin dashboard page
+const Dashboard = () => {
+  return (
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center">
+            <div className="p-3 bg-blue-100 rounded-full">
+              <Film className="h-6 w-6 text-blue-600" />
             </div>
-        </Layout>
-    );
-}
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Total Films</p>
+              <p className="text-2xl font-semibold text-gray-900">24</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center">
+            <div className="p-3 bg-green-100 rounded-full">
+              <Calendar className="h-6 w-6 text-green-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Active Schedules</p>
+              <p className="text-2xl font-semibold text-gray-900">48</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center">
+            <div className="p-3 bg-yellow-100 rounded-full">
+              <Users className="h-6 w-6 text-yellow-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Customers</p>
+              <p className="text-2xl font-semibold text-gray-900">1,234</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center">
+            <div className="p-3 bg-purple-100 rounded-full">
+              <Settings className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">System Status</p>
+              <p className="text-2xl font-semibold text-green-600">Online</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
+          <div className="space-y-3">
+            <Link
+              to="/admin/films"
+              className="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            >
+              <Film className="h-5 w-5 text-blue-600 mr-3" />
+              <span className="font-medium">Manage Films</span>
+            </Link>
+            <Link
+              to="/admin/schedules"
+              className="flex items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+            >
+              <Calendar className="h-5 w-5 text-green-600 mr-3" />
+              <span className="font-medium">Manage Schedules</span>
+            </Link>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between items-center py-2 border-b">
+              <span>New film added: "Spider-Man"</span>
+              <span className="text-gray-500">2 hours ago</span>
+            </div>
+            <div className="flex justify-between items-center py-2 border-b">
+              <span>Schedule updated for Theater 1</span>
+              <span className="text-gray-500">4 hours ago</span>
+            </div>
+            <div className="flex justify-between items-center py-2">
+              <span>Customer registration: John Doe</span>
+              <span className="text-gray-500">6 hours ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;

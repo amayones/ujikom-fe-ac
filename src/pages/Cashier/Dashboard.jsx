@@ -1,99 +1,112 @@
-import React from 'react';
-import { Ticket, CreditCard, Users, Clock } from 'lucide-react';
-import Layout from '../../components/Layout';
+import { ShoppingCart, Ticket, Users, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-export default function CashierDashboard() {
-    const todayStats = [
-        { title: 'Tickets Sold', value: '45', icon: Ticket, color: 'bg-blue-500' },
-        { title: 'Total Sales', value: 'Rp 2.25M', icon: CreditCard, color: 'bg-green-500' },
-        { title: 'Customers', value: '38', icon: Users, color: 'bg-purple-500' },
-        { title: 'Avg. Time', value: '3.2 min', icon: Clock, color: 'bg-orange-500' }
-    ];
-
-    const recentTransactions = [
-        { id: 'TXN001', movie: 'Spider-Man', seats: 'A1, A2', amount: 'Rp 100,000', time: '14:30' },
-        { id: 'TXN002', movie: 'Batman', seats: 'B5', amount: 'Rp 55,000', time: '14:25' },
-        { id: 'TXN003', movie: 'Doctor Strange', seats: 'C3, C4, C5', amount: 'Rp 180,000', time: '14:20' }
-    ];
-
-    return (
-        <Layout>
-            <div className="text-white">
-                <h1 className="text-3xl font-bold mb-8">Cashier Dashboard</h1>
-                
-                {/* Today's Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    {todayStats.map((stat, index) => (
-                        <div key={index} className="bg-gray-800 rounded-lg p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-gray-400 text-sm">{stat.title}</p>
-                                    <p className="text-2xl font-bold">{stat.value}</p>
-                                </div>
-                                <div className={`${stat.color} p-3 rounded-lg`}>
-                                    <stat.icon className="w-6 h-6 text-white" />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Quick Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-gray-800 rounded-lg p-6">
-                        <h3 className="text-xl font-semibold mb-4">New Transaction</h3>
-                        <p className="text-gray-400 mb-4">Process new ticket purchase</p>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
-                            New Sale
-                        </button>
-                    </div>
-                    
-                    <div className="bg-gray-800 rounded-lg p-6">
-                        <h3 className="text-xl font-semibold mb-4">Scan Ticket</h3>
-                        <p className="text-gray-400 mb-4">Validate customer tickets</p>
-                        <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full">
-                            Scan QR Code
-                        </button>
-                    </div>
-                    
-                    <div className="bg-gray-800 rounded-lg p-6">
-                        <h3 className="text-xl font-semibold mb-4">Daily Report</h3>
-                        <p className="text-gray-400 mb-4">View today's summary</p>
-                        <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded w-full">
-                            View Report
-                        </button>
-                    </div>
-                </div>
-
-                {/* Recent Transactions */}
-                <div className="bg-gray-800 rounded-lg p-6">
-                    <h3 className="text-xl font-semibold mb-4">Recent Transactions</h3>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-gray-700">
-                                    <th className="text-left py-2">Transaction ID</th>
-                                    <th className="text-left py-2">Movie</th>
-                                    <th className="text-left py-2">Seats</th>
-                                    <th className="text-left py-2">Amount</th>
-                                    <th className="text-left py-2">Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {recentTransactions.map((transaction, index) => (
-                                    <tr key={index} className="border-b border-gray-700">
-                                        <td className="py-2">{transaction.id}</td>
-                                        <td className="py-2">{transaction.movie}</td>
-                                        <td className="py-2">{transaction.seats}</td>
-                                        <td className="py-2 text-green-400">{transaction.amount}</td>
-                                        <td className="py-2">{transaction.time}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+// Cashier dashboard page
+const Dashboard = () => {
+  return (
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold text-gray-900">Cashier Dashboard</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center">
+            <div className="p-3 bg-green-100 rounded-full">
+              <ShoppingCart className="h-6 w-6 text-green-600" />
             </div>
-        </Layout>
-    );
-}
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Today's Sales</p>
+              <p className="text-2xl font-semibold text-gray-900">24</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center">
+            <div className="p-3 bg-blue-100 rounded-full">
+              <Ticket className="h-6 w-6 text-blue-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Tickets Processed</p>
+              <p className="text-2xl font-semibold text-gray-900">156</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center">
+            <div className="p-3 bg-yellow-100 rounded-full">
+              <Users className="h-6 w-6 text-yellow-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Walk-in Customers</p>
+              <p className="text-2xl font-semibold text-gray-900">18</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center">
+            <div className="p-3 bg-purple-100 rounded-full">
+              <Clock className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Avg. Service Time</p>
+              <p className="text-2xl font-semibold text-gray-900">3.2m</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
+          <div className="space-y-3">
+            <Link
+              to="/cashier/booking"
+              className="flex items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+            >
+              <ShoppingCart className="h-5 w-5 text-green-600 mr-3" />
+              <span className="font-medium">New Walk-in Booking</span>
+            </Link>
+            <Link
+              to="/cashier/tickets"
+              className="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            >
+              <Ticket className="h-5 w-5 text-blue-600 mr-3" />
+              <span className="font-medium">Process Online Tickets</span>
+            </Link>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-4">Today's Schedule</h2>
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between items-center py-2 border-b">
+              <div>
+                <p className="font-medium">Spider-Man: No Way Home</p>
+                <p className="text-gray-500">Theater 1</p>
+              </div>
+              <span className="text-gray-600">14:00</span>
+            </div>
+            <div className="flex justify-between items-center py-2 border-b">
+              <div>
+                <p className="font-medium">The Batman</p>
+                <p className="text-gray-500">Theater 2</p>
+              </div>
+              <span className="text-gray-600">16:30</span>
+            </div>
+            <div className="flex justify-between items-center py-2">
+              <div>
+                <p className="font-medium">Dune</p>
+                <p className="text-gray-500">Theater 1</p>
+              </div>
+              <span className="text-gray-600">19:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;

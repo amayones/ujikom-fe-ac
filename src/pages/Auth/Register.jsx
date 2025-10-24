@@ -1,254 +1,227 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Toast from '../../components/Toast';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff } from 'lucide-react';
+import useAuthStore from '../../store/authStore';
 
-export default function Register() {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: ''
+// Register page component
+const Register = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+    phone: '',
+    address: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { register, loading, isAuth } = useAuthStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuth) {
+      navigate('/movies');
+    }
+  }, [isAuth, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (formData.password !== formData.password_confirmation) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    const result = await register(formData);
+    if (result.success) {
+      navigate('/movies');
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
     });
-    const [fieldErrors, setFieldErrors] = useState({});
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
+  };
 
-
-
-    const validateForm = () => {
-        const errors = {};
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Create your account
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Or{' '}
+            <Link to="/login" className="font-medium text-accent hover:text-yellow-600">
+              sign in to existing account
+            </Link>
+          </p>
+        </div>
         
-        // Name validation
-        if (!formData.name.trim()) {
-            errors.name = 'Nama harus diisi';
-        } else if (!/^[a-zA-Z\s]+$/.test(formData.name)) {
-            errors.name = 'Nama hanya boleh berisi huruf dan spasi';
-        }
-        
-        // Email validation
-        if (!formData.email.trim()) {
-            errors.email = 'Email harus diisi';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            errors.email = 'Format email tidak valid';
-        }
-        
-        // Password validation
-        if (!formData.password) {
-            errors.password = 'Password harus diisi';
-        } else if (formData.password.length < 8) {
-            errors.password = 'Password minimal 8 karakter';
-        }
-        
-        // Confirm password validation
-        if (!formData.password_confirmation) {
-            errors.password_confirmation = 'Konfirmasi password harus diisi';
-        } else if (formData.password !== formData.password_confirmation) {
-            errors.password_confirmation = 'Password tidak cocok';
-        }
-        
-        setFieldErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-        
-        // Clear field error when user starts typing
-        if (fieldErrors[name]) {
-            setFieldErrors(prev => ({ ...prev, [name]: '' }));
-        }
-        
-
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (!validateForm()) {
-            return;
-        }
-        
-        setLoading(true);
-        
-        // Simulate register process
-        setTimeout(() => {
-            setLoading(false);
-            setToast({ show: true, type: 'success', message: 'Registrasi berhasil! (Demo mode)' });
-        }, 1000);
-    };
-
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4 py-8">
-            <div className="w-full max-w-md bg-black rounded-lg shadow-lg p-8">
-                {/* Judul */}
-                <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold text-white mb-2">
-                        Daftar Akun Cinema
-                    </h2>
-                    <p className="text-gray-400 text-sm">
-                        Buat akun baru untuk menikmati layanan kami
-                    </p>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Full Name
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
                 </div>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-accent focus:border-accent focus:z-10 sm:text-sm"
+                  placeholder="Enter your full name"
+                />
+              </div>
+            </div>
 
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email address
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-accent focus:border-accent focus:z-10 sm:text-sm"
+                  placeholder="Enter your email"
+                />
+              </div>
+            </div>
 
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-accent focus:border-accent focus:z-10 sm:text-sm"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+            </div>
 
-                {/* Form */}
-                <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-                    {/* Name */}
-                    <div>
-                        <label className="block text-sm text-gray-300 mb-1">Nama Lengkap</label>
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="masukkan nama lengkap"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            className={`w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${
-                                fieldErrors.name ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
-                            }`}
-                            disabled={loading}
-                        />
-                        {fieldErrors.name && (
-                            <p className="text-red-400 text-xs mt-1">{fieldErrors.name}</p>
-                        )}
-                    </div>
-
-                    {/* Email */}
-                    <div>
-                        <label className="block text-sm text-gray-300 mb-1">Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="masukkan email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className={`w-full px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${
-                                fieldErrors.email ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
-                            }`}
-                            disabled={loading}
-                        />
-                        {fieldErrors.email && (
-                            <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
-                        )}
-                    </div>
-
-
-
-                    {/* Password */}
-                    <div>
-                        <label className="block text-sm text-gray-300 mb-1">Password</label>
-                        <div className="relative">
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                name="password"
-                                placeholder="buat password"
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-2 pr-10 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${
-                                    fieldErrors.password ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
-                                }`}
-                                disabled={loading}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                                disabled={loading}
-                            >
-                                {showPassword ? (
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                                    </svg>
-                                ) : (
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                )}
-                            </button>
-                        </div>
-                        {fieldErrors.password && (
-                            <p className="text-red-400 text-xs mt-1">{fieldErrors.password}</p>
-                        )}
-                    </div>
-
-                    {/* Konfirmasi Password */}
-                    <div>
-                        <label className="block text-sm text-gray-300 mb-1">Konfirmasi Password</label>
-                        <div className="relative">
-                            <input
-                                type={showConfirmPassword ? 'text' : 'password'}
-                                name="password_confirmation"
-                                placeholder="ulangi password"
-                                value={formData.password_confirmation}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-2 pr-10 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 transition-colors ${
-                                    fieldErrors.password_confirmation ? 'ring-2 ring-red-500 focus:ring-red-500' : 'focus:ring-red-500'
-                                }`}
-                                disabled={loading}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                                disabled={loading}
-                            >
-                                {showConfirmPassword ? (
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                                    </svg>
-                                ) : (
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                )}
-                            </button>
-                        </div>
-                        {fieldErrors.password_confirmation && (
-                            <p className="text-red-400 text-xs mt-1">{fieldErrors.password_confirmation}</p>
-                        )}
-                    </div>
-
-                    {/* Tombol daftar */}
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 rounded transition-colors flex items-center justify-center mt-6"
-                    >
-                        {loading ? (
-                            <>
-                                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Mendaftar...
-                            </>
-                        ) : (
-                            'Daftar'
-                        )}
-                    </button>
-                </form>
-
-                {/* Link login */}
-                <p className="text-sm text-center text-gray-400 mt-6">
-                    Sudah punya akun?{' '}
-                    <Link to="/login" className="text-red-500 hover:underline font-medium">
-                        Login di sini
-                    </Link>
-                </p>
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                Address
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 pt-2 pointer-events-none">
+                  <MapPin className="h-5 w-5 text-gray-400" />
+                </div>
+                <textarea
+                  id="address"
+                  name="address"
+                  rows={3}
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-accent focus:border-accent focus:z-10 sm:text-sm"
+                  placeholder="Enter your address"
+                />
+              </div>
             </div>
             
-            {/* Toast */}
-            <Toast
-                type={toast.type}
-                message={toast.message}
-                isVisible={toast.show}
-                onClose={() => setToast({ ...toast, show: false })}
-            />
-        </div>
-    );
-}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full pl-10 pr-10 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-accent focus:border-accent focus:z-10 sm:text-sm"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  required
+                  value={formData.password_confirmation}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full pl-10 pr-10 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-accent focus:border-accent focus:z-10 sm:text-sm"
+                  placeholder="Confirm your password"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-primary bg-accent hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Creating account...' : 'Create account'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Register;

@@ -1,82 +1,118 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import api from '../api';
+import axiosClient from '../api/axiosClient';
+import { toast } from 'react-toastify';
+import { ROLES } from '../utils/roles';
 
-const useAuthStore = create(
-    persist(
-        (set, get) => ({
-            user: null,
-            token: null,
-            isAuthenticated: false,
-            loading: false,
-            error: null,
+// Auth store for user authentication and profile management
+const useAuthStore = create((set, get) => ({
+  user: JSON.parse(localStorage.getItem('user')) || null,
+  token: localStorage.getItem('token') || null,
+  isAuth: !!localStorage.getItem('token'),
+  loading: false,
 
-            login: async (email, password) => {
-                set({ loading: true, error: null });
-                try {
-                    const response = await api.post('/auth/login', { email, password });
-                    const { user, token } = response.data.data;
-                    
-                    set({ 
-                        user, 
-                        token, 
-                        isAuthenticated: true, 
-                        loading: false 
-                    });
-                    
-                    return { success: true, user };
-                } catch (error) {
-                    const message = error.response?.data?.message || 'Login failed';
-                    set({ error: message, loading: false });
-                    return { success: false, message };
-                }
-            },
+  setUser: (user) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    set({ user, isAuth: true });
+  },
 
-            register: async (userData) => {
-                set({ loading: true, error: null });
-                try {
-                    const response = await api.post('/auth/register', userData);
-                    set({ loading: false });
-                    return { success: true, data: response.data };
-                } catch (error) {
-                    const message = error.response?.data?.message || 'Registration failed';
-                    set({ error: message, loading: false });
-                    return { success: false, message };
-                }
-            },
+  setToken: (token) => {
+    localStorage.setItem('token', token);
+    set({ token, isAuth: true });
+  },
 
-            logout: async () => {
-                try {
-                    await api.post('/auth/logout');
-                } catch (error) {
-                    console.error('Logout error:', error);
-                }
-                
-                set({ 
-                    user: null, 
-                    token: null, 
-                    isAuthenticated: false 
-                });
-            },
+  getRoleBasedRoute: (role) => {
+    switch (role) {
+      case ROLES.ADMIN:
+        return '/admin/dashboard';
+      case ROLES.OWNER:
+        return '/owner/dashboard';
+      case ROLES.CASHIER:
+        return '/cashier/dashboard';
+      case ROLES.CUSTOMER:
+      default:
+        return '/movies';
+    }
+  },
 
-            clearError: () => set({ error: null }),
+  login: async (email, password) => {
+    try {
+      set({ loading: true });
+      const response = await axiosClient.post('/login', { email, password });
+      
+      if (response.data.status === 'success') {
+        const { user, token } = response.data.data;
+        get().setUser(user);
+        get().setToken(token);
+        toast.success(response.data.message);
+        const redirectRoute = get().getRoleBasedRoute(user.role);
+        return { success: true, redirectRoute };
+      }
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message };
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-            initAuth: () => {
-                const { token } = get();
-                if (token) {
-                    set({ isAuthenticated: true });
-                }
-            }
-        }),
-        {
-            name: 'auth-storage',
-            partialize: (state) => ({ 
-                user: state.user, 
-                token: state.token, 
-                isAuthenticated: state.isAuthenticated 
-            })
-        }
-    )
-);
+  register: async (payload) => {
+    try {
+      set({ loading: true });
+      const response = await axiosClient.post('/register', payload);
+      
+      if (response.data.status === 'success') {
+        const { user, token } = response.data.data;
+        get().setUser(user);
+        get().setToken(token);
+        toast.success(response.data.message);
+        return { success: true };
+      }
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message };
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  fetchProfile: async () => {
+    try {
+      const response = await axiosClient.get('/me');
+      if (response.data.status === 'success') {
+        get().setUser(response.data.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch profile:', error);
+    }
+  },
+
+  updateProfile: async (payload) => {
+    try {
+      set({ loading: true });
+      const response = await axiosClient.patch('/profile', payload);
+      
+      if (response.data.status === 'success') {
+        get().setUser(response.data.data);
+        toast.success(response.data.message);
+        return { success: true };
+      }
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message };
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axiosClient.post('/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      set({ user: null, token: null, isAuth: false });
+      toast.success('Logged out successfully');
+    }
+  },
+}));
 
 export default useAuthStore;

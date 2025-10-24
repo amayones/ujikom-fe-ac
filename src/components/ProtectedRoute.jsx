@@ -1,27 +1,34 @@
-import React from 'react';
 import { Navigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
+import { hasRole, hasAnyRole, ROLES } from '../utils/roles';
 
-export default function ProtectedRoute({ children, allowedRoles = [] }) {
-    const { isAuthenticated, user } = useAuthStore();
+// Protected route component with role-based access control
+const ProtectedRoute = ({ children, role, roles }) => {
+  const { isAuth, user } = useAuthStore();
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
+  if (!isAuth) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Check single role
+  if (role && !hasRole(user, role)) {
+    // If user has unknown role, redirect to login
+    if (!Object.values(ROLES).includes(user?.role)) {
+      return <Navigate to="/login" replace />;
     }
+    return <Navigate to="/" replace />;
+  }
 
-    if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
-        // redirect to user's dashboard
-        switch (user?.role) {
-            case 'admin':
-                return <Navigate to="/admin" replace />;
-            case 'owner':
-                return <Navigate to="/owner" replace />;
-            case 'cashier':
-                return <Navigate to="/cashier" replace />;
-            default:
-                return <Navigate to="/" replace />;
-        }
+  // Check multiple roles
+  if (roles && !hasAnyRole(user, roles)) {
+    // If user has unknown role, redirect to login
+    if (!Object.values(ROLES).includes(user?.role)) {
+      return <Navigate to="/login" replace />;
     }
+    return <Navigate to="/" replace />;
+  }
 
-    return children;
-}
+  return children;
+};
+
+export default ProtectedRoute;
